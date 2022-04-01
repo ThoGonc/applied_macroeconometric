@@ -14,3 +14,10 @@ Francets<-ts(data=France,start=(1970),end=(2021),frequency=4)
 
 France_hp<- hpfilter(Francets, freq=1600,type="frequency",drift=TRUE)
 
+
+
+
+
+# Kalman filter procedure
+
+install.packages("MARSS")
