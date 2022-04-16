@@ -1,5 +1,5 @@
 #install.packages("readxl")
-install.packages("mfilter")
+#install.packages("mfilter")
 library(RCurl)
 library(mFilter)
 
@@ -14,10 +14,37 @@ Francets<-ts(data=France,start=(1970),end=(2021),frequency=4)
 
 France_hp<- hpfilter(Francets, freq=1600,type="frequency",drift=TRUE)
 
+plot(France_hp)
+
+
+
+
+
+Suede<-dsin[[7]]
+
+
+Suedets<-ts(data=Suede,start=(1970),end=(2021),frequency=4)
+
+
+Suede_hp<- hpfilter(Suedets, freq=1600,type="frequency",drift=TRUE)
+
+plot(Suede_hp)
+
+
+
+USA<-dsin[[33]]
+
+
+USAts<-ts(data=USA,start=(1970),end=(2021),frequency=4)
+
+
+USA_hp<- hpfilter(USAts, freq=1600,type="frequency",drift=TRUE)
+
+plot(USA_hp)
 
 
 
 
 # Kalman filter procedure
 
-install.packages("MARSS")
+#install.packages("MARSS")
