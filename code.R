@@ -52,8 +52,38 @@ Suisse_hp<- hpfilter(Suissets, freq=100,type="frequency",drift=TRUE)
 plot(Suisse_hp)
 
 
+
+
+
+
+
+#Output_gap
+
+
+urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_IMF_annuelles_PIB_output_gap.csv'
+dsin<-read.csv2(urlfile, header=TRUE)
+myts<-ts(data=dsin,start=(1980),end=(2022),frequency=4)
+
+
+France<-dsin[[14]]
+Francets<-ts(data=France,start=(1980),end=(2022),frequency=4)
+
+France_hp<- hpfilter(Francets, freq=100,type="frequency",drift=TRUE)
+plot(France_hp)
+
+
 rm(list = ls())
+
+
+
+
+
+
+
+
 
 # Kalman filter procedure
 
 #install.packages("MARSS")
+install.packages("dlm")
+library(dlm)
