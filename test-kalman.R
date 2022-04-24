@@ -3,9 +3,9 @@ graphics.off()
 
 
 
-install.packages("devtools")
-devtools::install_github("KevinKotze/tsm")
-install.packages("dlm")
+#install.packages("devtools")
+#devtools::install_github("KevinKotze/tsm")
+#install.packages("dlm")
 
 library(tsm)
 library(dlm)
