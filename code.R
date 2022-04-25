@@ -7,26 +7,29 @@ library(RCurl)
 library(mFilter)
 library(tidyverse)
 
-urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_pib_volume.csv'
-dsin<-read.csv2(urlfile, header=TRUE)
-myts<-ts(data=dsin,start=(1970),end=(2022),frequency=4)
-
+urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_gdp_quarter.csv'
+gdp<-read.csv2(urlfile, header=TRUE)
+mygdpts<-ts(data=gdp,start=(1970),end=(2022),frequency=4)
 
 
 
 #Frequence du parametre HP smoother
 
+France<-gdp[[6]]
+
+Francelgdp<-log(France)
+Francedlgdp<-100*diff(Francelgdp)
+Francets<-ts(data=Francedlgdp,start=(1975),end=(2021),frequency=4)     
 
 
+#verif pourquoi on a une data en 2022Q1 sans chiffres dans la base
 
-
-France<-dsin[[6]]
-Francets<-ts(data=France,start=(1970),end=(2021),frequency=4)
-
-
+plot(Francets)
 #hp filter
-France_hp<- hpfilter(Francets, freq=100,type="frequency",drift=TRUE)
+France_hp<- hpfilter(Francets, freq=1600,type="frequency",drift=FALSE)
 #plot(France_hp)
+
+plot(France_hp)
 
 cycle_France_hp<-France_hp$cycle
 trend_France_hp<-France_hp$trend
