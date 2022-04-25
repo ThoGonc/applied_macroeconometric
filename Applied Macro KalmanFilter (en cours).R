@@ -3,6 +3,7 @@
 library(RCurl)
 library(mFilter)
 library(tidyverse)
+library(readxl)
 
 urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_pib_volume.csv'
 dsin<-read.csv2(urlfile, header=TRUE)
@@ -16,6 +17,11 @@ USAts<-ts(data=USA,start=(1970),end=(2021),frequency=4)
 USA_hp<- hpfilter(USAts, freq=100,type="frequency",drift=TRUE)
 plot(USA_hp)
 
+PaysBas<-dsin[[34]]
+PaysBas <- na.omit(PaysBas) 
+PaysBasts<-ts(data=PaysBas,start=(1970),end=(2021),frequency=4)
+PaysBas_hp<- hpfilter(PaysBasts, freq=100,type="frequency",drift=TRUE)
+
 
 install.packages("MARSS")
 install.packages("dlm")
@@ -25,6 +31,27 @@ library(dlm)
 #initial value pot_USA
 USA_hp_trend <- USA_hp[["trend"]]
 pot_USA_begin <- USA_hp_trend[[1]]
+
+
+#data inflation
+Data_applied_inflation <- read_excel("GitHub/applied_macroeconometric/Data_applied_inflation.xlsx")
+df_infla <- Data_applied_inflation
+USA_infla <-df_infla[32]
+USA_inflats<-ts(data=USA_infla,start=(1970),end=(2021),frequency=4)
+
+#model1: univar, avec inflation
+B1 <- matrix("b")
+Z1 <- matrix(1)
+A1 <- matrix("a")
+u1 <- "zero"
+D1 <- t(matrix(data = USA_inflats))
+x0 <- 28
+model.list1 <- list(B = B1, Z = Z1, A = A1, d=D1, R=matrix(1), V0="identity", tinitx = 1)
+fit <- MARSS(USAts, model=model.list1, fit = TRUE)
+USA_KF1 <- fitted(fit, type="ytt1", interval = c("none", "confidence", "prediction"),level = 0.95, output = c("data.frame", "matrix"))
+
+
+
 
 #model specification
 TUCref <- 25
