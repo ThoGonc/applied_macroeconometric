@@ -21,9 +21,7 @@ inf <- ts(dat.tmp, start = c(1960, 2), frequency = 4)
 plot.ts(inf)
 
 
-fn <- function(parm) {
-  dlmModPoly(order = 1, dV = exp(parm[1]), dW = exp(parm[2]))
-}
+fn <- function(parm) {  dlmModPoly(order = 1, dV = exp(parm[1]), dW = exp(parm[2]))}
 
 
 fit <- dlmMLE(inf, rep(0, 2), build = fn, hessian = TRUE)
