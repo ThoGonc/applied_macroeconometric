@@ -23,8 +23,8 @@ PaysBasts<-ts(data=PaysBas,start=(1970),end=(2021),frequency=4)
 PaysBas_hp<- hpfilter(PaysBasts, freq=100,type="frequency",drift=TRUE)
 
 
-install.packages("MARSS")
-install.packages("dlm")
+#install.packages("MARSS")
+#install.packages("dlm")
 library(MARSS)
 library(dlm)
 
