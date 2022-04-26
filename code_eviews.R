@@ -11,8 +11,6 @@ library(tsm)
 library(dlm)
 
 
-rm(list = ls())
-graphics.off()
 MySheet <- read_excel("D:/2021-22/ENSAE_papiers/Cours/S2/2.1 . Applied Macroeconometrics/applied_macroeconometrics/filtering/pottest.xlsx")
 
 gdp<-MySheet[[3]]
@@ -22,25 +20,42 @@ lgdp<-log(gdp)
 dlgdp<-100*diff(lgdp)
 
 
+inflats<-ts(data=infl,start=(1978),end=(2010),frequency=4)
+dlgdpts<-ts(data=,start=(1978),end=(2010),frequency=4)
 
-lgdp_hp<- hpfilter(lgdp, freq=1600,type="frequency",drift=FALSE)    #Vérifier s'il faut un drift ou pas
+lgdp_hp<- hpfilter(dlgdp, freq=1600,type="lambda",drift=FALSE)    #Vérifier s'il faut un drift ou pas
 lgdpt_hp<-lgdp_hp$trend
+plot(lgdp_hp)
+
+lgdpc_ini<-lgdp_hp$trend
+
+#inflation laggué
+lag_infla<-lagam(infl,k=1)
+
+alpha<-lm(inflats ~ lgdp)
+
+#Trend
 
 
+#cycle
 
-alpha<-lm(infl ~ lgdp)
+
+#Inflation markup model
 
 
+phi<-lm()
 
 lgdp_hp<- hpfilter(lgdp, freq=1600,type="frequency",drift=FALSE)    #Vérifier s'il faut un drift ou pas
 lgdpt_hp<-lgdp_hp$trend
 
 lgdpt_hp
 
+lag_infla<-lag(infl)
 
 
 
-
+infla<-lm(infl~lag(infla)+lgdp)
+summary(infla)
 
 
 #Plus tard

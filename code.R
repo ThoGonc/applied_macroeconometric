@@ -26,6 +26,7 @@ mygdpts<-ts(data=gdp,start=(1970),end=(2022),frequency=4)
 
 France<-gdp[[6]]
 
+logFrance<-log(France)
 #Franced<-diff(France)
 #Francelgdp<-log(France)
 #Francedlgdp<-100*diff(Francelgdp)
@@ -36,8 +37,8 @@ Francets<-ts(data=France,start=(1975),end=(2021),frequency=4)
 
 plot(Francets)
 #hp filter
-France_hp<- hpfilter(Francets, freq=1600,type="frequency",drift=TRUE)
-#plot(France_hp)
+France_hp<- hpfilter(Francets, freq=1600,type="lambda",drift=TRUE)
+plot(France_hp)
 
 plot(France_hp)
 
@@ -66,7 +67,7 @@ ts.plot(francetss_bk, trend_France_bk, gpars = list(col = c("black", "red")))
 
 lin.mod <- lm(Francets ~ time(Francets))
 lin.trend <- lin.mod$fitted.values  # fitted values pertain to time trend
-linear <- ts(lin.trend, start = c(1970, 1), frequency = 4)  # create a time series variable for trend
+linear <- ts(lin.trend, start = c(1970, 1), lambda = 4)  # create a time series variable for trend
 lin.cycle <- Francets - linear  # cycle is the difference between the data and linear trend
 
 ts.plot(linear, Francets, gpars = list(col = c("black", "red")))
@@ -78,8 +79,8 @@ ts.plot(linear, Francets, gpars = list(col = c("black", "red")))
 
 
 Suede<-dsin[[7]]
-Suedets<-ts(data=Suede,start=(1970),end=(2021),frequency=4)
-Suede_hp<- hpfilter(Suedets, freq=100,type="frequency",drift=TRUE)
+Suedets<-ts(data=Suede,start=(1970),end=(2021),lambda=4)
+Suede_hp<- hpfilter(Suedets, freq=100,type="lambda",drift=TRUE)
 devAskNewPage(ask = FALSE)
 plot(Suede_hp)
 
@@ -88,10 +89,10 @@ plot(Suede_hp)
 USA<-dsin[[33]]
 USA <- na.omit(USA) 
 
-USAts<-ts(data=USA,start=(1970),end=(2021),frequency=4)
+USAts<-ts(data=USA,start=(1970),end=(2021),lambda=4)
 
 
-USA_hp<- hpfilter(USAts, freq=100,type="frequency",drift=TRUE)
+USA_hp<- hpfilter(USAts, freq=100,type="lambda",drift=TRUE)
 
 plot(USA_hp)
 
@@ -100,8 +101,8 @@ plot(USA_hp)
 Suisse<-dsin[[10]]
 Suisse <- na.omit(Suisse) 
 
-Suissets<-ts(data=Suisse,start=1980,end=(2021),frequency=4)
-Suisse_hp<- hpfilter(Suissets, freq=100,type="frequency",drift=TRUE)
+Suissets<-ts(data=Suisse,start=1980,end=(2021),lambda=4)
+Suisse_hp<- hpfilter(Suissets, freq=100,type="lambda",drift=TRUE)
 plot(Suisse_hp)
 
 
