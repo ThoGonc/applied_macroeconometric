@@ -22,8 +22,28 @@ lgdp<-log(gdp)
 dlgdp<-100*diff(lgdp)
 
 
+
 lgdp_hp<- hpfilter(lgdp, freq=1600,type="frequency",drift=FALSE)    #Vérifier s'il faut un drift ou pas
 lgdpt_hp<-lgdp_hp$trend
+
+
+
+alpha<-lm(infl ~ lgdp)
+
+
+
+lgdp_hp<- hpfilter(lgdp, freq=1600,type="frequency",drift=FALSE)    #Vérifier s'il faut un drift ou pas
+lgdpt_hp<-lgdp_hp$trend
+
+lgdpt_hp
+
+
+
+
+
+
+
+#Plus tard
 
 
 lgdpc_hp= lgdp - lgdpt_hp
