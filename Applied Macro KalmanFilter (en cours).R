@@ -53,8 +53,8 @@ u1 <- "zero"
 D1 <- t(matrix(data = USA_inflats))
 x0 <- 28
 model.list1 <- list(B = B1, Z = Z1, A = A1, d=D1, R=matrix(1), V0="identity", tinitx = 1)
-fit <- MARSS(USAts, model=model.list1, fit = TRUE)
-USA_KF1 <- fitted(fit, type="ytt1", interval = c("none", "confidence", "prediction"),level = 0.95, output = c("data.frame", "matrix"))
+fit <- MARSS(USAts, model=model.list1, fit = TRUE, fun.kf = ("MARSSkfss"))
+USA_KF2 <- fitted(fit, type="ytt1", interval = c("none", "confidence", "prediction"),level = 0.95, output = c("data.frame", "matrix"))
 
 #model2: multivar with lags
 B2 <- matrix(list("b1", 0, "b2", 1), 2, 2)
@@ -75,7 +75,12 @@ USA_KF2 <- fitted(fit, type="ytt1", interval = c("none", "confidence", "predicti
 
 
 
+<<<<<<< Updated upstream
 #model 3
+=======
+#model2
+
+>>>>>>> Stashed changes
 #model specification
 TUCref <- 25
 B1 <- matrix(list("a", 0, 0, "b"), 2, 1)
