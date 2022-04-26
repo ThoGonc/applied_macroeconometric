@@ -26,7 +26,7 @@ mygdpts<-ts(data=gdp,start=(1970),end=(2022),frequency=4)
 
 France<-gdp[[6]]
 
-logFrance<-log(France)
+logFrance<-log(France)*100
 #Franced<-diff(France)
 #Francelgdp<-log(France)
 #Francedlgdp<-100*diff(Francelgdp)
