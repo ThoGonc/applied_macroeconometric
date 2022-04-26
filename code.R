@@ -8,46 +8,52 @@ library(mFilter)
 library(tidyverse)
 
 #gdp annuel
-urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_real_gdp_quarter.csv'
+urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_gdp_quarter_sa.csv'
 gdp<-read.csv2(urlfile, header=TRUE)
 mygdpts<-ts(data=gdp,start=(1970),end=(2022),frequency=4)
 
 #gdp trimestriel
 #https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_gdp_quarter.csv
 
-#gdp_trimestriel_reel_US_FRED
-#https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_real_gdp_quarter.csv
+#gdp_trimestriel_reel_US_FRED no seasonnaly adjust
+#https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_real_gdp_quarter_nosa.csv
 
 
 #gdp annuel
 #https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied.csv
 
+#gdp_trimestriel_reel_US_FRED no seasonnaly adjust
+#https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_gdp_quarter_sa.csv
+
+
+
 #Frequence du parametre HP smoother
 
 France<-gdp[[6]]
 
-logFrance<-log(France)*100
+logFrance<-log(France)
 #Franced<-diff(France)
 #Francelgdp<-log(France)
 #Francedlgdp<-100*diff(Francelgdp)
 Francets<-ts(data=France,start=(1975),end=(2021),frequency=4)     
 
+plot(Francets)
+
+
+hp.decom <- hpfilter(Francets, freq = 1600, type = "lambda")
+
+plot.ts(Francets, ylab = "")  # plot time series
+lines(hp.decom$trend, col = "red")  # include HP trend
+legend("topleft", legend = c("data", "HPtrend"), lty = 1, 
+       col = c("black", "red"), bty = "n")
+plot.ts(hp.decom$cycle, ylab = "")  # plot cycle
+legend("topleft", legend = c("HPcycle"), lty = 1, col = c("black"), 
+       bty = "n")
+
+
 
 #verif pourquoi on a une data en 2022Q1 sans chiffres dans la base
 
-plot(Francets)
-#hp filter
-France_hp<- hpfilter(Francets, freq=1600,type="lambda",drift=TRUE)
-plot(France_hp)
-
-plot(France_hp)
-
-cycle_France_hp<-France_hp$cycle
-trend_France_hp<-France_hp$trend
-francetss_hp<-France_hp$x
-
-#plot(France_hp)
-ts.plot(francetss_hp, trend_France_hp, gpars = list(col = c("black", "red")))
 
 
 
