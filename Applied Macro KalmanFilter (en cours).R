@@ -56,11 +56,26 @@ model.list1 <- list(B = B1, Z = Z1, A = A1, d=D1, R=matrix(1), V0="identity", ti
 fit <- MARSS(USAts, model=model.list1, fit = TRUE)
 USA_KF1 <- fitted(fit, type="ytt1", interval = c("none", "confidence", "prediction"),level = 0.95, output = c("data.frame", "matrix"))
 
+#model2: multivar with lags
+B2 <- matrix(list("b1", 0, "b2", 1), 2, 2)
+Z2 <- matrix(list (0, 0, 0, 0, "alpha2", 0, 0, "alpha3", 1), 3, 3)
+A2 <- matrix(list("delta", "alpha1", 0), 3, 1)
+Q2 <- matrix(list("q1", 0, 0, 0), 2, 2)
+u2 <- "zero"
+d2 <- t(matrix(data = USA_inflats, USAts, USAts))
+D2 <- matrix(list(1, "alpha3", 0, -1, 0, 0), 3, 2)
+x02 <- 28
+model.list2 <- list(B = B2, Z = Z2, A = A2, d=D2, R=matrix(1), V0="identity", tinitx = 1)
+fit <- MARSS(USAts, model=model.list2, fit = TRUE)
+USA_KF2 <- fitted(fit, type="ytt1", interval = c("none", "confidence", "prediction"),level = 0.95, output = c("data.frame", "matrix"))
 
 
 
 
 
+
+
+#model 3
 #model specification
 TUCref <- 25
 B1 <- matrix(list("a", 0, 0, "b"), 2, 1)
