@@ -1,3 +1,6 @@
+rm(list = ls())
+graphics.off()
+
 #install.packages("readxl")
 #install.packages("mFilter")
 library(RCurl)
@@ -34,10 +37,13 @@ pot_USA_begin <- USA_hp_trend[[1]]
 
 
 #data inflation
-Data_applied_inflation <- read_excel("GitHub/applied_macroeconometric/Data_applied_inflation.xlsx")
-df_infla <- Data_applied_inflation
+
+urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_inflation.csv'
+df_infla<-read.csv2(urlfile, header=TRUE)
 USA_infla <-df_infla[32]
 USA_inflats<-ts(data=USA_infla,start=(1970),end=(2021),frequency=4)
+
+
 
 #model1: univar, avec inflation
 B1 <- matrix("b")
@@ -49,6 +55,8 @@ x0 <- 28
 model.list1 <- list(B = B1, Z = Z1, A = A1, d=D1, R=matrix(1), V0="identity", tinitx = 1)
 fit <- MARSS(USAts, model=model.list1, fit = TRUE)
 USA_KF1 <- fitted(fit, type="ytt1", interval = c("none", "confidence", "prediction"),level = 0.95, output = c("data.frame", "matrix"))
+
+
 
 
 
