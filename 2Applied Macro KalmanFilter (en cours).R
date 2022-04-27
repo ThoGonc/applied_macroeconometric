@@ -36,13 +36,29 @@ USA_hp_trend <- USA_hp[["trend"]]
 pot_USA_begin <- USA_hp_trend[[1]]
 
 
-#data inflation
+#data inflation Q1_1970 Q4_2020 (205 values)
 
 urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_inflation.csv'
 df_infla<-read.csv2(urlfile, header=TRUE)
 USA_infla <-df_infla[32]
 USA_inflats<-ts(data=USA_infla,start=(1970),end=(2021),frequency=4)
+USA_infla <- matrix(data = USA_inflats)
 
+#data PIB Q1_1970 Q4_2020 (205 values)
+USA_PIB <- matrix(data = USAts)
+PaysBas_PIB <- matrix(data = PaysBasts)
+
+
+#préparation matrice des covariates
+mat_cov <- matrix(, nrow = 205, ncol = 3)
+mat_cov[,1] <- USA_infla
+mat_cov[,2] <- USA_PIB
+mat_cov[,3] <- PaysBas_PIB
+
+#préparation matrice var d'etat
+mat_etat <- matrix(, nrow = 205, ncol = 2)
+mat_etat[,1] <- USA_PIB
+mat_etat[,2] <- PaysBas_PIB
 
 
 #model1: univar, avec inflation
@@ -55,18 +71,20 @@ x0 <- 28
 model.list1 <- list(B = B1, Z = Z1, A = A1, d=D1, R=matrix(1), V0="identity", tinitx = 1)
 fit <- MARSS(USAts, model=model.list1, fit = TRUE, fun.kf = ("MARSSkfss"))
 USA_KF2 <- fitted(fit, type="ytt1", interval = c("none", "confidence", "prediction"),level = 0.95, output = c("data.frame", "matrix"))
+summary(fit)
+ggplot2::autoplot(fit, plot.type = "fitted.ytT")
 
 #model2: multivar with lags
 B2 <- matrix(list("b1", 0, "b2", 1), 2, 2)
-Z2 <- matrix(list (0, 0, 0, 0, "alpha2", 0, 0, "alpha3", 1), 3, 3)
+Z2 <- matrix(list(1, "alpha3", 0, -1, 0, 0), 3, 2)
 A2 <- matrix(list("delta", "alpha1", 0), 3, 1)
 Q2 <- matrix(list("q1", 0, 0, 0), 2, 2)
 u2 <- "zero"
-d2 <- t(matrix(data = USA_inflats, USAts, USAts))
-D2 <- matrix(list(1, "alpha3", 0, -1, 0, 0), 3, 2)
+d2 <- t(mat_cov)
+D2 <- matrix(list (0, 0, 0, 0, "alpha2", 0, 0, "alpha3", 1), 3, 3)
 x02 <- 28
-model.list2 <- list(B = B2, Z = Z2, A = A2, d=D2, R=matrix(1), V0="identity", tinitx = 1)
-fit <- MARSS(USAts, model=model.list2, fit = TRUE)
+model.list2 <- list(B = B2, Z = Z2, A = A2, d=d2, D=D2, R=matrix(1), V0="identity", tinitx = 1)
+fit <- MARSS(mat_etat, model=model.list2, fit = TRUE)
 USA_KF2 <- fitted(fit, type="ytt1", interval = c("none", "confidence", "prediction"),level = 0.95, output = c("data.frame", "matrix"))
 
 
@@ -112,22 +130,3 @@ USA_KF1 <- head(fitted(fit, type="ytt1"))
 #example
 dat0 <- cumsum(rnorm(100,0,0.5)) + rnorm(100,0,0.5)
 fit <- MARSS(USAts)
-
-#exemple2
-set.seed(123)
-u <- 0.01
-r <- 0.02
-q <- 0.1
-b <- 0.9
-TT <- 208
-x0 <- 28
-xt.ns <- rep(x0, TT)
-for (i in 2:TT) xt.ns[i] <- b * xt.ns[i - 1] + u + rnorm(1, 0, 
-                                                         sqrt(q))
-yt.ns <- xt.ns + rnorm(TT, 0, sqrt(r))
-
-plot(yt.ns, xlab = "", ylab = "", main = "xt and yt", pch = 16, 
-     col = "red")
-lines(xt.ns, lwd = 2)
-
-fit <- MARSS(yt.ns, model = list(B = matrix("b")))
