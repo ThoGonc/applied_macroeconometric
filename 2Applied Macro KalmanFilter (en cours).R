@@ -49,16 +49,12 @@ USA_PIB <- matrix(data = USAts)
 PaysBas_PIB <- matrix(data = PaysBasts)
 
 
-#préparation matrice des covariates
-mat_cov <- matrix(, nrow = 205, ncol = 3)
-mat_cov[,1] <- USA_infla
-mat_cov[,2] <- USA_PIB
-mat_cov[,3] <- PaysBas_PIB
+#préparation matrice var d'observation
+mat_obs <- matrix(, nrow = 205, ncol = 3)
+mat_obs[,1] <- USA_infla
+mat_obs[,2] <- USA_PIB
+mat_obs[,3] <- PaysBas_PIB
 
-#préparation matrice var d'etat
-mat_etat <- matrix(, nrow = 205, ncol = 2)
-mat_etat[,1] <- USA_PIB
-mat_etat[,2] <- PaysBas_PIB
 
 
 #model1: univar, avec inflation
@@ -80,12 +76,12 @@ Z2 <- matrix(list(1, "alpha3", 0, -1, 0, 0), 3, 2)
 A2 <- matrix(list("delta", "alpha1", 0), 3, 1)
 Q2 <- matrix(list("q1", 0, 0, 0), 2, 2)
 u2 <- "zero"
-d2 <- t(mat_cov)
+d2 <- t(mat_obs)
 D2 <- matrix(list (0, 0, 0, 0, "alpha2", 0, 0, "alpha3", 1), 3, 3)
 x02 <- 28
-model.list2 <- list(B = B2, Z = Z2, A = A2, d=d2, D=D2, R=matrix(1), V0="identity", tinitx = 1)
-fit <- MARSS(mat_etat, model=model.list2, fit = TRUE)
-USA_KF2 <- fitted(fit, type="ytt1", interval = c("none", "confidence", "prediction"),level = 0.95, output = c("data.frame", "matrix"))
+model.list2 <- list(B = B2, Z = Z2, A = A2, d=d2, D=D2, R="identity", V0="identity", tinitx = 1)
+fit <- MARSS(d2, model=model.list2, fit = TRUE)
+USA_KF3 <- fitted(fit, type="ytt1", interval = c("none", "confidence", "prediction"),level = 0.95, output = c("data.frame", "matrix"))
 
 
 
