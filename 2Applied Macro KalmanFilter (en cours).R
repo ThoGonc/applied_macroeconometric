@@ -33,8 +33,8 @@ library(dlm)
 
 #initial value pot_USA
 USA_hp_trend <- USA_hp[["trend"]]
-pot_USA_begin <- USA_hp_trend[[1]]
-pot_USA_begint1 <- USA_hp_trend[[2]]
+pot_USA_begin <- log(USA_hp_trend[[1]])
+pot_USA_begint1 <- log(USA_hp_trend[[2]])
 
 
 #data inflation Q1_1970 Q4_2020 (205 values)
@@ -65,15 +65,10 @@ for (i in seq_along(USA_infla)) {
   } else {
     mat_obs[i, 1] <- mat_obs[i, 1]- mat_obs[i - 1, 1]
     mat_obs[i, 3] <- mat_obs[i - 1, 2]
-    # mat_obs[i, 3] <- usa_infla[[i - 1]]
   }
 }
 
-
-#mat_obs[1, 1] <- NA_real_
 mat_obs <- na.omit(mat_obs)
-
-
 
 
 #model1: univar, avec inflation
@@ -106,3 +101,20 @@ USA_KF4 <- tsSmooth(fit,
                     type = c("xtT", "xtt", "xtt1", "ytT", "ytt", "ytt1"),
                     interval = c("none", "confidence", "prediction"),
                     level = 0.95, fun.kf = c("MARSSkfas", "MARSSkfss"))
+
+#exploitation des resultats
+mat_OG <- matrix(, nrow = 204, ncol = 1)
+for (i in 1:204) {
+  if (i == 1) {
+    mat_OG[i, 1] <- NA_real_
+  } else {
+    mat_OG[i, 1] <- USA_KF4[i,3]- USA_KF4[i-1,3]
+  }
+}
+
+
+USA_KF4exp <- exp(USA_KF4[,3])
+ggplot2::autoplot(fit, plot.type = "fitted.xtT")
+
+
+
