@@ -105,6 +105,26 @@ for (i in 1:204) {
 }
 
 
+#model2: multivar with lags, coefficients fixés
+B2 <- matrix(list(1.03, 1, -0.26, 0), 2, 2)
+Z2 <- matrix(list(1, -0.18, 0, -1, 0, 0), 3, 2)
+A2 <- matrix(list(0.77, 2.4, 0), 3, 1)
+Q2 <- matrix(list("q1", 0, 0, 0), 2, 2)
+u2 <- matrix(list(0,0),nrow = 2, ncol = 1)
+d2 <- t(mat_obs)
+D2 <- matrix(list (0, 0, 0, 0, 0, 0, 0, 0.82, 1), 3, 3)
+R2 <- matrix(list ("r11", 0, 0, 0, "r22", 0, 0, 0, 1), 3, 3)
+x02 <- matrix(list(pot_USA_begint1, pot_USA_begin), nrow = 2, ncol = 1)
+model.list2 <- list(B = B2, Q=Q2, Z = Z2, A = A2, d=d2, D=D2, U=u2, R=R2, x0= x02, tinitx = 1)
+fit <- MARSS(d2, model=model.list2, fit = TRUE)
+USA_KF3 <- fitted(fit, type="ytt1", interval = c("none", "confidence", "prediction"),level = 0.95, output = c("data.frame", "matrix"))
+USA_KF4 <- tsSmooth(fit,
+                    type = c("xtT", "xtt", "xtt1", "ytT", "ytt", "ytt1"),
+                    interval = c("none", "confidence", "prediction"),
+                    level = 0.95, fun.kf = c("MARSSkfas", "MARSSkfss"))
+
+
+
 USA_KF4exp <- exp(USA_KF4[,3])
 ggplot2::autoplot(fit, plot.type = "fitted.xtT")
 
