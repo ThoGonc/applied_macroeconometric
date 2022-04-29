@@ -20,21 +20,16 @@ USAts<-ts(data=USA,start=(1970),end=(2021),frequency=4)
 USA_hp<- hpfilter(USAts, freq=100,type="frequency",drift=TRUE)
 plot(USA_hp)
 
-PaysBas<-dsin[[34]]
-PaysBas <- na.omit(PaysBas) 
-PaysBasts<-ts(data=PaysBas,start=(1970),end=(2021),frequency=4)
-PaysBas_hp<- hpfilter(PaysBasts, freq=100,type="frequency",drift=TRUE)
-
-
 #install.packages("MARSS")
 #install.packages("dlm")
+installed.packages("broom")
 library(MARSS)
 library(dlm)
 
 #initial value pot_USA
-USA_hp_trend <- USA_hp[["trend"]]
-pot_USA_begin <- log(USA_hp_trend[[1]])
-pot_USA_begint1 <- log(USA_hp_trend[[2]])
+USA_hp_cycle <- USA_hp[["cycle"]]
+pot_USA_begin <- log(USA_hp_cycle[[1]])
+pot_USA_begint1 <- log(USA_hp_cycle[[2]])
 
 
 #data inflation Q1_1970 Q4_2020 (205 values)
@@ -47,18 +42,15 @@ USA_infla <- matrix(data = USA_inflats)
 
 #data PIB Q1_1970 Q4_2020 (205 values)
 USA_PIB <- matrix(data = USAts)
-PaysBas_PIB <- matrix(data = PaysBasts)
-
-USA_DeltaPIB <- log(USA_PIB)
+USA_logPIB <- log(USA_PIB)
 
 #préparation matrice var d'observation
 mat_obs <- matrix(, nrow = 205, ncol = 3)
-mat_obs[,1] <- USA_DeltaPIB 
+mat_obs[,1] <- USA_logPIB 
 mat_obs[,2] <- USA_infla
-mat_obs[,3] <- PaysBas_PIB
 
 
-#création du lag inflation
+#création du lag inflation et delta PIB
 for (i in seq_along(USA_infla)) {
   if (i == 1) {
     mat_obs[i, 3] <- NA_real_
