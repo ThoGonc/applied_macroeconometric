@@ -21,7 +21,6 @@ France <- na.omit(France)
 lFrance<-log(France)
 Francets<-ts(data=lFrance,start=(1975),end=(2022),frequency=4)
 
-plot(France_hp)
 
 
 France_hp<- hpfilter(lFrance, freq=1600,type="lambda",drift=FALSE)
@@ -33,7 +32,16 @@ trend_France_hp<-France_hp$trend
 diff_lgdp<-diff(lFrance)
 
 
+urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/infla_test_france.csv'
+df_infla<-read.csv2(urlfile, header=TRUE)
+France_infla <-df_infla[2]
+France_inflats<-ts(data=France_infla,start=(1975),end=(2022),frequency=4)
+France_infla <- matrix(data = France_inflats)
+
+
+
 #1ere equation Trend
+trend_value<-diff_lgpd-diff(cycle_France_hp)
 Trend<-lm(diff_lgdp~diff(cycle_France_hp))
 
 
@@ -46,6 +54,22 @@ summary(cycle)
 
 #2eme equation
 inflation_markunp_model<-lm(France_infla~lag(France_infla,1)+trend_France_hp)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #install.packages("MARSS")
@@ -61,12 +85,6 @@ pot_France_begint1 <- log(France_hp_cycle[[2]])
 
 
 #data inflation Q1_1970 Q4_2020 (205 values)
-
-urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/infla_test_france.csv'
-df_infla<-read.csv2(urlfile, header=TRUE)
-France_infla <-df_infla[2]
-France_inflats<-ts(data=France_infla,start=(1975),end=(2022),frequency=4)
-France_infla <- matrix(data = France_inflats)
 
 #data PIB Q1_1970 Q4_2020 (205 values)
 France_PIB <- matrix(data = Francets)
