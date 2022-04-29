@@ -8,47 +8,21 @@ library(mFilter)
 library(tidyverse)
 library(readxl)
 
-urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_gdp_quarter_sa.csv'
+urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_pib_volume.csv'
 dsin<-read.csv2(urlfile, header=TRUE)
-myts<-ts(data=dsin,start=(1975),end=(2022),frequency=4)
+myts<-ts(data=dsin,start=(1970),end=(2022),frequency=4)
 
 
 #HP smoother
 France<-dsin[[6]]
 France <- na.omit(France) 
-
-
-lFrance<-log(France)
-Francets<-ts(data=lFrance,start=(1975),end=(2022),frequency=4)
-
+Francets<-ts(data=France,start=(1970),end=(2021),frequency=4)
+France_hp<- hpfilter(Francets, freq=1600,type="lambda",drift=FALSE)
 plot(France_hp)
-
-
-France_hp<- hpfilter(lFrance, freq=1600,type="lambda",drift=FALSE)
-
-cycle_France_hp<-France_hp$cycle
-trend_France_hp<-France_hp$trend
-
-
-diff_lgdp<-diff(lFrance)
-
-
-#1ere equation
-Trend<-lm(diff_lgdp~diff(cycle_France_hp))
-
-#2eme equation
-inflation_markunp_model<-lm(France_infla~lag(France_infla)+trend_France_hp)
-
-#3 eme equation
-cycle_lag_un<-lag(cycle_France_hp,1)
-cycle_lag_deux<-lag(cycle_France_hp,2)
-cycle<-lm(cycle_France_hp~0+lag(cycle_France_hp,1)+lag(cycle_France_hp,2))
-summary(cycle)
-
 
 #install.packages("MARSS")
 #install.packages("dlm")
-installed.packages("broom")
+#installed.packages("broom")
 library(MARSS)
 library(dlm)
 
@@ -60,10 +34,10 @@ pot_France_begint1 <- log(France_hp_cycle[[2]])
 
 #data inflation Q1_1970 Q4_2020 (205 values)
 
-urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/infla_test_france.csv'
+urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_inflation.csv'
 df_infla<-read.csv2(urlfile, header=TRUE)
-France_infla <-df_infla[2]
-France_inflats<-ts(data=France_infla,start=(1975),end=(2022),frequency=4)
+France_infla <-df_infla[6]
+France_inflats<-ts(data=France_infla,start=(1970),end=(2021),frequency=4)
 France_infla <- matrix(data = France_inflats)
 
 #data PIB Q1_1970 Q4_2020 (205 values)
@@ -74,6 +48,9 @@ France_logPIB <- log(France_PIB)
 mat_obs <- matrix(, nrow = 205, ncol = 3)
 mat_obs[,1] <- France_logPIB 
 mat_obs[,2] <- France_infla
+
+
+
 
 
 #création du lag inflation et delta PIB
