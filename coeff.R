@@ -33,17 +33,19 @@ trend_France_hp<-France_hp$trend
 diff_lgdp<-diff(lFrance)
 
 
-#1ere equation
+#1ere equation Trend
 Trend<-lm(diff_lgdp~diff(cycle_France_hp))
 
-#2eme equation
-inflation_markunp_model<-lm(France_infla~lag(France_infla)+trend_France_hp)
 
-#3 eme equation
+#3 eme equation Cycle
 cycle_lag_un<-lag(cycle_France_hp,1)
 cycle_lag_deux<-lag(cycle_France_hp,2)
 cycle<-lm(cycle_France_hp~0+lag(cycle_France_hp,1)+lag(cycle_France_hp,2))
 summary(cycle)
+
+
+#2eme equation
+inflation_markunp_model<-lm(France_infla~lag(France_infla,1)+trend_France_hp)
 
 
 #install.packages("MARSS")
