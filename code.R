@@ -12,47 +12,197 @@ urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/mai
 gdp<-read.csv2(urlfile, header=TRUE)
 mygdpts<-ts(data=gdp,start=(1970),end=(2022),frequency=4)
 
-#gdp trimestriel
-#https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_gdp_quarter.csv
-
-#gdp_trimestriel_reel_US_FRED no seasonnaly adjust
-#https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_real_gdp_quarter_nosa.csv
-
-
-#gdp annuel
-#https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied.csv
-
-#gdp_trimestriel_reel_US_FRED no seasonnaly adjust
-#https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_gdp_quarter_sa.csv
-
-
 
 #Frequence du parametre HP smoother
 
-France<-gdp[[6]]
+France<-gdp[[2]]
 
 logFrance<-log(France)
-#Franced<-diff(France)
-#Francelgdp<-log(France)
-#Francedlgdp<-100*diff(Francelgdp)
-Francets<-ts(data=France,start=(1975),end=(2021),frequency=4)     
+Francets<-ts(data=logFrance,start=(1975),end=(2022),frequency=4)     
 
+Francets<- na.omit(Francets) 
 plot(Francets)
 
 
-hp.decom <- hpfilter(Francets, freq = 1600, type = "lambda")
+France_hp <- hpfilter(Francets, freq = 1600, type = "lambda",drift=FALSE)
 
-plot.ts(Francets, ylab = "")  # plot time series
-lines(hp.decom$trend, col = "red")  # include HP trend
-legend("topleft", legend = c("data", "HPtrend"), lty = 1, 
+# Plot time series
+plot.ts(Francets, ylab = "")  
+
+# include HP trend
+lines(France_hp$trend, col = "red")
+legend("topleft", legend = c("Log GDP France", "HP trend"), lty = 1, 
        col = c("black", "red"), bty = "n")
-plot.ts(hp.decom$cycle, ylab = "")  # plot cycle
-legend("topleft", legend = c("HPcycle"), lty = 1, col = c("black"), 
+
+#Plot cycle
+plot.ts(France_hp$cycle, ylab = "") 
+legend("topleft", legend = c("HP cycle France"), lty = 1, col = c("black"), 
        bty = "n")
 
 
 
-#verif pourquoi on a une data en 2022Q1 sans chiffres dans la base
+Germany<-gdp[[3]]
+
+logGermany<-log(Germany)
+Germanyts<-ts(data=logGermany,start=(1975),end=(2022),frequency=4)     
+
+Germanyts<- na.omit(Germanyts) 
+plot(Germanyts)
+
+
+Germany_hp <- hpfilter(Germanyts, freq = 1600, type = "lambda",drift=FALSE)
+
+
+#Plot time series
+plot.ts(Germanyts, ylab = "")
+
+# include HP trend
+lines(Germany_hp$trend, col = "red")
+legend("topleft", legend = c("Log GDP Germany", "HP trend"), lty = 1, 
+       col = c("black", "red"), bty = "n")
+
+#Plot cycle
+plot.ts(Germany_hp$cycle, ylab = "")  
+legend("topleft", legend = c("HP cycle Germany"), lty = 1, col = c("black"), 
+       bty = "n")
+
+
+
+
+
+Italia<-gdp[[4]]
+
+logItalia<-log(Italia)
+Italiats<-ts(data=logItalia,start=(1975),end=(2022),frequency=4)     
+
+Italiats<- na.omit(Italiats) 
+plot(Italiats)
+
+
+Italia_hp <- hpfilter(Italiats, freq = 1600, type = "lambda",drift=FALSE)
+
+#Plot time series
+plot.ts(Italiats, ylab = "")  
+
+# include HP trend
+lines(Italia_hp$trend, col = "red")  
+legend("topleft", legend = c("Log GDP Italia", "HP trend"), lty = 1, 
+       col = c("black", "red"), bty = "n")
+
+#Plot cycle
+plot.ts(Italia_hp$cycle, ylab = "")  
+legend("topleft", legend = c("HP cycle Italia"), lty = 1, col = c("black"), 
+       bty = "n")
+
+
+
+
+Spain<-gdp[[5]]
+
+logSpain<-log(Spain)
+Spaints<-ts(data=logSpain,start=(1975),end=(2022),frequency=4)     
+
+Spaints<- na.omit(Spaints) 
+plot(Spaints)
+
+
+Spain_hp <- hpfilter(Spaints, freq = 1600, type = "lambda",drift=FALSE)
+
+
+#Plot time series
+plot.ts(Spaints, ylab = "")  
+
+# include HP trend
+lines(Spain_hp$trend, col = "red")  
+legend("topleft", legend = c("Log GDP Spain", "HP trend"), lty = 1, 
+       col = c("black", "red"), bty = "n")
+
+#Plot cycle
+plot.ts(Spain_hp$cycle, ylab = "")  
+legend("topleft", legend = c("HP cycle Spain"), lty = 1, col = c("black"), 
+       bty = "n")
+
+
+
+
+Japan<-gdp[[6]]
+
+logJapan<-log(Japan)
+Japants<-ts(data=logJapan,start=(1975),end=(2022),frequency=4)     
+
+Japants<- na.omit(Japants) 
+plot(Japants)
+
+
+Japan_hp <- hpfilter(Japants, freq = 1600, type = "lambda",drift=FALSE)
+
+
+#Plot time series
+plot.ts(Japants, ylab = "")  
+
+# include HP trend
+lines(Japan_hp$trend, col = "red")
+legend("topleft", legend = c("Log GDP Japan", "HP trend"), lty = 1, 
+       col = c("black", "red"), bty = "n")
+
+#Plot cycle
+plot.ts(Japan_hp$cycle, ylab = "")  
+legend("topleft", legend = c("HP cycle Japan"), lty = 1, col = c("black"), 
+       bty = "n")
+
+
+
+United_Kingdom<-gdp[[7]]
+
+logUnited_Kingdom<-log(United_Kingdom)
+United_Kingdomts<-ts(data=logUnited_Kingdom,start=(1975),end=(2022),frequency=4)     
+
+United_Kingdomts<- na.omit(United_Kingdomts) 
+plot(United_Kingdomts)
+
+
+United_Kingdom_hp <- hpfilter(United_Kingdomts, freq = 1600, type = "lambda",drift=FALSE)
+
+
+#Plot time series
+plot.ts(United_Kingdomts, ylab = "")
+# include HP trend
+lines(United_Kingdom_hp$trend, col = "red")
+legend("topleft", legend = c("Log GDP United Kingdom", "HP trend"), lty = 1, 
+       col = c("black", "red"), bty = "n")
+
+#Plot cycle
+plot.ts(United_Kingdom_hp$cycle, ylab = "")
+legend("topleft", legend = c("HP cycle United Kingdom"), lty = 1, col = c("black"), 
+       bty = "n")
+
+
+
+United_States<-gdp[[8]]
+
+logUnited_States<-log(United_States)
+United_Statests<-ts(data=logUnited_States,start=(1975),end=(2022),frequency=4)     
+
+United_Statests<- na.omit(United_Statests) 
+plot(United_Statests)
+
+
+United_States_hp <- hpfilter(United_Statests, freq = 1600, type = "lambda",drift=FALSE)
+
+
+#Plot time series
+plot.ts(United_Statests, ylab = "")  
+
+# include HP trend
+lines(United_States_hp$trend, col = "red")  
+legend("topleft", legend = c("Log GDP United States", "HP trend"), lty = 1, 
+       col = c("black", "red"), bty = "n")
+
+#Plot cycle
+plot.ts(United_States_hp$cycle, ylab = "")  
+legend("topleft", legend = c("HP cycle USA"), lty = 1, col = c("black"), 
+       bty = "n")
+
 
 
 
