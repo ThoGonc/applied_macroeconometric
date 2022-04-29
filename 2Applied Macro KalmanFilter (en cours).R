@@ -16,7 +16,7 @@ myts<-ts(data=dsin,start=(1970),end=(2022),frequency=4)
 #HP smoother
 USA<-dsin[[33]]
 USA <- na.omit(USA) 
-USAts<-ts(data=USA,start=(1970),end=(2021),frequency=4)
+USAts<-ts(data=log(USA),start=(1970),end=(2021),frequency=4)
 USA_hp<- hpfilter(USAts, freq=100,type="frequency",drift=TRUE)
 plot(USA_hp)
 
@@ -42,7 +42,7 @@ USA_infla <- matrix(data = USA_inflats)
 
 #data PIB Q1_1970 Q4_2020 (205 values)
 USA_PIB <- matrix(data = USAts)
-USA_logPIB <- log(USA_PIB)
+USA_logPIB <- USA_PIB
 
 #préparation matrice var d'observation
 mat_obs <- matrix(, nrow = 205, ncol = 3)
@@ -78,13 +78,13 @@ ggplot2::autoplot(fit, plot.type = "fitted.ytT")
 
 #model2: multivar with lags
 B2 <- matrix(list("b1", 1, "b2", 0), 2, 2)
-Z2 <- matrix(list(1, "alpha3", 0, -1, 0, 0), 3, 2)
-A2 <- matrix(list("delta", "alpha1", 0), 3, 1)
+Z2 <- matrix(list(1, "alpha3", 0, -1, 0, 0), nrow=3, ncol=2)
+A2 <- matrix(list("delta", "alpha1", 0), nrow=3, ncol=1)
 Q2 <- matrix(list("q1", 0, 0, 0), 2, 2)
 u2 <- matrix(list(0,0),nrow = 2, ncol = 1)
 d2 <- t(mat_obs)
 D2 <- matrix(list (0, 0, 0, 0, 0, 0, 0, "alpha2", 1), 3, 3)
-R2 <- matrix(list ("r11", 0, 0, 0, "r22", 0, 0, 0, 1), 3, 3)
+R2 <- matrix(list ("r11", 0, 0, 0, "r22", 0, 0, 0, 0.001), 3, 3)
 x02 <- matrix(list(pot_USA_begint1, pot_USA_begin), nrow = 2, ncol = 1)
 model.list2 <- list(B = B2, Q=Q2, Z = Z2, A = A2, d=d2, D=D2, U=u2, R=R2, x0= x02, tinitx = 1)
 fit <- MARSS(d2, model=model.list2, fit = TRUE)
@@ -93,16 +93,6 @@ USA_KF4 <- tsSmooth(fit,
                     type = c("xtT", "xtt", "xtt1", "ytT", "ytt", "ytt1"),
                     interval = c("none", "confidence", "prediction"),
                     level = 0.95, fun.kf = c("MARSSkfas", "MARSSkfss"))
-
-#exploitation des resultats
-mat_OG <- matrix(, nrow = 204, ncol = 1)
-for (i in 1:204) {
-  if (i == 1) {
-    mat_OG[i, 1] <- NA_real_
-  } else {
-    mat_OG[i, 1] <- USA_KF4[i,3]- USA_KF4[i-1,3]
-  }
-}
 
 
 #model2: multivar with lags, coefficients fixés
@@ -113,20 +103,22 @@ Q2 <- matrix(list("q1", 0, 0, 0), 2, 2)
 u2 <- matrix(list(0,0),nrow = 2, ncol = 1)
 d2 <- t(mat_obs)
 D2 <- matrix(list (0, 0, 0, 0, 0, 0, 0, 0.82, 1), 3, 3)
-R2 <- matrix(list ("r11", 0, 0, 0, "r22", 0, 0, 0, 1), 3, 3)
+R2 <- matrix(list ("r11", 0, 0, 0, "r22", 0, 0, 0, 0.01), 3, 3)
 x02 <- matrix(list(pot_USA_begint1, pot_USA_begin), nrow = 2, ncol = 1)
 model.list2 <- list(B = B2, Q=Q2, Z = Z2, A = A2, d=d2, D=D2, U=u2, R=R2, x0= x02, tinitx = 1)
 fit <- MARSS(d2, model=model.list2, fit = TRUE)
 USA_KF3 <- fitted(fit, type="ytt1", interval = c("none", "confidence", "prediction"),level = 0.95, output = c("data.frame", "matrix"))
 USA_KF4 <- tsSmooth(fit,
                     type = c("xtT", "xtt", "xtt1", "ytT", "ytt", "ytt1"),
-                    interval = c("none", "confidence", "prediction"),
-                    level = 0.95, fun.kf = c("MARSSkfas", "MARSSkfss"))
+                    interval = c("confidence"),
+                    level = 0.95, fun.kf = c("MARSSkfss"))
 
 
 
 USA_KF4exp <- exp(USA_KF4[,3])
-ggplot2::autoplot(fit, plot.type = "fitted.xtT")
+ggplot2::autoplot(fit, plot.type = "fitted.xtt1")
 
-
+USA_KF4_trend <- USA_logPIB [2:205,1] - USA_KF4[1:204,3]
+plot (USA_KF4_trend)
+plot (USA_logPIB)
 
