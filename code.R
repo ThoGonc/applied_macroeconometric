@@ -6,6 +6,7 @@ graphics.off()
 library(RCurl)
 library(mFilter)
 library(tidyverse)
+library(MARSS)
 
 #gdp annuel
 urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_gdp_quarter_sa.csv'
@@ -98,7 +99,7 @@ France_infla_reg <- na.omit(France_infla_reg)
 France_infla<- na.omit(France_infla) 
 
 inflation_markup_model_France<-lm(France_infla_reg~lag(France_infla_reg,1)+trend_France_hp)
-summary(inflation_markup_model)
+summary(inflation_markup_model_France)
 
 
 
@@ -118,31 +119,31 @@ Alpha2_France <- Alphas_France[2]
 Alpha3_France <- Alphas_France[3]
 
 #valeurs initiales
-OGbegint0 <- cycle_France_hp[[3]]
-OGbegint_moins1 <- cycle_France_hp[[2]]
+OGbegint0_France <- cycle_France_hp[[3]]
+OGbegint_moins1_France <- cycle_France_hp[[2]]
 
 
 #préparation matrice variables d'observation du modèle espace etat
-mat_obs <- matrix(, nrow = 187, ncol = 3)
-mat_obs[,1] <- diff_lgdp
-mat_obs[,2] <- France_infla_reg
-mat_obs[,3] <- lag(France_infla_reg,1)
-mat_obs <- na.omit(mat_obs)
+mat_obs_France <- matrix(, nrow = 187, ncol = 3)
+mat_obs_France[,1] <- diff_lgdp
+mat_obs_France[,2] <- France_infla_reg
+mat_obs_France[,3] <- lag(France_infla_reg,1)
+mat_obs_France <- na.omit(mat_obs_France)
 
 
 
 #modele espace-etat multivar avec lags
-B2 <- matrix(list(b1_France, 1, b2_France, 0), 2, 2)
-Z2 <- matrix(list(1, Alpha3_France, 0, -1, 0, 0), nrow=3, ncol=2)
-A2 <- matrix(list(Delta1_France, Alpha1_France, 0), nrow=3, ncol=1)
-Q2 <- matrix(list("q1", 0, 0, 0), 2, 2)
-u2 <- matrix(list(0,0),nrow = 2, ncol = 1)
-d2 <- t(mat_obs)
-D2 <- matrix(list (0, 0, 0, 0, 0, 0, 0, Alpha2_France, 1), 3, 3)
-R2 <- matrix(list ("r11", 0, 0, 0, "r22", 0, 0, 0, 0.01), 3, 3)
-x02 <- matrix(list(OGbegint0, OGbegint_moins1), nrow = 2, ncol = 1)
-model.list2 <- list(B = B2, Q=Q2, Z = Z2, A = A2, d=d2, D=D2, U=u2, R=R2, x0= x02, tinitx = 1)
-fit <- MARSS(d2, model=model.list2, fit = TRUE)
+B2_France <- matrix(list(b1_France, 1, b2_France, 0), 2, 2)
+Z2_France <- matrix(list(1, Alpha3_France, 0, -1, 0, 0), nrow=3, ncol=2)
+A2_France <- matrix(list(Delta1_France, Alpha1_France, 0), nrow=3, ncol=1)
+Q2_France <- matrix(list("q1", 0, 0, 0), 2, 2)
+u2_France <- matrix(list(0,0),nrow = 2, ncol = 1)
+d2_France <- t(mat_obs_France)
+D2_France <- matrix(list (0, 0, 0, 0, 0, 0, 0, Alpha2_France, 1), 3, 3)
+R2_France <- matrix(list ("r11", 0, 0, 0, "r22", 0, 0, 0, 0.01), 3, 3)
+x02_France <- matrix(list(OGbegint0_France, OGbegint_moins1_France), nrow = 2, ncol = 1)
+model.list2_France <- list(B = B2_France, Q=Q2_France, Z = Z2_France, A = A2_France, d=d2_France, D=D2_France, U=u2_France, R=R2_France, x0= x02_France, tinitx = 1)
+fit <- MARSS(d2_France, model=model.list2_France, fit = TRUE)
 France_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95, output = c("data.frame", "matrix"))
 France_KF4 <- tsSmooth(fit,
                        type = c("xtT", "xtt", "xtt1", "ytT", "ytt", "ytt1"),
