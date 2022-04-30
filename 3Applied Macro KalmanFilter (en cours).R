@@ -8,22 +8,41 @@ library(mFilter)
 library(tidyverse)
 library(readxl)
 
-urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_pib_volume.csv'
-dsin<-read.csv2(urlfile, header=TRUE)
-myts<-ts(data=dsin,start=(1970),end=(2022),frequency=4)
+#gdp annuel
+urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_gdp_quarter_sa.csv'
+gdp<-read.csv2(urlfile, header=TRUE)
+mygdpts<-ts(data=gdp,start=(1975),end=(2022),frequency=4)
 
 
-#HP smoother
-France<-dsin[[2]]
-France <- na.omit(France) 
-Franceexp <- exp(France)
-Francets<-ts(data=log(Franceexp),start=(1975),end=(2022),frequency=4)
-France_hp<- hpfilter(Francets, freq=1600,type="lambda",drift=FALSE)
-plot(France_hp)
+France<-gdp[[2]]
+
+logFrance<-log(France)
+Francets<-ts(data=logFrance,start=(1975),end=(2022),frequency=4)     
+
+Francets<- na.omit(Francets) 
+plot(Francets)
+
+
+France_hp <- hpfilter(Francets, freq = 1600, type = "lambda",drift=FALSE)
+
+
+# Plot time series
+plot.ts(Francets, ylab = "")  
+
+# include HP trend
+lines(France_hp$trend, col = "red")
+legend("topleft", legend = c("Log GDP France", "HP trend"), lty = 1, 
+       col = c("black", "red"), bty = "n")
+
+#Plot cycle
+plot.ts(France_hp$cycle, ylab = "") 
+legend("topleft", legend = c("HP cycle France"), lty = 1, col = c("black"), 
+       bty = "n")
+
 
 #install.packages("MARSS")
 #install.packages("dlm")
-installed.packages("broom")
+#installed.packages("broom")
 library(MARSS)
 library(dlm)
 
@@ -32,7 +51,7 @@ France_hp_cycle <- France_hp[["cycle"]]
 pot_France_begin <- France_hp_cycle[[1]]
 pot_France_begint1 <- France_hp_cycle[[2]]
 
-#data inflation Q1_1970 Q4_2020 (205 values)
+
 
 urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_inflation.csv'
 df_infla<-read.csv2(urlfile, header=TRUE)
@@ -42,27 +61,27 @@ France_infla <- matrix(data = France_inflats)
 France_infla <- na.omit(France_infla)
 
 
-#data PIB Q1_1970 Q4_2020 (205 values)
+
+
 France_PIB <- matrix(data = Francets)
 France_logPIB <- log(France_PIB)
 
+
 #préparation matrice var d'observation
-mat_obs <- matrix(, nrow = 188, ncol = 3)
-mat_obs[,1] <- France_logPIB
-mat_obs[,2] <- France_infla
 
 
-#création du lag inflation et delta PIB
-for (i in seq_along(France_infla)) {
-  if (i == 1) {
-    mat_obs[i, 3] <- NA_real_
-  } else {
-    mat_obs[i, 1] <- mat_obs[i, 1]- mat_obs[i - 1, 1]
-    mat_obs[i, 3] <- mat_obs[i - 1, 2]
-  }
-}
+delta_log_pib<-diff(France_logPIB)*100
+France_laginfla<-lag(France_infla)
+France_laginfla<-France_laginfla[-188]
 
-mat_obs <- na.omit(mat_obs)
+M3<-matrix(,nrow=187,ncol=3)
+M3[,1]<-delta_log_pib
+France_infla<-France_infla[-188]
+M3[,2]<-France_infla
+M3[,3]<-France_laginfla
+M3 <- na.omit(M3)
+
+
 
 
 #model2: multivar with lags
@@ -71,7 +90,7 @@ Z2 <- matrix(list(1, "alpha3", 0, -1, 0, 0), nrow=3, ncol=2)
 A2 <- matrix(list("delta", "alpha1", 0), nrow=3, ncol=1)
 Q2 <- matrix(list("q1", 0, 0, 0), 2, 2)
 u2 <- matrix(list(0,0),nrow = 2, ncol = 1)
-d2 <- t(mat_obs)
+d2 <- t(M3)
 D2 <- matrix(list (0, 0, 0, 0, 0, 0, 0, "alpha2", 1), 3, 3)
 R2 <- matrix(list ("r11", 0, 0, 0, "r22", 0, 0, 0, 0.01), 3, 3)
 x02 <- matrix(list(pot_France_begint1, pot_France_begin), nrow = 2, ncol = 1)
@@ -84,10 +103,9 @@ France_KF4 <- tsSmooth(fit,
                     level = 0.95, fun.kf = c("MARSSkfas"))
 
 
-France_KF4exp <- exp(France_KF4[,3])
 ggplot2::autoplot(fit, plot.type = "fitted.xtT")
 
-France_KF4_trend <- France_logPIB [2:205,1] - France_KF4[1:204,3]
+France_KF4_trend <- France_logPIB [2:188,1] - France_KF4[1:187,3]
 plot (France_KF4_trend)
-plot (France_logPIB)
+
 
