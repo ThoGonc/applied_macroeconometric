@@ -561,6 +561,13 @@ ts.plot(linear_Italia, Italiats, gpars = list(col = c("black", "red")))
 
 
 
+
+
+
+
+
+
+
 ###Spain
 
 #Frequence du parametre HP smoother
@@ -933,6 +940,7 @@ ts.plot(linear_Japan, Japants, gpars = list(col = c("black", "red")))
 
 
 
+
 ###United_Kingdom
 
 #Frequence du parametre HP smoother
@@ -1000,7 +1008,7 @@ United_Kingdom_infla <- matrix(data = United_Kingdom_inflats)
 
 #Détermination des coefficients pour le modèle espace-etat 
 
-#1ere Trend
+#1ere équation Trend
 trend_United_Kingdom<-lm(diff_lgdp_United_Kingdom~1+offset(diff(cycle_United_Kingdom_hp)))
 summary(trend_United_Kingdom)
 
@@ -1012,17 +1020,13 @@ summary(cycle_United_Kingdom)
 
 
 
-
-
-
-
-
-
-
+#2 eme equation
 trend_United_Kingdom_hp<-trend_United_Kingdom_hp[-182,]
 trend_United_Kingdom_hp<-na.omit(trend_United_Kingdom_hp)
 
 United_Kingdom_infla_reg<-United_Kingdom_infla[-1,]
+United_Kingdom_infla_reg[183:187]<-NA_real_
+
 United_Kingdom_infla_reg<-na.omit(United_Kingdom_infla_reg)
 
 United_Kingdom_infla_reg<-na.omit(United_Kingdom_infla_reg) 
@@ -1055,7 +1059,7 @@ OGbegint_moins1_United_Kingdom <- cycle_United_Kingdom_hp[[2]]
 
 #préparation matrice variables d'observation du modèle espace etat
 
-mat_obs_United_Kingdom <- matrix(, nrow = 111, ncol = 3)
+mat_obs_United_Kingdom <- matrix(, nrow = 182, ncol = 3)
 mat_obs_United_Kingdom[,1] <- diff_lgdp_United_Kingdom
 mat_obs_United_Kingdom[,2] <- United_Kingdom_infla_reg
 mat_obs_United_Kingdom[,3] <- lag(United_Kingdom_infla_reg,1)
@@ -1085,7 +1089,7 @@ United_Kingdom_KF4 <- tsSmooth(fit,
 
 
 
-PIB_POTENTIEL_KF_United_Kingdom <- logUnited_Kingdom - United_Kingdom_KF4$.estimate[1:112]/100
+PIB_POTENTIEL_KF_United_Kingdom <- logUnited_Kingdom - United_Kingdom_KF4$.estimate[1:183]/100
 plot(PIB_POTENTIEL_KF_United_Kingdom)
 plot(logUnited_Kingdom)
 
