@@ -168,7 +168,7 @@ plot.ts(PIB_POTENTIEL_KF_France, ylab = "")
 # include HP trend
 lines(logFrance, col = "red")
 lines(trend_France_hp, col = "blue")
-legend("topleft", legend = c("PIB_Potentiel Kalman Filter Germany", "Log Germany", "HP trend"), lty = 1, 
+legend("topleft", legend = c("PIB_Potentiel Kalman Filter France", "Log France", "HP trend"), lty = 1, 
        col = c("black", "red"), bty = "n")
 
 
