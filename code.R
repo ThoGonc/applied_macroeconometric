@@ -10,7 +10,7 @@ library(tidyverse)
 #gdp annuel
 urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_gdp_quarter_sa.csv'
 gdp<-read.csv2(urlfile, header=TRUE)
-mygdpts<-ts(data=gdp,start=(1970),end=(2022),frequency=4)
+mygdpts<-ts(data=gdp,start=(1975),end=(2022),frequency=4)
 
 
 #Frequence du parametre HP smoother
