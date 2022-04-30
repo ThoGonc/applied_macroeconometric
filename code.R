@@ -11,7 +11,7 @@ library(MARSS)
 #gdp annuel
 urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_gdp_quarter_sa.csv'
 gdp<-read.csv2(urlfile, header=TRUE)
-mygdpts<-ts(data=gdp,start=(1975),end=(2022),frequency=4)
+
 
 
 
@@ -22,15 +22,17 @@ mygdpts<-ts(data=gdp,start=(1975),end=(2022),frequency=4)
 France<-gdp[[2]]
 logFrance<-log(France)
 
+France<-na.omit(France)
 
-
-Francets<-ts(data=logFrance,start=(1975),end=(2022),frequency=4)     
+Francets<-ts(data=logFrance,start=(1975),frequency=4)     
 
 Francets<- na.omit(Francets) 
 plot(Francets)
 
 
 France_hp <- hpfilter(Francets, freq = 1600, type = "lambda",drift=FALSE)
+
+
 
 # Plot time series
 plot.ts(Francets, ylab = "")  
@@ -58,8 +60,8 @@ France_hp_reg <- hpfilter(logFrance, freq = 1600, type = "lambda",drift=FALSE)
 cycle_France_hp<-France_hp_reg$cycle
 trend_France_hp<-France_hp_reg$trend
 
-cycle_France_hpts<-ts(data=cycle_France_hp,start=(1975),end=(2022),frequency=4)
-trend_France_hpts<-ts(data=trend_France_hp,start=(1975),end=(2022),frequency=4)
+cycle_France_hpts<-ts(data=cycle_France_hp,start=(1975),frequency=4)
+trend_France_hpts<-ts(data=trend_France_hp,start=(1975),frequency=4)
 
 
 
@@ -69,7 +71,7 @@ diff_lgdp<-diff(logFrance)*100
 urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_inflation.csv'
 df_infla<-read.csv2(urlfile, header=TRUE)
 France_infla <-df_infla[2]
-France_inflats<-ts(data=France_infla,start=(1975),end=(2022),frequency=4)
+France_inflats<-ts(data=France_infla,start=(1975),frequency=4)
 France_infla <- matrix(data = France_inflats)
 
 
@@ -150,37 +152,23 @@ France_KF4 <- tsSmooth(fit,
                        interval = c("confidence"),
                        level = 0.95, fun.kf = c("MARSSkfas"))
 
-cycle_KF_OUTPUTGAP_France <-ts(data=France_KF4$.estimate,start=(1975),end=(2022),frequency=4)
-plot(cycle_KF_OUTPUTGAP_France)
+
 
 PIB_POTENTIEL_KF_France <- logFrance - France_KF4$.estimate[1:188]/100
 
-PIB_POTENTIEL_KF_France_ts <-ts(data=PIB_POTENTIEL_KF_France,start=(1975),end=(2022),frequency=4)
-PIB_POTENTIEL_KF_France_ts<-PIB_POTENTIEL_KF_France_ts[-189]
-PIB_POTENTIEL_KF_France_ts<-na.omit(PIB_POTENTIEL_KF_France_ts)
+
 
 plot(PIB_POTENTIEL_KF_France)
 plot(logFrance)
 
-PIB_POTENTIEL_HP_France_ts <-ts(data=trend_France_hp,start=(1975),end=(2022),frequency=4)
-PIB_POTENTIEL_HP_France_ts<-PIB_POTENTIEL_HP_France_ts[-189]
-PIB_POTENTIEL_HP_France_ts<-PIB_POTENTIEL_HP_France_ts[-188]
-PIB_POTENTIEL_HP_France_ts<-na.omit(PIB_POTENTIEL_HP_France_ts)
-
-
-
-PIB_FRANCE_ts<-ts(data=logFrance,start=(1975),end=(2022),frequency=4)
-PIB_FRANCE_ts<-PIB_FRANCE_ts[-189]
-PIB_FRANCE_ts<-na.omit(PIB_FRANCE_ts)
-
 
 # Plot time series
-plot.ts(PIB_POTENTIEL_KF_France_ts, ylab = "")  
+plot.ts(PIB_POTENTIEL_KF_France, ylab = "")  
 
 # include HP trend
-lines(PIB_FRANCE_ts, col = "red")
-#lines(PIB_POTENTIEL_HP_France_ts, col = "blue")
-legend("topleft", legend = c("PIB_Potentiel Kalman Filter France", "Log France", "HP trend"), lty = 1, 
+lines(logFrance, col = "red")
+lines(trend_France_hp, col = "blue")
+legend("topleft", legend = c("PIB_Potentiel Kalman Filter Germany", "Log Germany", "HP trend"), lty = 1, 
        col = c("black", "red"), bty = "n")
 
 
@@ -204,7 +192,7 @@ logGermany<-log(Germany)
 
 Germany<-na.omit(Germany)
 
-Germanyts<-ts(data=logGermany,start=(1975),end=(2022),frequency=4)     
+Germanyts<-ts(data=logGermany,start=(1975),frequency=4)     
 
 Germanyts<- na.omit(Germanyts) 
 plot(Germanyts)
@@ -238,8 +226,8 @@ Germany_hp_reg <- hpfilter(logGermany, freq = 1600, type = "lambda",drift=FALSE)
 cycle_Germany_hp<-Germany_hp_reg$cycle
 trend_Germany_hp<-Germany_hp_reg$trend
 
-cycle_Germany_hpts<-ts(data=cycle_Germany_hp,start=(1975),end=(2022),frequency=4)
-trend_Germany_hpts<-ts(data=trend_Germany_hp,start=(1975),end=(2022),frequency=4)
+cycle_Germany_hpts<-ts(data=cycle_Germany_hp,start=(1975),frequency=4)
+trend_Germany_hpts<-ts(data=trend_Germany_hp,start=(1975),frequency=4)
 
 cycle_Germany_hpts<-na.omit(cycle_Germany_hpts)
 trend_Germany_hpts<-na.omit(trend_Germany_hpts)
@@ -345,8 +333,7 @@ Germany_KF4 <- tsSmooth(fit,
                        interval = c("confidence"),
                        level = 0.95, fun.kf = c("MARSSkfas"))
 
-cycle_KF_OUTPUTGAP_Germany <-ts(data=Germany_KF4$.estimate,start=(1975),end=(2022),frequency=4)
-plot(cycle_KF_OUTPUTGAP_Germany)
+
 
 PIB_POTENTIEL_KF_Germany <- logGermany - Germany_KF4$.estimate[1:124]/100
 plot(PIB_POTENTIEL_KF_Germany)
@@ -384,7 +371,7 @@ logItalia<-log(Italia)
 
 Italia<-na.omit(Italia)
 
-Italiats<-ts(data=logItalia,start=(1975),end=(2022),frequency=4)     
+Italiats<-ts(data=logItalia,start=(1975),frequency=4)     
 
 Italiats<- na.omit(Italiats) 
 plot(Italiats)
@@ -418,8 +405,8 @@ Italia_hp_reg <- hpfilter(logItalia, freq = 1600, type = "lambda",drift=FALSE)
 cycle_Italia_hp<-Italia_hp_reg$cycle
 trend_Italia_hp<-Italia_hp_reg$trend
 
-cycle_Italia_hpts<-ts(data=cycle_Italia_hp,start=(1975),end=(2022),frequency=4)
-trend_Italia_hpts<-ts(data=trend_Italia_hp,start=(1975),end=(2022),frequency=4)
+cycle_Italia_hpts<-ts(data=cycle_Italia_hp,start=(1975),frequency=4)
+trend_Italia_hpts<-ts(data=trend_Italia_hp,start=(1975),frequency=4)
 
 cycle_Italia_hpts<-na.omit(cycle_Italia_hpts)
 trend_Italia_hpts<-na.omit(trend_Italia_hpts)
@@ -430,7 +417,7 @@ diff_lgdp_Italia<-diff(logItalia)*100
 
 
 Italia_infla <-df_infla[4]
-Italia_inflats<-ts(data=Italia_infla,start=(1975),end=(2022),frequency=4)
+Italia_inflats<-ts(data=Italia_infla,start=(1975),frequency=4)
 
 Italia_inflats<- na.omit(Italia_inflats) 
 Italia_infla <- matrix(data = Italia_inflats)
@@ -525,8 +512,6 @@ Italia_KF4 <- tsSmooth(fit,
                         interval = c("confidence"),
                         level = 0.95, fun.kf = c("MARSSkfas"))
 
-cycle_KF_OUTPUTGAP_Italia <-ts(data=Italia_KF4$.estimate,start=(1975),end=(2022),frequency=4)
-plot(cycle_KF_OUTPUTGAP_Italia)
 
 PIB_POTENTIEL_KF_Italia <- logItalia - Italia_KF4$.estimate[1:108]/100
 plot(PIB_POTENTIEL_KF_Italia)
@@ -561,7 +546,7 @@ logSpain<-log(Spain)
 
 Spain<-na.omit(Spain)
 
-Spaints<-ts(data=logSpain,start=(1975),end=(2022),frequency=4)     
+Spaints<-ts(data=logSpain,start=(1975),frequency=4)     
 
 Spaints<- na.omit(Spaints) 
 plot(Spaints)
@@ -595,8 +580,8 @@ Spain_hp_reg <- hpfilter(logSpain, freq = 1600, type = "lambda",drift=FALSE)
 cycle_Spain_hp<-Spain_hp_reg$cycle
 trend_Spain_hp<-Spain_hp_reg$trend
 
-cycle_Spain_hpts<-ts(data=cycle_Spain_hp,start=(1975),end=(2022),frequency=4)
-trend_Spain_hpts<-ts(data=trend_Spain_hp,start=(1975),end=(2022),frequency=4)
+cycle_Spain_hpts<-ts(data=cycle_Spain_hp,start=(1975),frequency=4)
+trend_Spain_hpts<-ts(data=trend_Spain_hp,start=(1975),frequency=4)
 
 cycle_Spain_hpts<-na.omit(cycle_Spain_hpts)
 trend_Spain_hpts<-na.omit(trend_Spain_hpts)
@@ -702,8 +687,7 @@ Spain_KF4 <- tsSmooth(fit,
                        interval = c("confidence"),
                        level = 0.95, fun.kf = c("MARSSkfas"))
 
-cycle_KF_OUTPUTGAP_Spain <-ts(data=Spain_KF4$.estimate,start=(1975),end=(2022),frequency=4)
-plot(cycle_KF_OUTPUTGAP_Spain)
+
 
 PIB_POTENTIEL_KF_Spain <- logSpain - Spain_KF4$.estimate[1:108]/100
 plot(PIB_POTENTIEL_KF_Spain)
@@ -738,7 +722,7 @@ logJapan<-log(Japan)
 
 Japan<-na.omit(Japan)
 
-Japants<-ts(data=logJapan,start=(1975),end=(2022),frequency=4)     
+Japants<-ts(data=logJapan,start=(1975),frequency=4)     
 
 Japants<- na.omit(Japants) 
 plot(Japants)
@@ -772,8 +756,8 @@ Japan_hp_reg <- hpfilter(logJapan, freq = 1600, type = "lambda",drift=FALSE)
 cycle_Japan_hp<-Japan_hp_reg$cycle
 trend_Japan_hp<-Japan_hp_reg$trend
 
-cycle_Japan_hpts<-ts(data=cycle_Japan_hp,start=(1975),end=(2022),frequency=4)
-trend_Japan_hpts<-ts(data=trend_Japan_hp,start=(1975),end=(2022),frequency=4)
+cycle_Japan_hpts<-ts(data=cycle_Japan_hp,start=(1975),frequency=4)
+trend_Japan_hpts<-ts(data=trend_Japan_hp,start=(1975),frequency=4)
 
 cycle_Japan_hpts<-na.omit(cycle_Japan_hpts)
 trend_Japan_hpts<-na.omit(trend_Japan_hpts)
@@ -879,8 +863,7 @@ Japan_KF4 <- tsSmooth(fit,
                        interval = c("confidence"),
                        level = 0.95, fun.kf = c("MARSSkfas"))
 
-cycle_KF_OUTPUTGAP_Japan <-ts(data=Japan_KF4$.estimate,start=(1975),end=(2022),frequency=4)
-plot(cycle_KF_OUTPUTGAP_Japan)
+
 
 PIB_POTENTIEL_KF_Japan <- logJapan - Japan_KF4$.estimate[1:112]/100
 plot(PIB_POTENTIEL_KF_Japan)
@@ -921,7 +904,7 @@ logUnited_Kingdom<-log(United_Kingdom)
 
 United_Kingdom<-na.omit(United_Kingdom)
 
-United_Kingdomts<-ts(data=logUnited_Kingdom,start=(1975),end=(2020),frequency=4)     
+United_Kingdomts<-ts(data=logUnited_Kingdom,start=(1975),frequency=4)     
 
 United_Kingdomts<- na.omit(United_Kingdomts) 
 plot(United_Kingdomts)
@@ -955,8 +938,8 @@ United_Kingdom_hp_reg <- hpfilter(logUnited_Kingdom, freq = 1600, type = "lambda
 cycle_United_Kingdom_hp<-United_Kingdom_hp_reg$cycle
 trend_United_Kingdom_hp<-United_Kingdom_hp_reg$trend
 
-cycle_United_Kingdom_hpts<-ts(data=cycle_United_Kingdom_hp,start=(1975),end=(2020),frequency=4)
-trend_United_Kingdom_hpts<-ts(data=trend_United_Kingdom_hp,start=(1975),end=(2020),frequency=4)
+cycle_United_Kingdom_hpts<-ts(data=cycle_United_Kingdom_hp,start=(1975),frequency=4)
+trend_United_Kingdom_hpts<-ts(data=trend_United_Kingdom_hp,start=(1975),frequency=4)
 
 cycle_United_Kingdom_hpts<-na.omit(cycle_United_Kingdom_hpts)
 trend_United_Kingdom_hpts<-na.omit(trend_United_Kingdom_hpts)
@@ -967,7 +950,7 @@ diff_lgdp_United_Kingdom<-diff(logUnited_Kingdom)*100
 
 
 United_Kingdom_infla <-df_infla[7]
-United_Kingdom_inflats<-ts(data=United_Kingdom_infla,start=(1975),end=(2020),frequency=4)
+United_Kingdom_inflats<-ts(data=United_Kingdom_infla,start=(1975),frequency=4)
 
 United_Kingdom_inflats<- na.omit(United_Kingdom_inflats) 
 United_Kingdom_infla <- matrix(data = United_Kingdom_inflats)
@@ -1062,8 +1045,7 @@ United_Kingdom_KF4 <- tsSmooth(fit,
                       interval = c("confidence"),
                       level = 0.95, fun.kf = c("MARSSkfas"))
 
-cycle_KF_OUTPUTGAP_United_Kingdom <-ts(data=United_Kingdom_KF4$.estimate,start=(1975),end=(2022),frequency=4)
-plot(cycle_KF_OUTPUTGAP_United_Kingdom)
+
 
 PIB_POTENTIEL_KF_United_Kingdom <- logUnited_Kingdom - United_Kingdom_KF4$.estimate[1:112]/100
 plot(PIB_POTENTIEL_KF_United_Kingdom)
@@ -1110,7 +1092,7 @@ logUnited_States<-log(United_States)
 
 United_States<-na.omit(United_States)
 
-United_Statests<-ts(data=logUnited_States,start=(1975),end=(2022),frequency=4)     
+United_Statests<-ts(data=logUnited_States,start=(1975),frequency=4)     
 
 United_Statests<- na.omit(United_Statests) 
 plot(United_Statests)
@@ -1144,8 +1126,8 @@ United_States_hp_reg <- hpfilter(logUnited_States, freq = 1600, type = "lambda",
 cycle_United_States_hp<-United_States_hp_reg$cycle
 trend_United_States_hp<-United_States_hp_reg$trend
 
-cycle_United_States_hpts<-ts(data=cycle_United_States_hp,start=(1975),end=(2022),frequency=4)
-trend_United_States_hpts<-ts(data=trend_United_States_hp,start=(1975),end=(2022),frequency=4)
+cycle_United_States_hpts<-ts(data=cycle_United_States_hp,start=(1975),frequency=4)
+trend_United_States_hpts<-ts(data=trend_United_States_hp,start=(1975),frequency=4)
 
 cycle_United_States_hpts<-na.omit(cycle_United_States_hpts)
 trend_United_States_hpts<-na.omit(trend_United_States_hpts)
@@ -1156,7 +1138,7 @@ diff_lgdp_United_States<-diff(logUnited_States)*100
 
 
 United_States_infla <-df_infla[8]
-United_States_inflats<-ts(data=United_States_infla,start=(1975),end=(2022),frequency=4)
+United_States_inflats<-ts(data=United_States_infla,start=(1975),frequency=4)
 
 United_States_inflats<- na.omit(United_States_inflats) 
 United_States_infla <- matrix(data = United_States_inflats)
@@ -1251,8 +1233,7 @@ United_States_KF4 <- tsSmooth(fit,
                       interval = c("confidence"),
                       level = 0.95, fun.kf = c("MARSSkfas"))
 
-cycle_KF_OUTPUTGAP_United_States <-ts(data=United_States_KF4$.estimate,start=(1975),end=(2022),frequency=4)
-plot(cycle_KF_OUTPUTGAP_United_States)
+
 
 PIB_POTENTIEL_KF_United_States <- logUnited_States - United_States_KF4$.estimate[1:188]/100
 plot(PIB_POTENTIEL_KF_United_States)
