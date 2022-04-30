@@ -46,32 +46,29 @@ France_infla <- matrix(data = France_inflats)
 
 
 #1ere equation Trend
-#trend_value<-diff_lgdp-diff(cycle_France_hp)
 
 Trend<-lm(diff_lgdp~1+offset(diff(cycle_France_hp)))
 summary(Trend)
 
-#3 eme equation Cycle
-#cycle_lag_un<-lag(cycle_France_hp,1)
-#cycle_lag_deux<-lag(cycle_France_hp,2)
+Delta1_France <- Trend$coefficients
+
+
+#3 eme equation d'etat (Cycle)
+
 cycle<-lm(cycle_France_hp~0+lag(cycle_France_hp,1)+lag(cycle_France_hp,2))
 summary(cycle)
 
-
-
+B_France <- cycle$coefficients
+b1_France <- B_France[1]
+b2_France <- B_France[2]
 
 
 #2eme equation
 
 trend_France_hp_reg<-trend_France_hp[-1,]
-#OK
-
-
-
 
 France_infla_reg<-France_infla[-1,]
 France_infla_reg<-na.omit(France_infla_reg)
-
 
 
 lag_France_infla<-lag(France_infla,1)
@@ -83,14 +80,16 @@ lag_France_infla_reg<-na.omit(lag_France_infla_reg)
 France_infla_reg<-France_infla[-1,]
 
 
-
-
 France_infla_reg <- na.omit(France_infla_reg) 
 France_infla<- na.omit(France_infla) 
 
 inflation_markup_model<-lm(France_infla_reg~lag(France_infla_reg,1)+trend_France_hp_reg)
 summary(inflation_markup_model)
 
+Alphas_France <-inflation_markup_model$coefficients
+Alpha1_France <- Alphas_France[1]
+Alpha2_France <- Alphas_France[2]
+Alpha3_France <- Alphas_France[3]
 
 
 
@@ -99,95 +98,6 @@ summary(inflation_markup_model)
 
 
 
-
-
-
-
-
-
-
-
-#install.packages("MARSS")
-#install.packages("dlm")
-installed.packages("broom")
-library(MARSS)
-library(dlm)
-
-#initial value pot_France
-France_hp_cycle <- France_hp[["cycle"]]
-pot_France_begin <- log(France_hp_cycle[[1]])
-pot_France_begint1 <- log(France_hp_cycle[[2]])
-
-
-#data inflation Q1_1970 Q4_2020 (205 values)
-
-#data PIB Q1_1970 Q4_2020 (205 values)
-France_PIB <- matrix(data = Francets)
-France_logPIB <- log(France_PIB)
-
-#préparation matrice var d'observation
-mat_obs <- matrix(, nrow = 205, ncol = 3)
-mat_obs[,1] <- France_logPIB 
-mat_obs[,2] <- France_infla
-
-
-#création du lag inflation et delta PIB
-for (i in seq_along(France_infla)) {
-  if (i == 1) {
-    mat_obs[i, 3] <- NA_real_
-  } else {
-    mat_obs[i, 1] <- mat_obs[i, 1]- mat_obs[i - 1, 1]
-    mat_obs[i, 3] <- mat_obs[i - 1, 2]
-  }
-}
-
-mat_obs <- na.omit(mat_obs)
-
-
-#model1: univar, avec inflation
-B1 <- matrix("b")
-Z1 <- matrix(1)
-A1 <- matrix("a")
-u1 <- "zero"
-D1 <- t(matrix(data = France_inflats))
-x0 <- 28
-model.list1 <- list(B = B1, Z = Z1, A = A1, d=D1, R=matrix(1), V0="identity", tinitx = 1)
-fit <- MARSS(Francets, model=model.list1, fit = TRUE, fun.kf = ("MARSSkfss"))
-France_KF2 <- fitted(fit, type="ytt1", interval = c("none", "confidence", "prediction"),level = 0.95, output = c("data.frame", "matrix"))
-summary(fit)
-ggplot2::autoplot(fit, plot.type = "fitted.ytT")
-
-#model2: multivar with lags
-B2 <- matrix(list("b1", 1, "b2", 0), 2, 2)
-Z2 <- matrix(list(1, "alpha3", 0, -1, 0, 0), 3, 2)
-A2 <- matrix(list("delta", "alpha1", 0), 3, 1)
-Q2 <- matrix(list("q1", 0, 0, 0), 2, 2)
-u2 <- matrix(list(0,0),nrow = 2, ncol = 1)
-d2 <- t(mat_obs)
-D2 <- matrix(list (0, 0, 0, 0, 0, 0, 0, "alpha2", 1), 3, 3)
-R2 <- matrix(list ("r11", 0, 0, 0, "r22", 0, 0, 0, 1), 3, 3)
-x02 <- matrix(list(pot_France_begint1, pot_France_begin), nrow = 2, ncol = 1)
-model.list2 <- list(B = B2, Q=Q2, Z = Z2, A = A2, d=d2, D=D2, U=u2, R=R2, x0= x02, tinitx = 1)
-fit <- MARSS(d2, model=model.list2, fit = TRUE)
-France_KF3 <- fitted(fit, type="ytt1", interval = c("none", "confidence", "prediction"),level = 0.95, output = c("data.frame", "matrix"))
-France_KF4 <- tsSmooth(fit,
-                    type = c("xtT", "xtt", "xtt1", "ytT", "ytt", "ytt1"),
-                    interval = c("none", "confidence", "prediction"),
-                    level = 0.95, fun.kf = c("MARSSkfas", "MARSSkfss"))
-
-#exploitation des resultats
-mat_OG <- matrix(, nrow = 204, ncol = 1)
-for (i in 1:204) {
-  if (i == 1) {
-    mat_OG[i, 1] <- NA_real_
-  } else {
-    mat_OG[i, 1] <- France_KF4[i,3]- France_KF4[i-1,3]
-  }
-}
-
-
-France_KF4exp <- exp(France_KF4[,3])
-ggplot2::autoplot(fit, plot.type = "fitted.xtT")
 
 
 
