@@ -154,16 +154,32 @@ cycle_KF_OUTPUTGAP_France <-ts(data=France_KF4$.estimate,start=(1975),end=(2022)
 plot(cycle_KF_OUTPUTGAP_France)
 
 PIB_POTENTIEL_KF_France <- logFrance - France_KF4$.estimate[1:188]/100
+
+PIB_POTENTIEL_KF_France_ts <-ts(data=PIB_POTENTIEL_KF_France,start=(1975),end=(2022),frequency=4)
+PIB_POTENTIEL_KF_France_ts<-PIB_POTENTIEL_KF_France_ts[-189]
+PIB_POTENTIEL_KF_France_ts<-na.omit(PIB_POTENTIEL_KF_France_ts)
+
 plot(PIB_POTENTIEL_KF_France)
 plot(logFrance)
 
+PIB_POTENTIEL_HP_France_ts <-ts(data=trend_France_hp,start=(1975),end=(2022),frequency=4)
+PIB_POTENTIEL_HP_France_ts<-PIB_POTENTIEL_HP_France_ts[-189]
+PIB_POTENTIEL_HP_France_ts<-PIB_POTENTIEL_HP_France_ts[-188]
+PIB_POTENTIEL_HP_France_ts<-na.omit(PIB_POTENTIEL_HP_France_ts)
+
+
+
+PIB_FRANCE_ts<-ts(data=logFrance,start=(1975),end=(2022),frequency=4)
+PIB_FRANCE_ts<-PIB_FRANCE_ts[-189]
+PIB_FRANCE_ts<-na.omit(PIB_FRANCE_ts)
+
 
 # Plot time series
-plot.ts(PIB_POTENTIEL_KF_France, ylab = "")  
+plot.ts(PIB_POTENTIEL_KF_France_ts, ylab = "")  
 
 # include HP trend
-lines(logFrance, col = "red")
-lines(trend_France_hp, col = "blue")
+lines(PIB_FRANCE_ts, col = "red")
+#lines(PIB_POTENTIEL_HP_France_ts, col = "blue")
 legend("topleft", legend = c("PIB_Potentiel Kalman Filter France", "Log France", "HP trend"), lty = 1, 
        col = c("black", "red"), bty = "n")
 
@@ -767,7 +783,7 @@ trend_Japan_hpts<-na.omit(trend_Japan_hpts)
 diff_lgdp_Japan<-diff(logJapan)*100
 
 
-Japan_infla <-df_infla[4]
+Japan_infla <-df_infla[6]
 Japan_inflats<-ts(data=Japan_infla,start=(1975),end=(2022),frequency=4)
 
 Japan_inflats<- na.omit(Japan_inflats) 
@@ -799,7 +815,7 @@ summary(cycle_Japan)
 
 
 
-trend_Japan_hp<-trend_Japan_hp[-108,]
+trend_Japan_hp<-trend_Japan_hp[-112,]
 trend_Japan_hp<-na.omit(trend_Japan_hp)
 
 Japan_infla_reg<-Japan_infla[-1,]
@@ -835,7 +851,7 @@ OGbegint_moins1_Japan <- cycle_Japan_hp[[2]]
 
 #préparation matrice variables d'observation du modèle espace etat
 
-mat_obs_Japan <- matrix(, nrow = 107, ncol = 3)
+mat_obs_Japan <- matrix(, nrow = 111, ncol = 3)
 mat_obs_Japan[,1] <- diff_lgdp_Japan
 mat_obs_Japan[,2] <- Japan_infla_reg
 mat_obs_Japan[,3] <- lag(Japan_infla_reg,1)
@@ -866,7 +882,7 @@ Japan_KF4 <- tsSmooth(fit,
 cycle_KF_OUTPUTGAP_Japan <-ts(data=Japan_KF4$.estimate,start=(1975),end=(2022),frequency=4)
 plot(cycle_KF_OUTPUTGAP_Japan)
 
-PIB_POTENTIEL_KF_Japan <- logJapan - Japan_KF4$.estimate[1:108]/100
+PIB_POTENTIEL_KF_Japan <- logJapan - Japan_KF4$.estimate[1:112]/100
 plot(PIB_POTENTIEL_KF_Japan)
 plot(logJapan)
 
@@ -896,56 +912,16 @@ legend("topleft", legend = c("PIB_Potentiel Kalman Filter Japan", "Log Japan", "
 
 
 
+###United_Kingdom
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Japan<-gdp[[6]]
-
-logJapan<-log(Japan)
-Japants<-ts(data=logJapan,start=(1975),end=(2022),frequency=4)     
-
-Japants<- na.omit(Japants) 
-plot(Japants)
-
-
-Japan_hp <- hpfilter(Japants, freq = 1600, type = "lambda",drift=FALSE)
-
-
-#Plot time series
-plot.ts(Japants, ylab = "")  
-
-# include HP trend
-lines(Japan_hp$trend, col = "red")
-legend("topleft", legend = c("Log GDP Japan", "HP trend"), lty = 1, 
-       col = c("black", "red"), bty = "n")
-
-#Plot cycle
-plot.ts(Japan_hp$cycle, ylab = "")  
-legend("topleft", legend = c("HP cycle Japan"), lty = 1, col = c("black"), 
-       bty = "n")
-
-
+#Frequence du parametre HP smoother
 
 United_Kingdom<-gdp[[7]]
-
 logUnited_Kingdom<-log(United_Kingdom)
-United_Kingdomts<-ts(data=logUnited_Kingdom,start=(1975),end=(2022),frequency=4)     
+
+United_Kingdom<-na.omit(United_Kingdom)
+
+United_Kingdomts<-ts(data=logUnited_Kingdom,start=(1975),end=(2020),frequency=4)     
 
 United_Kingdomts<- na.omit(United_Kingdomts) 
 plot(United_Kingdomts)
@@ -953,24 +929,187 @@ plot(United_Kingdomts)
 
 United_Kingdom_hp <- hpfilter(United_Kingdomts, freq = 1600, type = "lambda",drift=FALSE)
 
+# Plot time series
+plot.ts(United_Kingdomts, ylab = "")  
 
-#Plot time series
-plot.ts(United_Kingdomts, ylab = "")
 # include HP trend
 lines(United_Kingdom_hp$trend, col = "red")
-legend("topleft", legend = c("Log GDP United Kingdom", "HP trend"), lty = 1, 
+legend("topleft", legend = c("Log GDP United_Kingdom", "HP trend"), lty = 1, 
        col = c("black", "red"), bty = "n")
 
 #Plot cycle
-plot.ts(United_Kingdom_hp$cycle, ylab = "")
-legend("topleft", legend = c("HP cycle United Kingdom"), lty = 1, col = c("black"), 
+plot.ts(United_Kingdom_hp$cycle, ylab = "") 
+legend("topleft", legend = c("HP cycle United_Kingdom"), lty = 1, col = c("black"), 
        bty = "n")
 
 
 
-United_States<-gdp[[8]]
 
+
+
+
+
+logUnited_Kingdom<-na.omit(logUnited_Kingdom)
+United_Kingdom_hp_reg <- hpfilter(logUnited_Kingdom, freq = 1600, type = "lambda",drift=FALSE)
+
+cycle_United_Kingdom_hp<-United_Kingdom_hp_reg$cycle
+trend_United_Kingdom_hp<-United_Kingdom_hp_reg$trend
+
+cycle_United_Kingdom_hpts<-ts(data=cycle_United_Kingdom_hp,start=(1975),end=(2020),frequency=4)
+trend_United_Kingdom_hpts<-ts(data=trend_United_Kingdom_hp,start=(1975),end=(2020),frequency=4)
+
+cycle_United_Kingdom_hpts<-na.omit(cycle_United_Kingdom_hpts)
+trend_United_Kingdom_hpts<-na.omit(trend_United_Kingdom_hpts)
+
+
+
+diff_lgdp_United_Kingdom<-diff(logUnited_Kingdom)*100
+
+
+United_Kingdom_infla <-df_infla[7]
+United_Kingdom_inflats<-ts(data=United_Kingdom_infla,start=(1975),end=(2020),frequency=4)
+
+United_Kingdom_inflats<- na.omit(United_Kingdom_inflats) 
+United_Kingdom_infla <- matrix(data = United_Kingdom_inflats)
+
+
+
+
+
+
+#Détermination des coefficients pour le modèle espace-etat 
+
+#1ere Trend
+trend_United_Kingdom<-lm(diff_lgdp_United_Kingdom~1+offset(diff(cycle_United_Kingdom_hp)))
+summary(trend_United_Kingdom)
+
+
+#3 eme equation Cycle
+
+cycle_United_Kingdom<-lm(cycle_United_Kingdom_hp~0+lag(cycle_United_Kingdom_hp,1)+lag(cycle_United_Kingdom_hp,2))
+summary(cycle_United_Kingdom)
+
+
+
+
+
+
+
+
+
+
+trend_United_Kingdom_hp<-trend_United_Kingdom_hp[-182,]
+trend_United_Kingdom_hp<-na.omit(trend_United_Kingdom_hp)
+
+United_Kingdom_infla_reg<-United_Kingdom_infla[-1,]
+United_Kingdom_infla_reg<-na.omit(United_Kingdom_infla_reg)
+
+United_Kingdom_infla_reg<-na.omit(United_Kingdom_infla_reg) 
+
+
+inflation_markup_model_United_Kingdom<-lm(United_Kingdom_infla_reg~lag(United_Kingdom_infla_reg,1)+trend_United_Kingdom_hp)
+summary(inflation_markup_model_United_Kingdom)
+
+
+
+
+#Nom des coefficients
+
+#equation d'etat
+B_United_Kingdom <- cycle_United_Kingdom$coefficients
+b1_United_Kingdom <- B_United_Kingdom[1]
+b2_United_Kingdom <- B_United_Kingdom[2]
+
+#equations d'observation
+Delta1_United_Kingdom <- trend_United_Kingdom$coefficients
+Alphas_United_Kingdom <-inflation_markup_model_United_Kingdom$coefficients
+Alpha1_United_Kingdom <- Alphas_United_Kingdom[1]
+Alpha2_United_Kingdom <- Alphas_United_Kingdom[2]
+Alpha3_United_Kingdom <- Alphas_United_Kingdom[3]
+
+#valeurs initiales
+OGbegint0_United_Kingdom <- cycle_United_Kingdom_hp[[3]]
+OGbegint_moins1_United_Kingdom <- cycle_United_Kingdom_hp[[2]]
+
+
+#préparation matrice variables d'observation du modèle espace etat
+
+mat_obs_United_Kingdom <- matrix(, nrow = 111, ncol = 3)
+mat_obs_United_Kingdom[,1] <- diff_lgdp_United_Kingdom
+mat_obs_United_Kingdom[,2] <- United_Kingdom_infla_reg
+mat_obs_United_Kingdom[,3] <- lag(United_Kingdom_infla_reg,1)
+mat_obs_United_Kingdom <- na.omit(mat_obs_United_Kingdom)
+
+
+
+
+
+#modele espace-etat multivar avec lags
+B2_United_Kingdom <- matrix(list(b1_United_Kingdom, 1, b2_United_Kingdom, 0), 2, 2)
+Z2_United_Kingdom <- matrix(list(1, Alpha3_United_Kingdom, 0, -1, 0, 0), nrow=3, ncol=2)
+A2_United_Kingdom <- matrix(list(Delta1_United_Kingdom, Alpha1_United_Kingdom, 0), nrow=3, ncol=1)
+Q2_United_Kingdom <- matrix(list("q1", 0, 0, 0), 2, 2)
+u2_United_Kingdom <- matrix(list(0,0),nrow = 2, ncol = 1)
+d2_United_Kingdom <- t(mat_obs_United_Kingdom)
+D2_United_Kingdom <- matrix(list (0, 0, 0, 0, 0, 0, 0, Alpha2_United_Kingdom, 1), 3, 3)
+R2_United_Kingdom <- matrix(list ("r11", 0, 0, 0, "r22", 0, 0, 0, 0.01), 3, 3)
+x02_United_Kingdom <- matrix(list(OGbegint0_United_Kingdom, OGbegint_moins1_United_Kingdom), nrow = 2, ncol = 1)
+model.list2_United_Kingdom <- list(B = B2_United_Kingdom, Q=Q2_United_Kingdom, Z = Z2_United_Kingdom, A = A2_United_Kingdom, d=d2_United_Kingdom, D=D2_United_Kingdom, U=u2_United_Kingdom, R=R2_United_Kingdom, x0= x02_United_Kingdom, tinitx = 1)
+fit <- MARSS(d2_United_Kingdom, model=model.list2_United_Kingdom, fit = TRUE)
+United_Kingdom_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95, output = c("data.frame", "matrix"))
+United_Kingdom_KF4 <- tsSmooth(fit,
+                      type = c("xtT", "xtt", "xtt1", "ytT", "ytt", "ytt1"),
+                      interval = c("confidence"),
+                      level = 0.95, fun.kf = c("MARSSkfas"))
+
+cycle_KF_OUTPUTGAP_United_Kingdom <-ts(data=United_Kingdom_KF4$.estimate,start=(1975),end=(2022),frequency=4)
+plot(cycle_KF_OUTPUTGAP_United_Kingdom)
+
+PIB_POTENTIEL_KF_United_Kingdom <- logUnited_Kingdom - United_Kingdom_KF4$.estimate[1:112]/100
+plot(PIB_POTENTIEL_KF_United_Kingdom)
+plot(logUnited_Kingdom)
+
+
+# Plot time series
+plot.ts(PIB_POTENTIEL_KF_United_Kingdom, ylab = "")  
+
+# include HP trend
+lines(logUnited_Kingdom, col = "red")
+lines(trend_United_Kingdom_hp, col = "blue")
+legend("topleft", legend = c("PIB_Potentiel Kalman Filter United_Kingdom", "Log United_Kingdom", "HP trend"), lty = 1, 
+       col = c("black", "red"), bty = "n")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###United_States
+
+#Frequence du parametre HP smoother
+
+United_States<-gdp[[8]]
 logUnited_States<-log(United_States)
+
+United_States<-na.omit(United_States)
+
 United_Statests<-ts(data=logUnited_States,start=(1975),end=(2022),frequency=4)     
 
 United_Statests<- na.omit(United_Statests) 
@@ -979,18 +1118,17 @@ plot(United_Statests)
 
 United_States_hp <- hpfilter(United_Statests, freq = 1600, type = "lambda",drift=FALSE)
 
-
-#Plot time series
+# Plot time series
 plot.ts(United_Statests, ylab = "")  
 
 # include HP trend
-lines(United_States_hp$trend, col = "red")  
-legend("topleft", legend = c("Log GDP United States", "HP trend"), lty = 1, 
+lines(United_States_hp$trend, col = "red")
+legend("topleft", legend = c("Log GDP United_States", "HP trend"), lty = 1, 
        col = c("black", "red"), bty = "n")
 
 #Plot cycle
-plot.ts(United_States_hp$cycle, ylab = "")  
-legend("topleft", legend = c("HP cycle USA"), lty = 1, col = c("black"), 
+plot.ts(United_States_hp$cycle, ylab = "") 
+legend("topleft", legend = c("HP cycle United_States"), lty = 1, col = c("black"), 
        bty = "n")
 
 
@@ -1000,25 +1138,45 @@ legend("topleft", legend = c("HP cycle USA"), lty = 1, col = c("black"),
 
 
 
+logUnited_States<-na.omit(logUnited_States)
+United_States_hp_reg <- hpfilter(logUnited_States, freq = 1600, type = "lambda",drift=FALSE)
 
+cycle_United_States_hp<-United_States_hp_reg$cycle
+trend_United_States_hp<-United_States_hp_reg$trend
 
+cycle_United_States_hpts<-ts(data=cycle_United_States_hp,start=(1975),end=(2022),frequency=4)
+trend_United_States_hpts<-ts(data=trend_United_States_hp,start=(1975),end=(2022),frequency=4)
 
+cycle_United_States_hpts<-na.omit(cycle_United_States_hpts)
+trend_United_States_hpts<-na.omit(trend_United_States_hpts)
 
 
 
+diff_lgdp_United_States<-diff(logUnited_States)*100
 
 
+United_States_infla <-df_infla[8]
+United_States_inflats<-ts(data=United_States_infla,start=(1975),end=(2022),frequency=4)
 
+United_States_inflats<- na.omit(United_States_inflats) 
+United_States_infla <- matrix(data = United_States_inflats)
 
 
 
 
 
 
+#Détermination des coefficients pour le modèle espace-etat 
 
+#1ere Trend
+trend_United_States<-lm(diff_lgdp_United_States~1+offset(diff(cycle_United_States_hp)))
+summary(trend_United_States)
 
 
+#3 eme equation Cycle
 
+cycle_United_States<-lm(cycle_United_States_hp~0+lag(cycle_United_States_hp,1)+lag(cycle_United_States_hp,2))
+summary(cycle_United_States)
 
 
 
@@ -1029,82 +1187,86 @@ legend("topleft", legend = c("HP cycle USA"), lty = 1, col = c("black"),
 
 
 
+trend_United_States_hp<-trend_United_States_hp[-188,]
+trend_United_States_hp<-na.omit(trend_United_States_hp)
 
+United_States_infla_reg<-United_States_infla[-1,]
+United_States_infla_reg<-na.omit(United_States_infla_reg)
 
+United_States_infla_reg<-na.omit(United_States_infla_reg) 
 
 
+inflation_markup_model_United_States<-lm(United_States_infla_reg~lag(United_States_infla_reg,1)+trend_United_States_hp)
+summary(inflation_markup_model_United_States)
 
 
 
 
+#Nom des coefficients
 
+#equation d'etat
+B_United_States <- cycle_United_States$coefficients
+b1_United_States <- B_United_States[1]
+b2_United_States <- B_United_States[2]
 
+#equations d'observation
+Delta1_United_States <- trend_United_States$coefficients
+Alphas_United_States <-inflation_markup_model_United_States$coefficients
+Alpha1_United_States <- Alphas_United_States[1]
+Alpha2_United_States <- Alphas_United_States[2]
+Alpha3_United_States <- Alphas_United_States[3]
 
+#valeurs initiales
+OGbegint0_United_States <- cycle_United_States_hp[[3]]
+OGbegint_moins1_United_States <- cycle_United_States_hp[[2]]
 
 
+#préparation matrice variables d'observation du modèle espace etat
 
+mat_obs_United_States <- matrix(, nrow = 187, ncol = 3)
+mat_obs_United_States[,1] <- diff_lgdp_United_States
+mat_obs_United_States[,2] <- United_States_infla_reg
+mat_obs_United_States[,3] <- lag(United_States_infla_reg,1)
+mat_obs_United_States <- na.omit(mat_obs_United_States)
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#modele espace-etat multivar avec lags
+B2_United_States <- matrix(list(b1_United_States, 1, b2_United_States, 0), 2, 2)
+Z2_United_States <- matrix(list(1, Alpha3_United_States, 0, -1, 0, 0), nrow=3, ncol=2)
+A2_United_States <- matrix(list(Delta1_United_States, Alpha1_United_States, 0), nrow=3, ncol=1)
+Q2_United_States <- matrix(list("q1", 0, 0, 0), 2, 2)
+u2_United_States <- matrix(list(0,0),nrow = 2, ncol = 1)
+d2_United_States <- t(mat_obs_United_States)
+D2_United_States <- matrix(list (0, 0, 0, 0, 0, 0, 0, Alpha2_United_States, 1), 3, 3)
+R2_United_States <- matrix(list ("r11", 0, 0, 0, "r22", 0, 0, 0, 0.01), 3, 3)
+x02_United_States <- matrix(list(OGbegint0_United_States, OGbegint_moins1_United_States), nrow = 2, ncol = 1)
+model.list2_United_States <- list(B = B2_United_States, Q=Q2_United_States, Z = Z2_United_States, A = A2_United_States, d=d2_United_States, D=D2_United_States, U=u2_United_States, R=R2_United_States, x0= x02_United_States, tinitx = 1)
+fit <- MARSS(d2_United_States, model=model.list2_United_States, fit = TRUE)
+United_States_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95, output = c("data.frame", "matrix"))
+United_States_KF4 <- tsSmooth(fit,
+                      type = c("xtT", "xtt", "xtt1", "ytT", "ytt", "ytt1"),
+                      interval = c("confidence"),
+                      level = 0.95, fun.kf = c("MARSSkfas"))
+
+cycle_KF_OUTPUTGAP_United_States <-ts(data=United_States_KF4$.estimate,start=(1975),end=(2022),frequency=4)
+plot(cycle_KF_OUTPUTGAP_United_States)
+
+PIB_POTENTIEL_KF_United_States <- logUnited_States - United_States_KF4$.estimate[1:188]/100
+plot(PIB_POTENTIEL_KF_United_States)
+plot(logUnited_States)
+
+
+# Plot time series
+plot.ts(PIB_POTENTIEL_KF_United_States, ylab = "")  
+
+# include HP trend
+lines(logUnited_States, col = "red")
+lines(trend_United_States_hp, col = "blue")
+legend("topleft", legend = c("PIB_Potentiel Kalman Filter United_States", "Log United_States", "HP trend"), lty = 1, 
+       col = c("black", "red"), bty = "n")
 
 
 
