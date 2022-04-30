@@ -22,10 +22,8 @@ France_hp<- hpfilter(Francets, freq=1600,type="lambda",drift=FALSE)
 plot(France_hp)
 
 #install.packages("MARSS")
-#install.packages("dlm")
-installed.packages("broom")
+
 library(MARSS)
-library(dlm)
 
 #initial value pot_France
 France_hp_cycle <- France_hp[["cycle"]]
@@ -60,9 +58,8 @@ mat_obs <- na.omit(mat_obs)
 
 
 
-#1ere equation Trend
-#trend_value<-diff_lgdp-diff(cycle_France_hp)
-Trend<-lm(France_deltalogPIB~1+offset(diff(France_hp_cycle)))
+
+Trend<-lm(diff_lgdp~1+offset(diff(cycle_France_hp)))
 summary(Trend)
 
 
