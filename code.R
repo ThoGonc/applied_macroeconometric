@@ -73,8 +73,7 @@ France_infla <- matrix(data = France_inflats)
 
 
 
-#Coefficients 
-
+#Détermination des coefficients pour le modèle espace-etat 
 
 #1ere Trend
 Trend<-lm(diff_lgdp~1+offset(diff(cycle_France_hp)))
@@ -86,20 +85,11 @@ summary(Trend)
 cycle<-lm(cycle_France_hp~0+lag(cycle_France_hp,1)+lag(cycle_France_hp,2))
 summary(cycle)
 
-
-
 trend_France_hp<-trend_France_hp[-188,]
 trend_France_hp<-na.omit(trend_France_hp)
 
-
 France_infla_reg<-France_infla[-1,]
 France_infla_reg<-na.omit(France_infla_reg)
-
-
-
-
-
-
 
 France_infla_reg <- na.omit(France_infla_reg) 
 France_infla<- na.omit(France_infla) 
@@ -110,25 +100,26 @@ summary(inflation_markup_model)
 
 
 
+#Nom des coefficients
 
-
-
-
-
-Delta1_France <- Trend$coefficients
-
+#equation d'etat
 B_France <- cycle$coefficients
 b1_France <- B_France[1]
 b2_France <- B_France[2]
 
+#equations d'observation
+Delta1_France <- Trend$coefficients
 Alphas_France <-inflation_markup_model$coefficients
 Alpha1_France <- Alphas_France[1]
 Alpha2_France <- Alphas_France[2]
 Alpha3_France <- Alphas_France[3]
 
+#valeurs initiales
+OGbegint0 <- cycle_France_hp[[3]]
+OGbegint_moins1 <- cycle_France_hp[[2]]
 
 
-#préparation matrice var d'observation
+#préparation matrice variables d'observation du modèle espace etat
 mat_obs <- matrix(, nrow = 187, ncol = 3)
 mat_obs[,1] <- diff_lgdp
 mat_obs[,2] <- France_infla_reg
@@ -137,16 +128,16 @@ mat_obs <- na.omit(mat_obs)
 
 
 
-#model3: multivar with lags fixed coef from Eviews
-B2 <- matrix(list(b1, 1, b2, 0), 2, 2)
-Z2 <- matrix(list(1, alpha3, 0, -1, 0, 0), nrow=3, ncol=2)
-A2 <- matrix(list(delta, Alpha1_France, 0), nrow=3, ncol=1)
+#modele espace-etat multivar avec lags
+B2 <- matrix(list(b1_France, 1, b2_France, 0), 2, 2)
+Z2 <- matrix(list(1, Alpha3_France, 0, -1, 0, 0), nrow=3, ncol=2)
+A2 <- matrix(list(Delta1_France, Alpha1_France, 0), nrow=3, ncol=1)
 Q2 <- matrix(list("q1", 0, 0, 0), 2, 2)
 u2 <- matrix(list(0,0),nrow = 2, ncol = 1)
 d2 <- t(mat_obs)
-D2 <- matrix(list (0, 0, 0, 0, 0, 0, 0, alpha2, 1), 3, 3)
+D2 <- matrix(list (0, 0, 0, 0, 0, 0, 0, Alpha2_France, 1), 3, 3)
 R2 <- matrix(list ("r11", 0, 0, 0, "r22", 0, 0, 0, 0.01), 3, 3)
-x02 <- matrix(list(0, 0), nrow = 2, ncol = 1)
+x02 <- matrix(list(OGbegint0, OGbegint_moins1), nrow = 2, ncol = 1)
 model.list2 <- list(B = B2, Q=Q2, Z = Z2, A = A2, d=d2, D=D2, U=u2, R=R2, x0= x02, tinitx = 1)
 fit <- MARSS(d2, model=model.list2, fit = TRUE)
 France_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95, output = c("data.frame", "matrix"))
@@ -155,13 +146,8 @@ France_KF4 <- tsSmooth(fit,
                        interval = c("confidence"),
                        level = 0.95, fun.kf = c("MARSSkfas"))
 
-cycleKF<-ts(data=France_KF4$.estimate,start=(1975),end=(2022),frequency=4)
-
-
-
-
-cycleKF_OUTPUTGAP_France <- cycleKF
-plot(cycleKF_OUTPUTGAP_France)
+cycle_KF_OUTPUTGAP_France <-ts(data=France_KF4$.estimate,start=(1975),end=(2022),frequency=4)
+plot(cycle_KF_OUTPUTGAP_France)
 
 PIB_POTENTIEL_KF_France <- logFrance - France_KF4$.estimate[1:188]/100
 plot(PIB_POTENTIEL_KF_France)
@@ -179,6 +165,11 @@ legend("topleft", legend = c("PIB_Potentiel Kalman Filter France", "Log France",
 
 
 
+view(cycle_France_hpts)
+view(cycle_KF_OUTPUTGAP_France)
+view(trend_France_hpts)
+view(PIB_POTENTIEL_KF_France)
+view(logFrance)
 
 
 
