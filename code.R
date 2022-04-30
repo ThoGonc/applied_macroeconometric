@@ -359,52 +359,34 @@ legend("topleft", legend = c("PIB_Potentiel Kalman Filter Germany", "Log Germany
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-###Italy
+###Italia
 
 #Frequence du parametre HP smoother
 
-Italy<-gdp[[4]]
-logItaly<-log(Italy)
+Italia<-gdp[[4]]
+logItalia<-log(Italia)
+
+Italia<-na.omit(Italia)
+
+Italiats<-ts(data=logItalia,start=(1975),end=(2022),frequency=4)     
+
+Italiats<- na.omit(Italiats) 
+plot(Italiats)
 
 
-
-Italyts<-ts(data=logItaly,start=(1975),end=(2022),frequency=4)     
-
-Italyts<- na.omit(Italyts) 
-plot(Italyts)
-
-
-Italy_hp <- hpfilter(Italyts, freq = 1600, type = "lambda",drift=FALSE)
+Italia_hp <- hpfilter(Italiats, freq = 1600, type = "lambda",drift=FALSE)
 
 # Plot time series
-plot.ts(Italyts, ylab = "")  
+plot.ts(Italiats, ylab = "")  
 
 # include HP trend
-lines(Italy_hp$trend, col = "red")
-legend("topleft", legend = c("Log GDP Italy", "HP trend"), lty = 1, 
+lines(Italia_hp$trend, col = "red")
+legend("topleft", legend = c("Log GDP Italia", "HP trend"), lty = 1, 
        col = c("black", "red"), bty = "n")
 
 #Plot cycle
-plot.ts(Italy_hp$cycle, ylab = "") 
-legend("topleft", legend = c("HP cycle Italy"), lty = 1, col = c("black"), 
+plot.ts(Italia_hp$cycle, ylab = "") 
+legend("topleft", legend = c("HP cycle Italia"), lty = 1, col = c("black"), 
        bty = "n")
 
 
@@ -414,25 +396,28 @@ legend("topleft", legend = c("HP cycle Italy"), lty = 1, col = c("black"),
 
 
 
-logItaly<-na.omit(logItaly)
-Italy_hp_reg <- hpfilter(logItaly, freq = 1600, type = "lambda",drift=FALSE)
+logItalia<-na.omit(logItalia)
+Italia_hp_reg <- hpfilter(logItalia, freq = 1600, type = "lambda",drift=FALSE)
 
-cycle_Italy_hp<-Italy_hp_reg$cycle
-trend_Italy_hp<-Italy_hp_reg$trend
+cycle_Italia_hp<-Italia_hp_reg$cycle
+trend_Italia_hp<-Italia_hp_reg$trend
 
-cycle_Italy_hpts<-ts(data=cycle_Italy_hp,start=(1975),end=(2022),frequency=4)
-trend_Italy_hpts<-ts(data=trend_Italy_hp,start=(1975),end=(2022),frequency=4)
+cycle_Italia_hpts<-ts(data=cycle_Italia_hp,start=(1975),end=(2022),frequency=4)
+trend_Italia_hpts<-ts(data=trend_Italia_hp,start=(1975),end=(2022),frequency=4)
+
+cycle_Italia_hpts<-na.omit(cycle_Italia_hpts)
+trend_Italia_hpts<-na.omit(trend_Italia_hpts)
 
 
 
-diff_lgdp<-diff(logItaly)*100
+diff_lgdp_Italia<-diff(logItalia)*100
 
 
-urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_inflation.csv'
-df_infla<-read.csv2(urlfile, header=TRUE)
-Italy_infla <-df_infla[3]
-Italy_inflats<-ts(data=Italy_infla,start=(1975),end=(2022),frequency=4)
-Italy_infla <- matrix(data = Italy_inflats)
+Italia_infla <-df_infla[4]
+Italia_inflats<-ts(data=Italia_infla,start=(1975),end=(2022),frequency=4)
+
+Italia_inflats<- na.omit(Italia_inflats) 
+Italia_infla <- matrix(data = Italia_inflats)
 
 
 
@@ -442,26 +427,35 @@ Italy_infla <- matrix(data = Italy_inflats)
 #Détermination des coefficients pour le modèle espace-etat 
 
 #1ere Trend
-Trend<-lm(diff_lgdp~1+offset(diff(cycle_Italy_hp)))
-summary(Trend)
+trend_Italia<-lm(diff_lgdp_Italia~1+offset(diff(cycle_Italia_hp)))
+summary(trend_Italia)
 
 
 #3 eme equation Cycle
 
-cycle<-lm(cycle_Italy_hp~0+lag(cycle_Italy_hp,1)+lag(cycle_Italy_hp,2))
-summary(cycle)
+cycle_Italia<-lm(cycle_Italia_hp~0+lag(cycle_Italia_hp,1)+lag(cycle_Italia_hp,2))
+summary(cycle_Italia)
 
-trend_Italy_hp<-trend_Italy_hp[-108,]
-trend_Italy_hp<-na.omit(trend_Italy_hp)
 
-Italy_infla_reg<-Italy_infla[-1,]
-Italy_infla_reg<-na.omit(Italy_infla_reg)
 
-Italy_infla_reg <- na.omit(Italy_infla_reg) 
-Italy_infla<- na.omit(Italy_infla) 
 
-inflation_markup_model_Italy<-lm(Italy_infla_reg~lag(Italy_infla_reg,1)+trend_Italy_hp)
-summary(inflation_markup_model)
+
+
+
+
+
+
+trend_Italia_hp<-trend_Italia_hp[-108,]
+trend_Italia_hp<-na.omit(trend_Italia_hp)
+
+Italia_infla_reg<-Italia_infla[-1,]
+Italia_infla_reg<-na.omit(Italia_infla_reg)
+
+Italia_infla_reg<-na.omit(Italia_infla_reg) 
+
+
+inflation_markup_model_Italia<-lm(Italia_infla_reg~lag(Italia_infla_reg,1)+trend_Italia_hp)
+summary(inflation_markup_model_Italia)
 
 
 
@@ -469,65 +463,67 @@ summary(inflation_markup_model)
 #Nom des coefficients
 
 #equation d'etat
-B_Italy <- cycle$coefficients
-b1_Italy <- B_Italy[1]
-b2_Italy <- B_Italy[2]
+B_Italia <- cycle_Italia$coefficients
+b1_Italia <- B_Italia[1]
+b2_Italia <- B_Italia[2]
 
 #equations d'observation
-Delta1_Italy <- Trend$coefficients
-Alphas_Italy <-inflation_markup_model_Italy$coefficients
-Alpha1_Italy <- Alphas_Italy[1]
-Alpha2_Italy <- Alphas_Italy[2]
-Alpha3_Italy <- Alphas_Italy[3]
+Delta1_Italia <- trend_Italia$coefficients
+Alphas_Italia <-inflation_markup_model_Italia$coefficients
+Alpha1_Italia <- Alphas_Italia[1]
+Alpha2_Italia <- Alphas_Italia[2]
+Alpha3_Italia <- Alphas_Italia[3]
 
 #valeurs initiales
-OGbegint0 <- cycle_Italy_hp[[3]]
-OGbegint_moins1 <- cycle_Italy_hp[[2]]
+OGbegint0_Italia <- cycle_Italia_hp[[3]]
+OGbegint_moins1_Italia <- cycle_Italia_hp[[2]]
 
 
 #préparation matrice variables d'observation du modèle espace etat
-Italy_infla_reg_adj <- Italy_infla_reg[82:188]
-mat_obs <- matrix(, nrow = 107, ncol = 3)
-mat_obs[,1] <- diff_lgdp
-mat_obs[,2] <- Italy_infla_reg_adj
-mat_obs[,3] <- lag(Italy_infla_reg_adj,1)
-mat_obs <- na.omit(mat_obs)
+
+mat_obs_Italia <- matrix(, nrow = 107, ncol = 3)
+mat_obs_Italia[,1] <- diff_lgdp_Italia
+mat_obs_Italia[,2] <- Italia_infla_reg
+mat_obs_Italia[,3] <- lag(Italia_infla_reg,1)
+mat_obs_Italia <- na.omit(mat_obs_Italia)
+
+
 
 
 
 #modele espace-etat multivar avec lags
-B2 <- matrix(list(b1_Italy, 1, b2_Italy, 0), 2, 2)
-Z2 <- matrix(list(1, Alpha3_Italy, 0, -1, 0, 0), nrow=3, ncol=2)
-A2 <- matrix(list(Delta1_Italy, Alpha1_Italy, 0), nrow=3, ncol=1)
-Q2 <- matrix(list("q1", 0, 0, 0), 2, 2)
-u2 <- matrix(list(0,0),nrow = 2, ncol = 1)
-d2 <- t(mat_obs)
-D2 <- matrix(list (0, 0, 0, 0, 0, 0, 0, Alpha2_Italy, 1), 3, 3)
-R2 <- matrix(list ("r11", 0, 0, 0, "r22", 0, 0, 0, 0.01), 3, 3)
-x02 <- matrix(list(OGbegint0, OGbegint_moins1), nrow = 2, ncol = 1)
-model.list2 <- list(B = B2, Q=Q2, Z = Z2, A = A2, d=d2, D=D2, U=u2, R=R2, x0= x02, tinitx = 1)
-fit <- MARSS(d2, model=model.list2, fit = TRUE)
-Italy_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95, output = c("data.frame", "matrix"))
-Italy_KF4 <- tsSmooth(fit,
+B2_Italia <- matrix(list(b1_Italia, 1, b2_Italia, 0), 2, 2)
+Z2_Italia <- matrix(list(1, Alpha3_Italia, 0, -1, 0, 0), nrow=3, ncol=2)
+A2_Italia <- matrix(list(Delta1_Italia, Alpha1_Italia, 0), nrow=3, ncol=1)
+Q2_Italia <- matrix(list("q1", 0, 0, 0), 2, 2)
+u2_Italia <- matrix(list(0,0),nrow = 2, ncol = 1)
+d2_Italia <- t(mat_obs_Italia)
+D2_Italia <- matrix(list (0, 0, 0, 0, 0, 0, 0, Alpha2_Italia, 1), 3, 3)
+R2_Italia <- matrix(list ("r11", 0, 0, 0, "r22", 0, 0, 0, 0.01), 3, 3)
+x02_Italia <- matrix(list(OGbegint0_Italia, OGbegint_moins1_Italia), nrow = 2, ncol = 1)
+model.list2_Italia <- list(B = B2_Italia, Q=Q2_Italia, Z = Z2_Italia, A = A2_Italia, d=d2_Italia, D=D2_Italia, U=u2_Italia, R=R2_Italia, x0= x02_Italia, tinitx = 1)
+fit <- MARSS(d2_Italia, model=model.list2_Italia, fit = TRUE)
+Italia_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95, output = c("data.frame", "matrix"))
+Italia_KF4 <- tsSmooth(fit,
                         type = c("xtT", "xtt", "xtt1", "ytT", "ytt", "ytt1"),
                         interval = c("confidence"),
                         level = 0.95, fun.kf = c("MARSSkfas"))
 
-cycle_KF_OUTPUTGAP_Italy <-ts(data=Italy_KF4$.estimate,start=(1975),end=(2022),frequency=4)
-plot(cycle_KF_OUTPUTGAP_Italy)
+cycle_KF_OUTPUTGAP_Italia <-ts(data=Italia_KF4$.estimate,start=(1975),end=(2022),frequency=4)
+plot(cycle_KF_OUTPUTGAP_Italia)
 
-PIB_POTENTIEL_KF_Italy <- logItaly - Italy_KF4$.estimate[1:108]/100
-plot(PIB_POTENTIEL_KF_Italy)
-plot(logItaly)
+PIB_POTENTIEL_KF_Italia <- logItalia - Italia_KF4$.estimate[1:108]/100
+plot(PIB_POTENTIEL_KF_Italia)
+plot(logItalia)
 
 
 # Plot time series
-plot.ts(PIB_POTENTIEL_KF_Italy, ylab = "")  
+plot.ts(PIB_POTENTIEL_KF_Italia, ylab = "")  
 
 # include HP trend
-lines(logItaly, col = "red")
-lines(trend_Italy_hp, col = "blue")
-legend("topleft", legend = c("PIB_Potentiel Kalman Filter Italy", "Log Italy", "HP trend"), lty = 1, 
+lines(logItalia, col = "red")
+lines(trend_Italia_hp, col = "blue")
+legend("topleft", legend = c("PIB_Potentiel Kalman Filter Italia", "Log Italia", "HP trend"), lty = 1, 
        col = c("black", "red"), bty = "n")
 
 
@@ -540,26 +536,15 @@ legend("topleft", legend = c("PIB_Potentiel Kalman Filter Italy", "Log Italy", "
 
 
 
+###Spain
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#Frequence du parametre HP smoother
 
 Spain<-gdp[[5]]
-
 logSpain<-log(Spain)
+
+Spain<-na.omit(Spain)
+
 Spaints<-ts(data=logSpain,start=(1975),end=(2022),frequency=4)     
 
 Spaints<- na.omit(Spaints) 
@@ -568,19 +553,364 @@ plot(Spaints)
 
 Spain_hp <- hpfilter(Spaints, freq = 1600, type = "lambda",drift=FALSE)
 
-
-#Plot time series
+# Plot time series
 plot.ts(Spaints, ylab = "")  
 
 # include HP trend
-lines(Spain_hp$trend, col = "red")  
+lines(Spain_hp$trend, col = "red")
 legend("topleft", legend = c("Log GDP Spain", "HP trend"), lty = 1, 
        col = c("black", "red"), bty = "n")
 
 #Plot cycle
-plot.ts(Spain_hp$cycle, ylab = "")  
+plot.ts(Spain_hp$cycle, ylab = "") 
 legend("topleft", legend = c("HP cycle Spain"), lty = 1, col = c("black"), 
        bty = "n")
+
+
+
+
+
+
+
+
+logSpain<-na.omit(logSpain)
+Spain_hp_reg <- hpfilter(logSpain, freq = 1600, type = "lambda",drift=FALSE)
+
+cycle_Spain_hp<-Spain_hp_reg$cycle
+trend_Spain_hp<-Spain_hp_reg$trend
+
+cycle_Spain_hpts<-ts(data=cycle_Spain_hp,start=(1975),end=(2022),frequency=4)
+trend_Spain_hpts<-ts(data=trend_Spain_hp,start=(1975),end=(2022),frequency=4)
+
+cycle_Spain_hpts<-na.omit(cycle_Spain_hpts)
+trend_Spain_hpts<-na.omit(trend_Spain_hpts)
+
+
+
+diff_lgdp_Spain<-diff(logSpain)*100
+
+
+Spain_infla <-df_infla[5]
+Spain_inflats<-ts(data=Spain_infla,start=(1975),end=(2022),frequency=4)
+
+Spain_inflats<- na.omit(Spain_inflats) 
+Spain_infla <- matrix(data = Spain_inflats)
+
+
+
+
+
+
+#Détermination des coefficients pour le modèle espace-etat 
+
+#1ere Trend
+trend_Spain<-lm(diff_lgdp_Spain~1+offset(diff(cycle_Spain_hp)))
+summary(trend_Spain)
+
+
+#3 eme equation Cycle
+
+cycle_Spain<-lm(cycle_Spain_hp~0+lag(cycle_Spain_hp,1)+lag(cycle_Spain_hp,2))
+summary(cycle_Spain)
+
+
+
+
+
+
+
+
+
+
+trend_Spain_hp<-trend_Spain_hp[-108,]
+trend_Spain_hp<-na.omit(trend_Spain_hp)
+
+Spain_infla_reg<-Spain_infla[-1,]
+Spain_infla_reg<-na.omit(Spain_infla_reg)
+
+Spain_infla_reg<-na.omit(Spain_infla_reg) 
+
+
+inflation_markup_model_Spain<-lm(Spain_infla_reg~lag(Spain_infla_reg,1)+trend_Spain_hp)
+summary(inflation_markup_model_Spain)
+
+
+
+
+#Nom des coefficients
+
+#equation d'etat
+B_Spain <- cycle_Spain$coefficients
+b1_Spain <- B_Spain[1]
+b2_Spain <- B_Spain[2]
+
+#equations d'observation
+Delta1_Spain <- trend_Spain$coefficients
+Alphas_Spain <-inflation_markup_model_Spain$coefficients
+Alpha1_Spain <- Alphas_Spain[1]
+Alpha2_Spain <- Alphas_Spain[2]
+Alpha3_Spain <- Alphas_Spain[3]
+
+#valeurs initiales
+OGbegint0_Spain <- cycle_Spain_hp[[3]]
+OGbegint_moins1_Spain <- cycle_Spain_hp[[2]]
+
+
+#préparation matrice variables d'observation du modèle espace etat
+
+mat_obs_Spain <- matrix(, nrow = 107, ncol = 3)
+mat_obs_Spain[,1] <- diff_lgdp_Spain
+mat_obs_Spain[,2] <- Spain_infla_reg
+mat_obs_Spain[,3] <- lag(Spain_infla_reg,1)
+mat_obs_Spain <- na.omit(mat_obs_Spain)
+
+
+
+
+
+#modele espace-etat multivar avec lags
+B2_Spain <- matrix(list(b1_Spain, 1, b2_Spain, 0), 2, 2)
+Z2_Spain <- matrix(list(1, Alpha3_Spain, 0, -1, 0, 0), nrow=3, ncol=2)
+A2_Spain <- matrix(list(Delta1_Spain, Alpha1_Spain, 0), nrow=3, ncol=1)
+Q2_Spain <- matrix(list("q1", 0, 0, 0), 2, 2)
+u2_Spain <- matrix(list(0,0),nrow = 2, ncol = 1)
+d2_Spain <- t(mat_obs_Spain)
+D2_Spain <- matrix(list (0, 0, 0, 0, 0, 0, 0, Alpha2_Spain, 1), 3, 3)
+R2_Spain <- matrix(list ("r11", 0, 0, 0, "r22", 0, 0, 0, 0.01), 3, 3)
+x02_Spain <- matrix(list(OGbegint0_Spain, OGbegint_moins1_Spain), nrow = 2, ncol = 1)
+model.list2_Spain <- list(B = B2_Spain, Q=Q2_Spain, Z = Z2_Spain, A = A2_Spain, d=d2_Spain, D=D2_Spain, U=u2_Spain, R=R2_Spain, x0= x02_Spain, tinitx = 1)
+fit <- MARSS(d2_Spain, model=model.list2_Spain, fit = TRUE)
+Spain_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95, output = c("data.frame", "matrix"))
+Spain_KF4 <- tsSmooth(fit,
+                       type = c("xtT", "xtt", "xtt1", "ytT", "ytt", "ytt1"),
+                       interval = c("confidence"),
+                       level = 0.95, fun.kf = c("MARSSkfas"))
+
+cycle_KF_OUTPUTGAP_Spain <-ts(data=Spain_KF4$.estimate,start=(1975),end=(2022),frequency=4)
+plot(cycle_KF_OUTPUTGAP_Spain)
+
+PIB_POTENTIEL_KF_Spain <- logSpain - Spain_KF4$.estimate[1:108]/100
+plot(PIB_POTENTIEL_KF_Spain)
+plot(logSpain)
+
+
+# Plot time series
+plot.ts(PIB_POTENTIEL_KF_Spain, ylab = "")  
+
+# include HP trend
+lines(logSpain, col = "red")
+lines(trend_Spain_hp, col = "blue")
+legend("topleft", legend = c("PIB_Potentiel Kalman Filter Spain", "Log Spain", "HP trend"), lty = 1, 
+       col = c("black", "red"), bty = "n")
+
+
+
+
+
+
+
+
+
+
+
+###Japan
+
+#Frequence du parametre HP smoother
+
+Japan<-gdp[[6]]
+logJapan<-log(Japan)
+
+Japan<-na.omit(Japan)
+
+Japants<-ts(data=logJapan,start=(1975),end=(2022),frequency=4)     
+
+Japants<- na.omit(Japants) 
+plot(Japants)
+
+
+Japan_hp <- hpfilter(Japants, freq = 1600, type = "lambda",drift=FALSE)
+
+# Plot time series
+plot.ts(Japants, ylab = "")  
+
+# include HP trend
+lines(Japan_hp$trend, col = "red")
+legend("topleft", legend = c("Log GDP Japan", "HP trend"), lty = 1, 
+       col = c("black", "red"), bty = "n")
+
+#Plot cycle
+plot.ts(Japan_hp$cycle, ylab = "") 
+legend("topleft", legend = c("HP cycle Japan"), lty = 1, col = c("black"), 
+       bty = "n")
+
+
+
+
+
+
+
+
+logJapan<-na.omit(logJapan)
+Japan_hp_reg <- hpfilter(logJapan, freq = 1600, type = "lambda",drift=FALSE)
+
+cycle_Japan_hp<-Japan_hp_reg$cycle
+trend_Japan_hp<-Japan_hp_reg$trend
+
+cycle_Japan_hpts<-ts(data=cycle_Japan_hp,start=(1975),end=(2022),frequency=4)
+trend_Japan_hpts<-ts(data=trend_Japan_hp,start=(1975),end=(2022),frequency=4)
+
+cycle_Japan_hpts<-na.omit(cycle_Japan_hpts)
+trend_Japan_hpts<-na.omit(trend_Japan_hpts)
+
+
+
+diff_lgdp_Japan<-diff(logJapan)*100
+
+
+Japan_infla <-df_infla[4]
+Japan_inflats<-ts(data=Japan_infla,start=(1975),end=(2022),frequency=4)
+
+Japan_inflats<- na.omit(Japan_inflats) 
+Japan_infla <- matrix(data = Japan_inflats)
+
+
+
+
+
+
+#Détermination des coefficients pour le modèle espace-etat 
+
+#1ere Trend
+trend_Japan<-lm(diff_lgdp_Japan~1+offset(diff(cycle_Japan_hp)))
+summary(trend_Japan)
+
+
+#3 eme equation Cycle
+
+cycle_Japan<-lm(cycle_Japan_hp~0+lag(cycle_Japan_hp,1)+lag(cycle_Japan_hp,2))
+summary(cycle_Japan)
+
+
+
+
+
+
+
+
+
+
+trend_Japan_hp<-trend_Japan_hp[-108,]
+trend_Japan_hp<-na.omit(trend_Japan_hp)
+
+Japan_infla_reg<-Japan_infla[-1,]
+Japan_infla_reg<-na.omit(Japan_infla_reg)
+
+Japan_infla_reg<-na.omit(Japan_infla_reg) 
+
+
+inflation_markup_model_Japan<-lm(Japan_infla_reg~lag(Japan_infla_reg,1)+trend_Japan_hp)
+summary(inflation_markup_model_Japan)
+
+
+
+
+#Nom des coefficients
+
+#equation d'etat
+B_Japan <- cycle_Japan$coefficients
+b1_Japan <- B_Japan[1]
+b2_Japan <- B_Japan[2]
+
+#equations d'observation
+Delta1_Japan <- trend_Japan$coefficients
+Alphas_Japan <-inflation_markup_model_Japan$coefficients
+Alpha1_Japan <- Alphas_Japan[1]
+Alpha2_Japan <- Alphas_Japan[2]
+Alpha3_Japan <- Alphas_Japan[3]
+
+#valeurs initiales
+OGbegint0_Japan <- cycle_Japan_hp[[3]]
+OGbegint_moins1_Japan <- cycle_Japan_hp[[2]]
+
+
+#préparation matrice variables d'observation du modèle espace etat
+
+mat_obs_Japan <- matrix(, nrow = 107, ncol = 3)
+mat_obs_Japan[,1] <- diff_lgdp_Japan
+mat_obs_Japan[,2] <- Japan_infla_reg
+mat_obs_Japan[,3] <- lag(Japan_infla_reg,1)
+mat_obs_Japan <- na.omit(mat_obs_Japan)
+
+
+
+
+
+#modele espace-etat multivar avec lags
+B2_Japan <- matrix(list(b1_Japan, 1, b2_Japan, 0), 2, 2)
+Z2_Japan <- matrix(list(1, Alpha3_Japan, 0, -1, 0, 0), nrow=3, ncol=2)
+A2_Japan <- matrix(list(Delta1_Japan, Alpha1_Japan, 0), nrow=3, ncol=1)
+Q2_Japan <- matrix(list("q1", 0, 0, 0), 2, 2)
+u2_Japan <- matrix(list(0,0),nrow = 2, ncol = 1)
+d2_Japan <- t(mat_obs_Japan)
+D2_Japan <- matrix(list (0, 0, 0, 0, 0, 0, 0, Alpha2_Japan, 1), 3, 3)
+R2_Japan <- matrix(list ("r11", 0, 0, 0, "r22", 0, 0, 0, 0.01), 3, 3)
+x02_Japan <- matrix(list(OGbegint0_Japan, OGbegint_moins1_Japan), nrow = 2, ncol = 1)
+model.list2_Japan <- list(B = B2_Japan, Q=Q2_Japan, Z = Z2_Japan, A = A2_Japan, d=d2_Japan, D=D2_Japan, U=u2_Japan, R=R2_Japan, x0= x02_Japan, tinitx = 1)
+fit <- MARSS(d2_Japan, model=model.list2_Japan, fit = TRUE)
+Japan_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95, output = c("data.frame", "matrix"))
+Japan_KF4 <- tsSmooth(fit,
+                       type = c("xtT", "xtt", "xtt1", "ytT", "ytt", "ytt1"),
+                       interval = c("confidence"),
+                       level = 0.95, fun.kf = c("MARSSkfas"))
+
+cycle_KF_OUTPUTGAP_Japan <-ts(data=Japan_KF4$.estimate,start=(1975),end=(2022),frequency=4)
+plot(cycle_KF_OUTPUTGAP_Japan)
+
+PIB_POTENTIEL_KF_Japan <- logJapan - Japan_KF4$.estimate[1:108]/100
+plot(PIB_POTENTIEL_KF_Japan)
+plot(logJapan)
+
+
+# Plot time series
+plot.ts(PIB_POTENTIEL_KF_Japan, ylab = "")  
+
+# include HP trend
+lines(logJapan, col = "red")
+lines(trend_Japan_hp, col = "blue")
+legend("topleft", legend = c("PIB_Potentiel Kalman Filter Japan", "Log Japan", "HP trend"), lty = 1, 
+       col = c("black", "red"), bty = "n")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
