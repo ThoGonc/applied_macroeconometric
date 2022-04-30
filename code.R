@@ -173,6 +173,15 @@ legend("topleft", legend = c("PIB_Potentiel Kalman Filter France", "Log France",
 
 
 
+#Detrend data with a linear filter
+
+lin.mod_France <- lm(Francets ~ time(Francets))
+lin.trend_France <- lin.mod_France$fitted.values  # fitted values pertain to time trend
+linear_France <- ts(lin.trend_France, start = c(1975, 1), frequency = 4)  # create a time series variable for trend
+lin.cycle_France <- Francets - linear_France  # cycle is the difference between the data and linear trend
+
+ts.plot(linear_France, Francets, gpars = list(col = c("black", "red")))
+
 
 
 
@@ -353,6 +362,15 @@ legend("topleft", legend = c("PIB_Potentiel Kalman Filter Germany", "Log Germany
 
 
 
+#Detrend data with a linear filter
+
+lin.mod_Germany <- lm(Germanyts ~ time(Germanyts))
+lin.trend_Germany <- lin.mod_Germany$fitted.values  # fitted values pertain to time trend
+linear_Germany <- ts(lin.trend_Germany, start = c(1991, 1), frequency = 4)  # create a time series variable for trend
+lin.cycle_Germany <- Germanyts - linear_Germany  # cycle is the difference between the data and linear trend
+
+ts.plot(linear_Germany, Germanyts, gpars = list(col = c("black", "red")))
+
 
 
 
@@ -530,9 +548,15 @@ legend("topleft", legend = c("PIB_Potentiel Kalman Filter Italia", "Log Italia",
 
 
 
+#Detrend data with a linear filter
 
 
+lin.mod_Italia <- lm(Italiats ~ time(Italiats))
+lin.trend_Italia <- lin.mod_Italia$fitted.values  # fitted values pertain to time trend
+linear_Italia <- ts(lin.trend_Italia, start = c(1995, 1), frequency = 4)  # create a time series variable for trend
+lin.cycle_Italia <- Italiats - linear_Italia  # cycle is the difference between the data and linear trend
 
+ts.plot(linear_Italia, Italiats, gpars = list(col = c("black", "red")))
 
 
 
@@ -705,7 +729,14 @@ legend("topleft", legend = c("PIB_Potentiel Kalman Filter Spain", "Log Spain", "
 
 
 
+#Detrend data with a linear filter
 
+lin.mod_Spain <- lm(Spaints ~ time(Spaints))
+lin.trend_Spain <- lin.mod_Spain$fitted.values  # fitted values pertain to time trend
+linear_Spain <- ts(lin.trend_Spain, start = c(1995, 1), frequency = 4)  # create a time series variable for trend
+lin.cycle_Spain <- Spaints - linear_Spain  # cycle is the difference between the data and linear trend
+
+ts.plot(linear_Spain, Spaints, gpars = list(col = c("black", "red")))
 
 
 
@@ -884,7 +915,14 @@ legend("topleft", legend = c("PIB_Potentiel Kalman Filter Japan", "Log Japan", "
 
 
 
+#Detrend data with a linear filter
 
+lin.mod_Japan <- lm(Japants ~ time(Japants))
+lin.trend_Japan <- lin.mod_Japan$fitted.values  # fitted values pertain to time trend
+linear_Japan <- ts(lin.trend_Japan, start = c(1994, 1), frequency = 4)  # create a time series variable for trend
+lin.cycle_Japan <- Japants - linear_Japan  # cycle is the difference between the data and linear trend
+
+ts.plot(linear_Japan, Japants, gpars = list(col = c("black", "red")))
 
 
 
@@ -1062,7 +1100,14 @@ legend("topleft", legend = c("PIB_Potentiel Kalman Filter United_Kingdom", "Log 
        col = c("black", "red"), bty = "n")
 
 
+#Detrend data with a linear filter
 
+lin.mod_United_Kingdom <- lm(United_Kingdomts ~ time(United_Kingdomts))
+lin.trend_United_Kingdom <- lin.mod_United_Kingdom$fitted.values  # fitted values pertain to time trend
+linear_United_Kingdom <- ts(lin.trend_United_Kingdom, start = c(1975, 1), frequency = 4)  # create a time series variable for trend
+lin.cycle_United_Kingdom <- United_Kingdomts - linear_United_Kingdom  # cycle is the difference between the data and linear trend
+
+ts.plot(linear_United_Kingdom, United_Kingdomts, gpars = list(col = c("black", "red")))
 
 
 
@@ -1254,7 +1299,14 @@ legend("topleft", legend = c("PIB_Potentiel Kalman Filter United_States", "Log U
 
 
 
+#Detrend data with a linear filter
 
+lin.mod_United_States <- lm(United_Statests ~ time(United_Statests))
+lin.trend_United_States <- lin.mod_United_States$fitted.values  # fitted values pertain to time trend
+linear_United_States <- ts(lin.trend_United_States, start = c(1975, 1), frequency = 4)  # create a time series variable for trend
+lin.cycle_United_States <- United_Statests - linear_United_States  # cycle is the difference between the data and linear trend
+
+ts.plot(linear_United_States, United_Statests, gpars = list(col = c("black", "red")))
 
 
 
@@ -1280,54 +1332,6 @@ francetss_bk<-France_bk$x
 ts.plot(francetss_bk, trend_France_bk, gpars = list(col = c("black", "red")))
 
 
-#Detrend data with a linear filter
-
-lin.mod <- lm(Francets ~ time(Francets))
-lin.trend <- lin.mod$fitted.values  # fitted values pertain to time trend
-linear <- ts(lin.trend, start = c(1975, 1), lambda = 4)  # create a time series variable for trend
-lin.cycle <- Francets - linear  # cycle is the difference between the data and linear trend
-
-ts.plot(linear, Francets, gpars = list(col = c("black", "red")))
-
-
-
-
-
-
-
-Suede<-dsin[[7]]
-Suedets<-ts(data=Suede,start=(1970),end=(2021),lambda=4)
-Suede_hp<- hpfilter(Suedets, freq=100,type="lambda",drift=TRUE)
-devAskNewPage(ask = FALSE)
-plot(Suede_hp)
-
-
-
-USA<-dsin[[33]]
-USA <- na.omit(USA) 
-
-USAts<-ts(data=USA,start=(1970),end=(2021),lambda=4)
-
-
-USA_hp<- hpfilter(USAts, freq=100,type="lambda",drift=TRUE)
-
-plot(USA_hp)
-
-
-
-Suisse<-dsin[[10]]
-Suisse <- na.omit(Suisse) 
-
-Suissets<-ts(data=Suisse,start=1980,end=(2021),lambda=4)
-Suisse_hp<- hpfilter(Suissets, freq=100,type="lambda",drift=TRUE)
-plot(Suisse_hp)
-
-
-
-
-
-
-rm(list = ls())
 
 
 
@@ -1336,8 +1340,3 @@ rm(list = ls())
 
 
 
-
-# Kalman filter procedure
-
-#install.packages("MARSS")
-library(MARSS)
