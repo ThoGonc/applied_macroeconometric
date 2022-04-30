@@ -2,37 +2,40 @@ rm(list = ls())
 graphics.off()
 
 #install.packages("readxl")
-#install.packages("mFilter")
+#install.packages("mfilter")
 library(RCurl)
 library(mFilter)
 library(tidyverse)
-library(readxl)
 
+#gdp annuel
 urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_gdp_quarter_sa.csv'
-dsin<-read.csv2(urlfile, header=TRUE)
-myts<-ts(data=dsin,start=(1975),end=(2022),frequency=4)
+gdp<-read.csv2(urlfile, header=TRUE)
+mygdpts<-ts(data=gdp,start=(1975),end=(2022),frequency=4)
 
 
-#HP smoother
-France<-dsin[[6]]
+#Frequence du parametre HP smoother
+
+France<-gdp[[2]]
 France <- na.omit(France) 
 
+logFrance<-log(France)
 
-lFrance<-log(France)
-Francets<-ts(data=lFrance,start=(1975),end=(2022),frequency=4)
+Francets<-ts(data=logFrance,start=(1975),end=(2022),frequency=4)     
 
 
 
-France_hp<- hpfilter(lFrance, freq=1600,type="lambda",drift=FALSE)
+France_hp <- hpfilter(logFrance, freq = 1600, type = "lambda",drift=FALSE)
+
+
 
 cycle_France_hp<-France_hp$cycle
 trend_France_hp<-France_hp$trend
 
 
-diff_lgdp<-diff(lFrance)
+diff_lgdp<-diff(logFrance)*100
 
 
-urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/infla_test_france.csv'
+urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_inflation.csv'
 df_infla<-read.csv2(urlfile, header=TRUE)
 France_infla <-df_infla[2]
 France_inflats<-ts(data=France_infla,start=(1975),end=(2022),frequency=4)
@@ -40,21 +43,41 @@ France_infla <- matrix(data = France_inflats)
 
 
 
-#1ere equation Trend
-trend_value<-diff_lgpd-diff(cycle_France_hp)
-Trend<-lm(diff_lgdp~diff(cycle_France_hp))
 
+
+#1ere equation Trend
+#trend_value<-diff_lgdp-diff(cycle_France_hp)
+
+Trend<-lm(diff_lgdp~1+offset(diff(cycle_France_hp)))
+summary(Trend)
 
 #3 eme equation Cycle
-cycle_lag_un<-lag(cycle_France_hp,1)
-cycle_lag_deux<-lag(cycle_France_hp,2)
+#cycle_lag_un<-lag(cycle_France_hp,1)
+#cycle_lag_deux<-lag(cycle_France_hp,2)
 cycle<-lm(cycle_France_hp~0+lag(cycle_France_hp,1)+lag(cycle_France_hp,2))
 summary(cycle)
 
 
 #2eme equation
-inflation_markunp_model<-lm(France_infla~lag(France_infla,1)+trend_France_hp)
 
+trend_France_hp_reg<-trend_France_hp[-1,]
+
+lag_France_infla<-lag(France_infla,1)
+
+lag_France_infla_reg<-lag_France_infla[-1,]
+lag_France_infla_reg<-lag_France_infla[-2,]
+
+lag_France_infla_reg<-na.omit(lag_France_infla_reg)
+France_infla_reg<-France_infla[-1,]
+
+
+
+
+France_infla_reg <- na.omit(France_infla_reg) 
+France_infla<- na.omit(France_infla) 
+
+inflation_markup_model<-lm(France_infla~lag(France_infla,1)+trend_France_hp)
+summary(inflation_markup_model)
 
 
 
