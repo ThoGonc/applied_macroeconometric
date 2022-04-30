@@ -42,16 +42,21 @@ France_infla <- na.omit(France_infla)
 
 #création du lag inflation et delta log(PIB)
 
-France_PIB <- matrix(data = Francets)
-France_logPIB <- log(France_PIB)
-France_deltalogPIB <- diff(France_logPIB)
+France_logPIB <- matrix(data = Francets)
+France_deltalogPIB <- diff(France_logPIB)*100
 France_deltalogPIB[187,1] <- NA_real_
+France_deltalogPIB[188,1] <- NA_real_
+
 
 France_laginfla <- lag(France_infla)
+France_infla[1,1] <- NA_real_
+France_infla <- na.omit(France_infla)
+France_laginfla <- na.omit(France_laginfla)
+
 
 #préparation matrice var d'observation
 mat_obs <- matrix(, nrow = 187, ncol = 3)
-mat_obs[,1] <- France_deltalogPIB*100
+mat_obs[,1] <- France_deltalogPIB
 mat_obs[,2] <- France_infla
 mat_obs[,3] <- France_laginfla
 mat_obs <- na.omit(mat_obs)
@@ -82,4 +87,9 @@ France_KF4 <- tsSmooth(fit,
                        level = 0.95, fun.kf = c("MARSSkfas"))
 
 cycleKF<-ts(data=France_KF4$.estimate,start=(1975),end=(2022),frequency=4)
-plot(cycleKF)
+cycleKF_OUTPUTGAP_France <- cycleKF
+plot(cycleKF_OUTPUTGAP)
+
+PIB_POTENTIEL_KF_France <- France_logPIB - France_KF4$.estimate[1:188]/100
+plot(PIB_POTENTIEL_KF_France)
+plot(France_logPIB)
