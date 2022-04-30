@@ -80,14 +80,14 @@ France_infla <- matrix(data = France_inflats)
 #Détermination des coefficients pour le modèle espace-etat 
 
 #1ere Trend
-Trend<-lm(diff_lgdp~1+offset(diff(cycle_France_hp)))
-summary(Trend)
+Trend_France<-lm(diff_lgdp~1+offset(diff(cycle_France_hp)))
+summary(Trend_France)
 
 
 #3 eme equation Cycle
 
-cycle<-lm(cycle_France_hp~0+lag(cycle_France_hp,1)+lag(cycle_France_hp,2))
-summary(cycle)
+cycle_France<-lm(cycle_France_hp~0+lag(cycle_France_hp,1)+lag(cycle_France_hp,2))
+summary(cycle_France)
 
 trend_France_hp<-trend_France_hp[-188,]
 trend_France_hp<-na.omit(trend_France_hp)
@@ -107,12 +107,12 @@ summary(inflation_markup_model_France)
 #Nom des coefficients
 
 #equation d'etat
-B_France <- cycle$coefficients
+B_France <- cycle_France$coefficients
 b1_France <- B_France[1]
 b2_France <- B_France[2]
 
 #equations d'observation
-Delta1_France <- Trend$coefficients
+Delta1_France <- Trend_France$coefficients
 Alphas_France <-inflation_markup_model_France$coefficients
 Alpha1_France <- Alphas_France[1]
 Alpha2_France <- Alphas_France[2]
@@ -225,13 +225,14 @@ trend_Germany_hp<-Germany_hp_reg$trend
 cycle_Germany_hpts<-ts(data=cycle_Germany_hp,start=(1975),end=(2022),frequency=4)
 trend_Germany_hpts<-ts(data=trend_Germany_hp,start=(1975),end=(2022),frequency=4)
 
+cycle_Germany_hpts<-na.omit(cycle_Germany_hpts)
+trend_Germany_hpts<-na.omit(trend_Germany_hpts)
 
 
-diff_lgdp<-diff(logGermany)*100
+
+diff_lgdp_Germany<-diff(logGermany)*100
 
 
-urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_inflation.csv'
-df_infla<-read.csv2(urlfile, header=TRUE)
 Germany_infla <-df_infla[3]
 Germany_inflats<-ts(data=Germany_infla,start=(1975),end=(2022),frequency=4)
 Germany_infla <- matrix(data = Germany_inflats)
@@ -244,14 +245,14 @@ Germany_infla <- matrix(data = Germany_inflats)
 #Détermination des coefficients pour le modèle espace-etat 
 
 #1ere Trend
-Trend<-lm(diff_lgdp~1+offset(diff(cycle_Germany_hp)))
-summary(Trend)
+trend_Germany<-lm(diff_lgdp_Germany~1+offset(diff(cycle_Germany_hp)))
+summary(trend_Germany)
 
 
 #3 eme equation Cycle
 
-cycle<-lm(cycle_Germany_hp~0+lag(cycle_Germany_hp,1)+lag(cycle_Germany_hp,2))
-summary(cycle)
+cycle_Germany<-lm(cycle_Germany_hp~0+lag(cycle_Germany_hp,1)+lag(cycle_Germany_hp,2))
+summary(cycle_Germany)
 
 trend_Germany_hp<-trend_Germany_hp[-124,]
 trend_Germany_hp<-na.omit(trend_Germany_hp)
