@@ -60,6 +60,12 @@ mat_obs <- na.omit(mat_obs)
 
 
 
+#1ere equation Trend
+#trend_value<-diff_lgdp-diff(cycle_France_hp)
+Trend<-lm(France_deltalogPIB~1+offset(diff(France_hp_cycle)))
+summary(Trend)
+
+
 
 #model2: multivar with lags
 B2 <- matrix(list("b1", 1, "b2", 0), 2, 2)

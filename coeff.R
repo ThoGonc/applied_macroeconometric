@@ -17,7 +17,6 @@ mygdpts<-ts(data=gdp,start=(1975),end=(2022),frequency=4)
 
 France<-gdp[[2]]
 France <- na.omit(France) 
-
 logFrance<-log(France)
 
 Francets<-ts(data=logFrance,start=(1975),end=(2022),frequency=4)     

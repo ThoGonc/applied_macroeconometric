@@ -16,8 +16,10 @@ mygdpts<-ts(data=gdp,start=(1975),end=(2022),frequency=4)
 #Frequence du parametre HP smoother
 
 France<-gdp[[2]]
-
 logFrance<-log(France)
+
+
+
 Francets<-ts(data=logFrance,start=(1975),end=(2022),frequency=4)     
 
 Francets<- na.omit(Francets) 
@@ -202,6 +204,190 @@ legend("topleft", legend = c("Log GDP United States", "HP trend"), lty = 1,
 plot.ts(United_States_hp$cycle, ylab = "")  
 legend("topleft", legend = c("HP cycle USA"), lty = 1, col = c("black"), 
        bty = "n")
+
+
+
+
+
+
+
+
+
+logFrance<-na.omit(logFrance)
+France_hp_reg <- hpfilter(logFrance, freq = 1600, type = "lambda",drift=FALSE)
+
+cycle_France_hp<-France_hp_reg$cycle
+trend_France_hp<-France_hp_reg$trend
+
+diff_lgdp<-diff(logFrance)*100
+
+
+urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_inflation.csv'
+df_infla<-read.csv2(urlfile, header=TRUE)
+France_infla <-df_infla[2]
+France_inflats<-ts(data=France_infla,start=(1975),end=(2022),frequency=4)
+France_infla <- matrix(data = France_inflats)
+
+
+#Coefficients 
+
+
+#1ere Trend
+Trend<-lm(diff_lgdp~1+offset(diff(cycle_France_hp)))
+summary(Trend)
+
+
+#3 eme equation Cycle
+
+cycle<-lm(cycle_France_hp~0+lag(cycle_France_hp,1)+lag(cycle_France_hp,2))
+summary(cycle)
+
+
+
+trend_France_hp<-trend_France_hp[-188,]
+trend_France_hp<-na.omit(trend_France_hp)
+
+
+France_infla_reg<-France_infla[-1,]
+France_infla_reg<-na.omit(France_infla_reg)
+
+
+
+lag_France_infla<-lag(France_infla,1)
+
+lag_France_infla_reg<-lag_France_infla[-1,]
+lag_France_infla_reg<-lag_France_infla[-2,]
+
+lag_France_infla_reg<-na.omit(lag_France_infla_reg)
+France_infla_reg<-France_infla[-1,]
+
+
+
+
+France_infla_reg <- na.omit(France_infla_reg) 
+France_infla<- na.omit(France_infla) 
+
+inflation_markup_model<-lm(France_infla_reg~lag(France_infla_reg,1)+trend_France_hp)
+summary(inflation_markup_model)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
