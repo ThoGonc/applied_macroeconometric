@@ -186,7 +186,7 @@ legend("topleft", legend = c("PIB_Potentiel Kalman Filter France", "Log France",
 Germany<-gdp[[3]]
 logGermany<-log(Germany)
 
-
+Germany<-na.omit(Germany)
 
 Germanyts<-ts(data=logGermany,start=(1975),end=(2022),frequency=4)     
 
@@ -235,6 +235,8 @@ diff_lgdp_Germany<-diff(logGermany)*100
 
 Germany_infla <-df_infla[3]
 Germany_inflats<-ts(data=Germany_infla,start=(1975),end=(2022),frequency=4)
+
+Germany_inflats<- na.omit(Germany_inflats) 
 Germany_infla <- matrix(data = Germany_inflats)
 
 
@@ -254,17 +256,26 @@ summary(trend_Germany)
 cycle_Germany<-lm(cycle_Germany_hp~0+lag(cycle_Germany_hp,1)+lag(cycle_Germany_hp,2))
 summary(cycle_Germany)
 
+
+
+
+
+
+
+
+
+
 trend_Germany_hp<-trend_Germany_hp[-124,]
 trend_Germany_hp<-na.omit(trend_Germany_hp)
 
 Germany_infla_reg<-Germany_infla[-1,]
 Germany_infla_reg<-na.omit(Germany_infla_reg)
 
-Germany_infla_reg <- na.omit(Germany_infla_reg) 
-Germany_infla<- na.omit(Germany_infla) 
+Germany_infla_reg<-na.omit(Germany_infla_reg) 
+
 
 inflation_markup_model_Germany<-lm(Germany_infla_reg~lag(Germany_infla_reg,1)+trend_Germany_hp)
-summary(inflation_markup_model)
+summary(inflation_markup_model_Germany)
 
 
 
@@ -272,44 +283,46 @@ summary(inflation_markup_model)
 #Nom des coefficients
 
 #equation d'etat
-B_Germany <- cycle$coefficients
+B_Germany <- cycle_Germany$coefficients
 b1_Germany <- B_Germany[1]
 b2_Germany <- B_Germany[2]
 
 #equations d'observation
-Delta1_Germany <- Trend$coefficients
+Delta1_Germany <- trend_Germany$coefficients
 Alphas_Germany <-inflation_markup_model_Germany$coefficients
 Alpha1_Germany <- Alphas_Germany[1]
 Alpha2_Germany <- Alphas_Germany[2]
 Alpha3_Germany <- Alphas_Germany[3]
 
 #valeurs initiales
-OGbegint0 <- cycle_Germany_hp[[3]]
-OGbegint_moins1 <- cycle_Germany_hp[[2]]
+OGbegint0_Germany <- cycle_Germany_hp[[3]]
+OGbegint_moins1_Germany <- cycle_Germany_hp[[2]]
 
 
 #préparation matrice variables d'observation du modèle espace etat
-Germany_infla_reg_adj <- Germany_infla_reg[66:188]
-mat_obs <- matrix(, nrow = 123, ncol = 3)
-mat_obs[,1] <- diff_lgdp
-mat_obs[,2] <- Germany_infla_reg_adj
-mat_obs[,3] <- lag(Germany_infla_reg_adj,1)
-mat_obs <- na.omit(mat_obs)
+
+mat_obs_Germany <- matrix(, nrow = 123, ncol = 3)
+mat_obs_Germany[,1] <- diff_lgdp_Germany
+mat_obs_Germany[,2] <- Germany_infla_reg
+mat_obs_Germany[,3] <- lag(Germany_infla_reg,1)
+mat_obs_Germany <- na.omit(mat_obs_Germany)
+
+
 
 
 
 #modele espace-etat multivar avec lags
-B2 <- matrix(list(b1_Germany, 1, b2_Germany, 0), 2, 2)
-Z2 <- matrix(list(1, Alpha3_Germany, 0, -1, 0, 0), nrow=3, ncol=2)
-A2 <- matrix(list(Delta1_Germany, Alpha1_Germany, 0), nrow=3, ncol=1)
-Q2 <- matrix(list("q1", 0, 0, 0), 2, 2)
-u2 <- matrix(list(0,0),nrow = 2, ncol = 1)
-d2 <- t(mat_obs)
-D2 <- matrix(list (0, 0, 0, 0, 0, 0, 0, Alpha2_Germany, 1), 3, 3)
-R2 <- matrix(list ("r11", 0, 0, 0, "r22", 0, 0, 0, 0.01), 3, 3)
-x02 <- matrix(list(OGbegint0, OGbegint_moins1), nrow = 2, ncol = 1)
-model.list2 <- list(B = B2, Q=Q2, Z = Z2, A = A2, d=d2, D=D2, U=u2, R=R2, x0= x02, tinitx = 1)
-fit <- MARSS(d2, model=model.list2, fit = TRUE)
+B2_Germany <- matrix(list(b1_Germany, 1, b2_Germany, 0), 2, 2)
+Z2_Germany <- matrix(list(1, Alpha3_Germany, 0, -1, 0, 0), nrow=3, ncol=2)
+A2_Germany <- matrix(list(Delta1_Germany, Alpha1_Germany, 0), nrow=3, ncol=1)
+Q2_Germany <- matrix(list("q1", 0, 0, 0), 2, 2)
+u2_Germany <- matrix(list(0,0),nrow = 2, ncol = 1)
+d2_Germany <- t(mat_obs_Germany)
+D2_Germany <- matrix(list (0, 0, 0, 0, 0, 0, 0, Alpha2_Germany, 1), 3, 3)
+R2_Germany <- matrix(list ("r11", 0, 0, 0, "r22", 0, 0, 0, 0.01), 3, 3)
+x02_Germany <- matrix(list(OGbegint0_Germany, OGbegint_moins1_Germany), nrow = 2, ncol = 1)
+model.list2_Germany <- list(B = B2_Germany, Q=Q2_Germany, Z = Z2_Germany, A = A2_Germany, d=d2_Germany, D=D2_Germany, U=u2_Germany, R=R2_Germany, x0= x02_Germany, tinitx = 1)
+fit <- MARSS(d2_Germany, model=model.list2_Germany, fit = TRUE)
 Germany_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95, output = c("data.frame", "matrix"))
 Germany_KF4 <- tsSmooth(fit,
                        type = c("xtT", "xtt", "xtt1", "ytT", "ytt", "ytt1"),
