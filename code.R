@@ -162,13 +162,13 @@ plot(logFrance)
 
 
 # Plot time series
-plot.ts(PIB_POTENTIEL_KF_Francets, ylab = "")  
+plot.ts(PIB_POTENTIEL_KF_Francets, ylab = "",col="black")  
 
 # include HP trend
 lines(Francets, col = "red")
 lines(trend_France_hpts, col = "blue")
 legend("topleft", legend = c("PIB_Potentiel Kalman Filter France", "Log France", "HP trend"), lty = 1, 
-       col = c("black", "red"), bty = "n")
+       fill = c("black", "red","blue"), bty = "n")
 
 
 
@@ -350,13 +350,13 @@ plot(logGermany)
 
 
 # Plot time series
-plot.ts(PIB_POTENTIEL_KF_Germanyts, ylab = "")  
+plot.ts(PIB_POTENTIEL_KF_Germanyts, ylab = "",col="black")  
 
 # include HP trend
 lines(Germanyts, col = "red")
 lines(trend_Germany_hpts, col = "blue")
 legend("topleft", legend = c("PIB_Potentiel Kalman Filter Germany", "Log Germany", "HP trend"), lty = 1, 
-       col = c("black", "red"), bty = "n")
+       fill = c("black", "red","blue"), bty = "n")
 
 
 
@@ -537,13 +537,13 @@ plot(logItalia)
 
 
 # Plot time series
-plot.ts(PIB_POTENTIEL_KF_Italiats, ylab = "")  
+plot.ts(PIB_POTENTIEL_KF_Italiats, ylab = "", col="black")  
 
 # include HP trend
 lines(Italiats, col = "red")
 lines(trend_Italia_hpts, col = "blue")
 legend("topleft", legend = c("PIB_Potentiel Kalman Filter Italia", "Log Italia", "HP trend"), lty = 1, 
-       col = c("black", "red"), bty = "n")
+       fill = c("black", "red","blue"), bty = "n")
 
 
 
@@ -724,13 +724,13 @@ PIB_POTENTIEL_KF_Spaints <- ts(PIB_POTENTIEL_KF_Spain, start = c(1995, 1), frequ
 
 
 # Plot time series
-plot.ts(PIB_POTENTIEL_KF_Spaints, ylab = "")  
+plot.ts(PIB_POTENTIEL_KF_Spaints, ylab = "",col="black")  
 
 # include HP trend
 lines(Spaints, col = "red")
 lines(trend_Spain_hpts, col = "blue")
 legend("topleft", legend = c("PIB_Potentiel Kalman Filter Spain", "Log Spain", "HP trend"), lty = 1, 
-       col = c("black", "red"), bty = "n")
+       fill = c("black", "red","blue"), bty = "n")
 
 
 #Detrend data with a linear filter
@@ -905,13 +905,13 @@ PIB_POTENTIEL_KF_Japan <- logJapan - Japan_KF4$.estimate[1:112]/100
 PIB_POTENTIEL_KF_Japants <- ts(PIB_POTENTIEL_KF_Japan, start = c(1994, 1), frequency = 4)
 
 # Plot time series
-plot.ts(PIB_POTENTIEL_KF_Japants, ylab = "")  
+plot.ts(PIB_POTENTIEL_KF_Japants, ylab = "", col ="black")  
 
 # include HP trend
 lines(Japants, col = "red")
 lines(trend_Japan_hpts, col = "blue")
 legend("topleft", legend = c("PIB_Potentiel Kalman Filter Japan", "Log Japan", "HP trend"), lty = 1, 
-       col = c("black", "red"), bty = "n")
+       fill = c("black", "red","blue"), bty = "n")
 
 
 
@@ -1089,13 +1089,13 @@ PIB_POTENTIEL_KF_United_Kingdom <- logUnited_Kingdom - United_Kingdom_KF4$.estim
 PIB_POTENTIEL_KF_United_Kingdomts <- ts(PIB_POTENTIEL_KF_United_Kingdom, start = c(1975, 1), frequency = 4)
 
 # Plot time series
-plot.ts(United_Kingdomts, ylab = "", col = "red")  
+plot.ts(United_Kingdomts, ylab = "", col = "black")  
 
 # include HP trend
-lines(PIB_POTENTIEL_KF_United_Kingdomts, col = "black")
+lines(PIB_POTENTIEL_KF_United_Kingdomts, col = "red")
 lines(trend_United_Kingdom_hpts, col = "blue")
 legend("topleft", legend = c("PIB_Potentiel Kalman Filter United_Kingdom", "Log United_Kingdom", "HP trend"), lty = 1, 
-       col = c("black", "red"), bty = "n")
+       fill = c("black", "red","blue"), bty = "n")
 
 
 #Detrend data with a linear filter
@@ -1283,14 +1283,13 @@ PIB_POTENTIEL_KF_United_Statests <- ts(PIB_POTENTIEL_KF_United_States, start = c
 
 
 # Plot time series
-plot.ts(PIB_POTENTIEL_KF_United_Statests, ylab = "")  
+plot.ts(PIB_POTENTIEL_KF_United_Statests, ylab = "black",col="black")  
 
 # include HP trend
 lines(United_Statests, col = "red")
 lines(trend_United_States_hpts, col = "blue")
-legend("topleft", legend = c("PIB_Potentiel Kalman Filter United_States", "Log United_States", "HP trend"), lty = 1, 
-       col = c("black", "red"), bty = "n")
-
+legend("topleft", legend = c("PIB_Potentiel Kalman Filter United_States", "Log United_States", "HP trend"),lty = 1, 
+       fill = c("black", "red","blue"), bty = "n")
 
 
 
