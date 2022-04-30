@@ -58,9 +58,21 @@ cycle<-lm(cycle_France_hp~0+lag(cycle_France_hp,1)+lag(cycle_France_hp,2))
 summary(cycle)
 
 
+
+
+
 #2eme equation
 
 trend_France_hp_reg<-trend_France_hp[-1,]
+#OK
+
+
+
+
+France_infla_reg<-France_infla[-1,]
+France_infla_reg<-na.omit(France_infla_reg)
+
+
 
 lag_France_infla<-lag(France_infla,1)
 
@@ -76,7 +88,7 @@ France_infla_reg<-France_infla[-1,]
 France_infla_reg <- na.omit(France_infla_reg) 
 France_infla<- na.omit(France_infla) 
 
-inflation_markup_model<-lm(France_infla~lag(France_infla,1)+trend_France_hp)
+inflation_markup_model<-lm(France_infla_reg~lag(France_infla_reg,1)+trend_France_hp_reg)
 summary(inflation_markup_model)
 
 

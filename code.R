@@ -223,7 +223,7 @@ ts.plot(francetss_bk, trend_France_bk, gpars = list(col = c("black", "red")))
 
 lin.mod <- lm(Francets ~ time(Francets))
 lin.trend <- lin.mod$fitted.values  # fitted values pertain to time trend
-linear <- ts(lin.trend, start = c(1970, 1), lambda = 4)  # create a time series variable for trend
+linear <- ts(lin.trend, start = c(1975, 1), lambda = 4)  # create a time series variable for trend
 lin.cycle <- Francets - linear  # cycle is the difference between the data and linear trend
 
 ts.plot(linear, Francets, gpars = list(col = c("black", "red")))
