@@ -155,19 +155,18 @@ France_KF4 <- tsSmooth(fit,
 
 
 PIB_POTENTIEL_KF_France <- logFrance - France_KF4$.estimate[1:188]/100
-
-
+PIB_POTENTIEL_KF_Francets <- ts(PIB_POTENTIEL_KF_France, start = c(1975, 1), frequency = 4)
 
 plot(PIB_POTENTIEL_KF_France)
 plot(logFrance)
 
 
 # Plot time series
-plot.ts(PIB_POTENTIEL_KF_France, ylab = "")  
+plot.ts(PIB_POTENTIEL_KF_Francets, ylab = "")  
 
 # include HP trend
-lines(logFrance, col = "red")
-lines(trend_France_hp, col = "blue")
+lines(Francets, col = "red")
+lines(trend_France_hpts, col = "blue")
 legend("topleft", legend = c("PIB_Potentiel Kalman Filter France", "Log France", "HP trend"), lty = 1, 
        col = c("black", "red"), bty = "n")
 
@@ -197,11 +196,10 @@ ts.plot(linear_France, Francets, gpars = list(col = c("black", "red")))
 #Frequence du parametre HP smoother
 
 Germany<-gdp[[3]]
-logGermany<-log(Germany)
-
 Germany<-na.omit(Germany)
 
-Germanyts<-ts(data=logGermany,start=(1975),frequency=4)     
+logGermany<-log(Germany)
+Germanyts<-ts(data=logGermany,start=(1991),frequency=4)     
 
 Germanyts<- na.omit(Germanyts) 
 plot(Germanyts)
@@ -235,8 +233,8 @@ Germany_hp_reg <- hpfilter(logGermany, freq = 1600, type = "lambda",drift=FALSE)
 cycle_Germany_hp<-Germany_hp_reg$cycle
 trend_Germany_hp<-Germany_hp_reg$trend
 
-cycle_Germany_hpts<-ts(data=cycle_Germany_hp,start=(1975),frequency=4)
-trend_Germany_hpts<-ts(data=trend_Germany_hp,start=(1975),frequency=4)
+cycle_Germany_hpts<-ts(data=cycle_Germany_hp,start=(1991),frequency=4)
+trend_Germany_hpts<-ts(data=trend_Germany_hp,start=(1991),frequency=4)
 
 cycle_Germany_hpts<-na.omit(cycle_Germany_hpts)
 trend_Germany_hpts<-na.omit(trend_Germany_hpts)
@@ -345,16 +343,18 @@ Germany_KF4 <- tsSmooth(fit,
 
 
 PIB_POTENTIEL_KF_Germany <- logGermany - Germany_KF4$.estimate[1:124]/100
+PIB_POTENTIEL_KF_Germanyts <- ts(PIB_POTENTIEL_KF_Germany, start = c(1991, 1), frequency = 4)
+
 plot(PIB_POTENTIEL_KF_Germany)
 plot(logGermany)
 
 
 # Plot time series
-plot.ts(PIB_POTENTIEL_KF_Germany, ylab = "")  
+plot.ts(PIB_POTENTIEL_KF_Germanyts, ylab = "")  
 
 # include HP trend
-lines(logGermany, col = "red")
-lines(trend_Germany_hp, col = "blue")
+lines(Germanyts, col = "red")
+lines(trend_Germany_hpts, col = "blue")
 legend("topleft", legend = c("PIB_Potentiel Kalman Filter Germany", "Log Germany", "HP trend"), lty = 1, 
        col = c("black", "red"), bty = "n")
 
@@ -423,8 +423,8 @@ Italia_hp_reg <- hpfilter(logItalia, freq = 1600, type = "lambda",drift=FALSE)
 cycle_Italia_hp<-Italia_hp_reg$cycle
 trend_Italia_hp<-Italia_hp_reg$trend
 
-cycle_Italia_hpts<-ts(data=cycle_Italia_hp,start=(1975),frequency=4)
-trend_Italia_hpts<-ts(data=trend_Italia_hp,start=(1975),frequency=4)
+cycle_Italia_hpts<-ts(data=cycle_Italia_hp,start=(1995),frequency=4)
+trend_Italia_hpts<-ts(data=trend_Italia_hp,start=(1995),frequency=4)
 
 cycle_Italia_hpts<-na.omit(cycle_Italia_hpts)
 trend_Italia_hpts<-na.omit(trend_Italia_hpts)
@@ -530,18 +530,18 @@ Italia_KF4 <- tsSmooth(fit,
                         interval = c("confidence"),
                         level = 0.95, fun.kf = c("MARSSkfas"))
 
-
 PIB_POTENTIEL_KF_Italia <- logItalia - Italia_KF4$.estimate[1:108]/100
+PIB_POTENTIEL_KF_Italiats <- ts(PIB_POTENTIEL_KF_Italia, start = c(1995, 1), frequency = 4)
 plot(PIB_POTENTIEL_KF_Italia)
 plot(logItalia)
 
 
 # Plot time series
-plot.ts(PIB_POTENTIEL_KF_Italia, ylab = "")  
+plot.ts(PIB_POTENTIEL_KF_Italiats, ylab = "")  
 
 # include HP trend
-lines(logItalia, col = "red")
-lines(trend_Italia_hp, col = "blue")
+lines(Italiats, col = "red")
+lines(trend_Italia_hpts, col = "blue")
 legend("topleft", legend = c("PIB_Potentiel Kalman Filter Italia", "Log Italia", "HP trend"), lty = 1, 
        col = c("black", "red"), bty = "n")
 
@@ -573,11 +573,10 @@ ts.plot(linear_Italia, Italiats, gpars = list(col = c("black", "red")))
 #Frequence du parametre HP smoother
 
 Spain<-gdp[[5]]
-logSpain<-log(Spain)
-
 Spain<-na.omit(Spain)
 
-Spaints<-ts(data=logSpain,start=(1975),frequency=4)     
+logSpain<-log(Spain)
+Spaints<-ts(data=logSpain,start=(1995),frequency=4)     
 
 Spaints<- na.omit(Spaints) 
 plot(Spaints)
@@ -611,8 +610,8 @@ Spain_hp_reg <- hpfilter(logSpain, freq = 1600, type = "lambda",drift=FALSE)
 cycle_Spain_hp<-Spain_hp_reg$cycle
 trend_Spain_hp<-Spain_hp_reg$trend
 
-cycle_Spain_hpts<-ts(data=cycle_Spain_hp,start=(1975),frequency=4)
-trend_Spain_hpts<-ts(data=trend_Spain_hp,start=(1975),frequency=4)
+cycle_Spain_hpts<-ts(data=cycle_Spain_hp,start=(1995),frequency=4)
+trend_Spain_hpts<-ts(data=trend_Spain_hp,start=(1995),frequency=4)
 
 cycle_Spain_hpts<-na.omit(cycle_Spain_hpts)
 trend_Spain_hpts<-na.omit(trend_Spain_hpts)
@@ -721,19 +720,17 @@ Spain_KF4 <- tsSmooth(fit,
 
 
 PIB_POTENTIEL_KF_Spain <- logSpain - Spain_KF4$.estimate[1:108]/100
-plot(PIB_POTENTIEL_KF_Spain)
-plot(logSpain)
+PIB_POTENTIEL_KF_Spaints <- ts(PIB_POTENTIEL_KF_Spain, start = c(1995, 1), frequency = 4)
 
 
 # Plot time series
-plot.ts(PIB_POTENTIEL_KF_Spain, ylab = "")  
+plot.ts(PIB_POTENTIEL_KF_Spaints, ylab = "")  
 
 # include HP trend
-lines(logSpain, col = "red")
-lines(trend_Spain_hp, col = "blue")
+lines(Spaints, col = "red")
+lines(trend_Spain_hpts, col = "blue")
 legend("topleft", legend = c("PIB_Potentiel Kalman Filter Spain", "Log Spain", "HP trend"), lty = 1, 
        col = c("black", "red"), bty = "n")
-
 
 
 #Detrend data with a linear filter
@@ -751,20 +748,25 @@ ts.plot(linear_Spain, Spaints, gpars = list(col = c("black", "red")))
 
 
 
+
+
+
+
+
+
+
 ###Japan
 
 #Frequence du parametre HP smoother
 
 Japan<-gdp[[6]]
-logJapan<-log(Japan)
-
 Japan<-na.omit(Japan)
 
-Japants<-ts(data=logJapan,start=(1975),frequency=4)     
+logJapan<-log(Japan)
+Japants<-ts(data=logJapan,start=(1994),frequency=4)     
 
 Japants<- na.omit(Japants) 
 plot(Japants)
-
 
 Japan_hp <- hpfilter(Japants, freq = 1600, type = "lambda",drift=FALSE)
 
@@ -784,18 +786,14 @@ legend("topleft", legend = c("HP cycle Japan"), lty = 1, col = c("black"),
 
 
 
-
-
-
-
 logJapan<-na.omit(logJapan)
 Japan_hp_reg <- hpfilter(logJapan, freq = 1600, type = "lambda",drift=FALSE)
 
 cycle_Japan_hp<-Japan_hp_reg$cycle
 trend_Japan_hp<-Japan_hp_reg$trend
 
-cycle_Japan_hpts<-ts(data=cycle_Japan_hp,start=(1975),frequency=4)
-trend_Japan_hpts<-ts(data=trend_Japan_hp,start=(1975),frequency=4)
+cycle_Japan_hpts<-ts(data=cycle_Japan_hp,start=(1994),frequency=4)
+trend_Japan_hpts<-ts(data=trend_Japan_hp,start=(1994),frequency=4)
 
 cycle_Japan_hpts<-na.omit(cycle_Japan_hpts)
 trend_Japan_hpts<-na.omit(trend_Japan_hpts)
@@ -904,16 +902,14 @@ Japan_KF4 <- tsSmooth(fit,
 
 
 PIB_POTENTIEL_KF_Japan <- logJapan - Japan_KF4$.estimate[1:112]/100
-plot(PIB_POTENTIEL_KF_Japan)
-plot(logJapan)
-
+PIB_POTENTIEL_KF_Japants <- ts(PIB_POTENTIEL_KF_Japan, start = c(1994, 1), frequency = 4)
 
 # Plot time series
-plot.ts(PIB_POTENTIEL_KF_Japan, ylab = "")  
+plot.ts(PIB_POTENTIEL_KF_Japants, ylab = "")  
 
 # include HP trend
-lines(logJapan, col = "red")
-lines(trend_Japan_hp, col = "blue")
+lines(Japants, col = "red")
+lines(trend_Japan_hpts, col = "blue")
 legend("topleft", legend = c("PIB_Potentiel Kalman Filter Japan", "Log Japan", "HP trend"), lty = 1, 
        col = c("black", "red"), bty = "n")
 
@@ -1090,16 +1086,14 @@ United_Kingdom_KF4 <- tsSmooth(fit,
 
 
 PIB_POTENTIEL_KF_United_Kingdom <- logUnited_Kingdom - United_Kingdom_KF4$.estimate[1:183]/100
-plot(PIB_POTENTIEL_KF_United_Kingdom)
-plot(logUnited_Kingdom)
-
+PIB_POTENTIEL_KF_United_Kingdomts <- ts(PIB_POTENTIEL_KF_United_Kingdom, start = c(1975, 1), frequency = 4)
 
 # Plot time series
-plot.ts(PIB_POTENTIEL_KF_United_Kingdom, ylab = "")  
+plot.ts(United_Kingdomts, ylab = "", col = "red")  
 
 # include HP trend
-lines(logUnited_Kingdom, col = "red")
-lines(trend_United_Kingdom_hp, col = "blue")
+lines(PIB_POTENTIEL_KF_United_Kingdomts, col = "black")
+lines(trend_United_Kingdom_hpts, col = "blue")
 legend("topleft", legend = c("PIB_Potentiel Kalman Filter United_Kingdom", "Log United_Kingdom", "HP trend"), lty = 1, 
        col = c("black", "red"), bty = "n")
 
@@ -1283,18 +1277,17 @@ United_States_KF4 <- tsSmooth(fit,
                       level = 0.95, fun.kf = c("MARSSkfas"))
 
 
-
 PIB_POTENTIEL_KF_United_States <- logUnited_States - United_States_KF4$.estimate[1:188]/100
-plot(PIB_POTENTIEL_KF_United_States)
-plot(logUnited_States)
+PIB_POTENTIEL_KF_United_Statests <- ts(PIB_POTENTIEL_KF_United_States, start = c(1975, 1), frequency = 4)
+
 
 
 # Plot time series
-plot.ts(PIB_POTENTIEL_KF_United_States, ylab = "")  
+plot.ts(PIB_POTENTIEL_KF_United_Statests, ylab = "")  
 
 # include HP trend
-lines(logUnited_States, col = "red")
-lines(trend_United_States_hp, col = "blue")
+lines(United_Statests, col = "red")
+lines(trend_United_States_hpts, col = "blue")
 legend("topleft", legend = c("PIB_Potentiel Kalman Filter United_States", "Log United_States", "HP trend"), lty = 1, 
        col = c("black", "red"), bty = "n")
 
