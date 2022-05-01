@@ -264,7 +264,7 @@ mae_HP_France_cycle<-mae(observed_France,predicted_France_HP_cycle)
 mae_HP_France_cycle
 mae_Linear_France_cycle<-mae(observed_France,predicted_France_Linear_cycle)
 mae_Linear_France_cycle
-mae_Baxter_King_France<-mae(observed_France,predicted_France_Baxter_King_cycle)
+mae_Baxter_King_France_cycle<-mae(observed_France,predicted_France_Baxter_King_cycle)
 mae_Baxter_King_France_cycle
 
 
