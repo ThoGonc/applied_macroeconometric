@@ -118,7 +118,7 @@ b2_France <- B_France[2]
 Delta1_France <- Trend_France$coefficients
 Alphas_France <-inflation_markup_model_France$coefficients
 Alpha1_France <- Alphas_France[1]
-Alpha2_France <- Alphas_France[2] 
+Alpha2_France <- Alphas_France[2]
 Alpha3_France <- Alphas_France[3]
 
 #valeurs initiales
@@ -155,8 +155,8 @@ France_KF4 <- tsSmooth(fit,
 
 
 
-PIB_POTENTIEL_KF_France <- logFrance - France_KF4$.estimate[1:188]/100
-PIB_POTENTIEL_KF_Francets <- ts(PIB_POTENTIEL_KF_France, start = c(1975, 1), frequency = 4)
+PIB_POTENTIEL_KF_France <- logFrance[2:187] - France_KF4$.estimate[1:186]/100
+PIB_POTENTIEL_KF_Francets <- ts(PIB_POTENTIEL_KF_France, start = c(1975, 2), frequency = 4)
 
 plot(PIB_POTENTIEL_KF_France)
 plot(logFrance)
@@ -245,8 +245,8 @@ mae_Baxter_King_France
 diff_lgdp_France_ts<-ts(diff_lgdp_France/100, end = c(2022, 1), frequency = 4)
 cycle_France_bk_ts<-ts(cycle_France_bk, end = c(2022, 1), frequency = 4)
 cycle_France_linear_ts<-ts(lin.cycle_France, start = c(1975, 1), frequency = 4)
-cycle_France_Kalman_a <- logFrance - PIB_POTENTIEL_KF_France
-cycle_France_Kalman_ts<-ts(cycle_France_Kalman_a, end = c(2022, 1), frequency = 4)
+cycle_France_Kalman_a <- France_KF4$.estimate[1:186]/100
+cycle_France_Kalman_ts<-ts(cycle_France_Kalman_a, end = c(2021, 4), frequency = 4)
 
 
 # Plot time series
@@ -533,8 +533,8 @@ mae_Baxter_King_Germany_cycle
 diff_lgdp_Germany_ts<-ts(diff_lgdp_Germany/100, end = c(2022, 1), frequency = 4)
 cycle_Germany_bk_ts<-ts(cycle_Germany_bk, end = c(2022, 1), frequency = 4)
 cycle_Germany_linear_ts<-ts(lin.cycle_Germany, start = c(1991, 1), frequency = 4)
-cycle_Germany_Kalman_a <- logGermany - PIB_POTENTIEL_KF_Germany
-cycle_Germany_Kalman_ts<-ts(cycle_Germany_Kalman_a, start = c(1991, 3), frequency = 4)
+cycle_Germany_Kalman_a <- Germany_KF4$.estimate[1:122]/100
+cycle_Germany_Kalman_ts<-ts(cycle_Germany_Kalman_a, end = c(2021, 4), frequency = 4)
 
 
 # Plot time series
@@ -691,7 +691,7 @@ b2_Italia <- B_Italia[2]
 Delta1_Italia <- trend_Italia$coefficients
 Alphas_Italia <-inflation_markup_model_Italia$coefficients
 Alpha1_Italia <- Alphas_Italia[1] + 11.1
-Alpha2_Italia <- Alphas_Italia[2] -0.9
+Alpha2_Italia <- Alphas_Italia[2] - 0.9
 Alpha3_Italia <- Alphas_Italia[3] + 0.5
 
 #valeurs initiales
@@ -729,8 +729,8 @@ Italia_KF4 <- tsSmooth(fit,
                         interval = c("confidence"),
                         level = 0.95, fun.kf = c("MARSSkfas"))
 
-PIB_POTENTIEL_KF_Italia <- logItalia - Italia_KF4$.estimate[1:108]/100
-PIB_POTENTIEL_KF_Italiats <- ts(PIB_POTENTIEL_KF_Italia, start = c(1995, 1), frequency = 4)
+PIB_POTENTIEL_KF_Italia <- logItalia[2:107] - Italia_KF4$.estimate[1:106]/100
+PIB_POTENTIEL_KF_Italiats <- ts(PIB_POTENTIEL_KF_Italia, start = c(1995, 2), frequency = 4)
 plot(PIB_POTENTIEL_KF_Italia)
 plot(logItalia)
 
@@ -824,8 +824,8 @@ mae_Baxter_King_Italia
 diff_lgdp_Italia_ts<-ts(diff_lgdp_Italia/100, end = c(2022, 1), frequency = 4)
 cycle_Italia_bk_ts<-ts(cycle_Italia_bk, end = c(2022, 1), frequency = 4)
 cycle_Italia_linear_ts<-ts(lin.cycle_Italia, start = c(1995, 1), frequency = 4)
-cycle_Italia_Kalman_a <- logItalia - PIB_POTENTIEL_KF_Italia
-cycle_Italia_Kalman_ts<-ts(cycle_Italia_Kalman_a, end = c(2022, 1), frequency = 4)
+cycle_Italia_Kalman_a <- Italia_KF4$.estimate[1:106]/100
+cycle_Italia_Kalman_ts<-ts(cycle_Italia_Kalman_a, end = c(2021, 4), frequency = 4)
 
 
 # Plot time series
@@ -1021,8 +1021,8 @@ Spain_KF4 <- tsSmooth(fit,
 
 
 
-PIB_POTENTIEL_KF_Spain <- logSpain - Spain_KF4$.estimate[1:108]/100
-PIB_POTENTIEL_KF_Spaints <- ts(PIB_POTENTIEL_KF_Spain, start = c(1995, 1), frequency = 4)
+PIB_POTENTIEL_KF_Spain <- logSpain[2:107] - Spain_KF4$.estimate[1:106]/100
+PIB_POTENTIEL_KF_Spaints <- ts(PIB_POTENTIEL_KF_Spain, start = c(1995, 2), frequency = 4)
 
 
 
@@ -1117,8 +1117,8 @@ mae_Baxter_King_Spain
 diff_lgdp_Spain_ts<-ts(diff_lgdp_Spain/100, end = c(2022, 1), frequency = 4)
 cycle_Spain_bk_ts<-ts(cycle_Spain_bk, end = c(2022, 1), frequency = 4)
 cycle_Spain_linear_ts<-ts(lin.cycle_Spain, start = c(1995, 1), frequency = 4)
-cycle_Spain_Kalman_a <- logSpain - PIB_POTENTIEL_KF_Spain
-cycle_Spain_Kalman_ts<-ts(cycle_Spain_Kalman_a, end = c(2022, 1), frequency = 4)
+cycle_Spain_Kalman_a <- Spain_KF4$.estimate[1:106]/100
+cycle_Spain_Kalman_ts<-ts(cycle_Spain_Kalman_a, end = c(2021, 4), frequency = 4)
 
 
 # Plot time series
@@ -1265,7 +1265,7 @@ b2_Japan <- B_Japan[2]
 Delta1_Japan <- trend_Japan$coefficients
 Alphas_Japan <-inflation_markup_model_Japan$coefficients
 Alpha1_Japan <- Alphas_Japan[1] + 9.5
-Alpha2_Japan <- Alphas_Japan[2] -0.2
+Alpha2_Japan <- Alphas_Japan[2] -0.4
 Alpha3_Japan <- Alphas_Japan[3]
 
 #valeurs initiales
@@ -1305,8 +1305,8 @@ Japan_KF4 <- tsSmooth(fit,
 
 
 
-PIB_POTENTIEL_KF_Japan <- logJapan - Japan_KF4$.estimate[1:112]/100
-PIB_POTENTIEL_KF_Japants <- ts(PIB_POTENTIEL_KF_Japan, start = c(1994, 1), frequency = 4)
+PIB_POTENTIEL_KF_Japan <- logJapan[2:111] - Japan_KF4$.estimate[1:110]/100
+PIB_POTENTIEL_KF_Japants <- ts(PIB_POTENTIEL_KF_Japan, start = c(1994, 2), frequency = 4)
 
 
 
@@ -1394,8 +1394,8 @@ mae_Baxter_King_Japan
 diff_lgdp_Japan_ts<-ts(diff_lgdp_Japan/100, end = c(2022, 1), frequency = 4)
 cycle_Japan_bk_ts<-ts(cycle_Japan_bk, end = c(2022, 1), frequency = 4)
 cycle_Japan_linear_ts<-ts(lin.cycle_Japan, start = c(1994, 1), frequency = 4)
-cycle_Japan_Kalman_a <- logJapan - PIB_POTENTIEL_KF_Japan
-cycle_Japan_Kalman_ts<-ts(cycle_Japan_Kalman_a, end = c(2022, 1), frequency = 4)
+cycle_Japan_Kalman_a <- Japan_KF4$.estimate[1:110]/100
+cycle_Japan_Kalman_ts<-ts(cycle_Japan_Kalman_a, end = c(2021, 4), frequency = 4)
 
 
 # Plot time series
@@ -1569,7 +1569,7 @@ United_Kingdom_KF4 <- tsSmooth(fit,
 
 
 
-PIB_POTENTIEL_KF_United_Kingdom <- logUnited_Kingdom - United_Kingdom_KF4$.estimate[1:180]/100
+PIB_POTENTIEL_KF_United_Kingdom <- logUnited_Kingdom[2:179] - United_Kingdom_KF4$.estimate[1:178]/100
 PIB_POTENTIEL_KF_United_Kingdomts <- ts(PIB_POTENTIEL_KF_United_Kingdom, start = c(1975, 1), frequency = 4)
 
 
@@ -1659,8 +1659,8 @@ mae_Baxter_King_United_Kingdom
 diff_lgdp_United_Kingdom_ts<-ts(diff_lgdp_United_Kingdom/100, end = c(2020, 1), frequency = 4)
 cycle_United_Kingdom_bk_ts<-ts(cycle_United_Kingdom_bk, end = c(2020, 1), frequency = 4)
 cycle_United_Kingdom_linear_ts<-ts(lin.cycle_United_Kingdom, start = c(1975, 1), frequency = 4)
-cycle_United_Kingdom_Kalman_a <- logUnited_Kingdom - PIB_POTENTIEL_KF_United_Kingdom
-cycle_United_Kingdom_Kalman_ts<-ts(cycle_United_Kingdom_Kalman_a, end = c(2020, 1), frequency = 4)
+cycle_United_Kingdom_Kalman_a <- United_Kingdom_KF4$.estimate[1:178]/100
+cycle_United_Kingdom_Kalman_ts<-ts(cycle_United_Kingdom_Kalman_a, end = c(2019, 4), frequency = 4)
 
 
 # Plot time series
@@ -1857,8 +1857,8 @@ United_States_KF4 <- tsSmooth(fit,
                       level = 0.95, fun.kf = c("MARSSkfas"))
 
 
-PIB_POTENTIEL_KF_United_States <- logUnited_States - United_States_KF4$.estimate[1:188]/100
-PIB_POTENTIEL_KF_United_Statests <- ts(PIB_POTENTIEL_KF_United_States, start = c(1975, 1), frequency = 4)
+PIB_POTENTIEL_KF_United_States <- logUnited_States[2:187] - United_States_KF4$.estimate[1:186]/100
+PIB_POTENTIEL_KF_United_Statests <- ts(PIB_POTENTIEL_KF_United_States, start = c(1975, 2), frequency = 4)
 
 
 # Plot time series
@@ -1947,8 +1947,8 @@ mae_Baxter_King_United_States
 diff_lgdp_United_States_ts<-ts(diff_lgdp_United_States/100, end = c(2022, 1), frequency = 4)
 cycle_United_States_bk_ts<-ts(cycle_United_States_bk, end = c(2022, 1), frequency = 4)
 cycle_United_States_linear_ts<-ts(lin.cycle_United_States, start = c(1975, 1), frequency = 4)
-cycle_United_States_Kalman_a <- logUnited_States - PIB_POTENTIEL_KF_United_States
-cycle_United_States_Kalman_ts<-ts(cycle_United_States_Kalman_a*10, end = c(2022, 1), frequency = 4)
+cycle_United_States_Kalman_a <- United_States_KF4$.estimate[1:186]/100
+cycle_United_States_Kalman_ts<-ts(cycle_United_States_Kalman_a*10, end = c(2021, 4), frequency = 4)
 
 
 # Plot time series
