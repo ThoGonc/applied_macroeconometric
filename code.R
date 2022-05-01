@@ -3,10 +3,12 @@ graphics.off()
 
 #install.packages("readxl")
 #install.packages("mfilter")
+install.packages("Metrics")
 library(RCurl)
 library(mFilter)
 library(tidyverse)
 library(MARSS)
+library(Metrics)
 
 #gdp annuel
 urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_gdp_quarter_sa.csv'
@@ -190,6 +192,46 @@ trend_France_bk<-France_bk$trend
 francetss_bk<-France_bk$x
 
 ts.plot(francetss_bk, trend_France_bk, gpars = list(col = c("black", "red")))
+
+
+linear_trend_France<-ts(linear_France, start = c(1975, 1), frequency = 4)
+trend_France_bkts<-ts(trend_France_bk, start = c(1975, 1), frequency = 4)
+
+# Plot time series
+plot.ts(PIB_POTENTIEL_KF_Francets, ylab = "",col="black")  
+
+# include HP trend
+lines(Francets, col = "red")
+lines(trend_France_hpts, col = "blue")
+lines(linear_trend_France, col = "green")
+lines(trend_France_bkts, col = "orange")
+legend("topleft", legend = c("GDP potential Kalman Filter France", "Log GDP France", "HP France trend","Linear France trend","Baxter-King France trend" ), lty = 1, 
+       fill = c("black", "red","blue","green","orange"), bty = "n")
+
+
+
+
+observed_France<-Francets
+predicted_France_Kalman<-PIB_POTENTIEL_KF_Francets
+predicted_France_HP<-trend_France_hpts
+predicted_France_Linear<-linear_trend_France
+predicted_France_Baxter_King<-trend_France_bkts
+
+
+
+mae_Kalman_France<-mae(observed,predicted_France_Kalman)
+mae_Kalman_France
+mae_HP_France<-mae(observed,predicted_France_HP)
+mae_HP_France
+mae_Linear_France<-mae(observed,predicted_France_Linear)
+mae_Linear_France
+mae_Baxter_King_France<-mae(observed,predicted_France_Baxter_King)
+mae_Baxter_King_France
+
+
+
+
+
 
 
 
@@ -392,6 +434,40 @@ ts.plot(Germanytss_bk, trend_Germany_bk, gpars = list(col = c("black", "red")))
 
 
 
+linear_trend_Germany<-ts(linear_Germany, start = c(1991, 1), frequency = 4)
+trend_Germany_bkts<-ts(trend_Germany_bk, start = c(1991, 1), frequency = 4)
+
+# Plot time series
+plot.ts(PIB_POTENTIEL_KF_Germanyts, ylab = "",col="black")  
+
+# include HP trend
+lines(Germanyts, col = "red")
+lines(trend_Germany_hpts, col = "blue")
+lines(linear_trend_Germany, col = "green")
+lines(trend_Germany_bkts, col = "orange")
+legend("topleft", legend = c("GDP potential Kalman Filter Germany", "Log GDP Germany", "HP Germany trend","Linear Germany trend","Baxter-King Germany trend" ), lty = 1, 
+       fill = c("black", "red","blue","green","orange"), bty = "n")
+
+
+
+observed_Germany<-Germanyts
+predicted_Germany_Kalman<-PIB_POTENTIEL_KF_Germanyts
+predicted_Germany_HP<-trend_Germany_hpts
+predicted_Germany_Linear<-linear_trend_Germany
+predicted_Germany_Baxter_King<-trend_Germany_bkts
+
+
+
+mae_Kalman_Germany<-mae(observed,predicted_Germany_Kalman)
+mae_Kalman_Germany
+mae_HP_Germany<-mae(observed,predicted_Germany_HP)
+mae_HP_Germany
+mae_Linear_Germany<-mae(observed,predicted_Germany_Linear)
+mae_Linear_Germany
+mae_Baxter_King_Germany<-mae(observed,predicted_Germany_Baxter_King)
+mae_Baxter_King_Germany
+
+
 
 
 
@@ -590,6 +666,43 @@ ts.plot(Italiatss_bk, trend_Italia_bk, gpars = list(col = c("black", "red")))
 
 
 
+linear_trend_Italia<-ts(linear_Italia, start = c(1995, 1), frequency = 4)
+trend_Italia_bkts<-ts(trend_Italia_bk, start = c(1995, 1), frequency = 4)
+
+# Plot time series
+plot.ts(PIB_POTENTIEL_KF_Italiats, ylab = "",col="black")  
+
+# include HP trend
+lines(Italiats, col = "red")
+lines(trend_Italia_hpts, col = "blue")
+lines(linear_trend_Italia, col = "green")
+lines(trend_Italia_bkts, col = "orange")
+legend("topleft", legend = c("GDP potential Kalman Filter Italia", "Log GDP Italia", "HP Italia trend","Linear Italia trend","Baxter-King Italia trend" ), lty = 1, 
+       fill = c("black", "red","blue","green","orange"), bty = "n")
+
+
+
+
+
+observed_Italia<-Italiats
+predicted_Italia_Kalman<-PIB_POTENTIEL_KF_Italiats
+predicted_Italia_HP<-trend_Italia_hpts
+predicted_Italia_Linear<-linear_trend_Italia
+predicted_Italia_Baxter_King<-trend_Italia_bkts
+
+
+
+mae_Kalman_Italia<-mae(observed,predicted_Italia_Kalman)
+mae_Kalman_Italia
+mae_HP_Italia<-mae(observed,predicted_Italia_HP)
+mae_HP_Italia
+mae_Linear_Italia<-mae(observed,predicted_Italia_Linear)
+mae_Linear_Italia
+mae_Baxter_King_Italia<-mae(observed,predicted_Italia_Baxter_King)
+mae_Baxter_King_Italia
+
+
+
 
 
 
@@ -785,9 +898,37 @@ ts.plot(Spaintss_bk, trend_Spain_bk, gpars = list(col = c("black", "red")))
 
 
 
+linear_trend_Spain<-ts(linear_Spain, start = c(1995, 1), frequency = 4)
+trend_Spain_bkts<-ts(trend_Spain_bk, start = c(1995, 1), frequency = 4)
+
+# Plot time series
+plot.ts(PIB_POTENTIEL_KF_Spaints, ylab = "",col="black")  
+
+# include HP trend
+lines(Spaints, col = "red")
+lines(trend_Spain_hpts, col = "blue")
+lines(linear_trend_Spain, col = "green")
+lines(trend_Spain_bkts, col = "orange")
+legend("topleft", legend = c("GDP potential Kalman Filter Spain", "Log GDP Spain", "HP Spain trend","Linear Spain trend","Baxter-King Spain trend" ), lty = 1, 
+       fill = c("black", "red","blue","green","orange"), bty = "n")
+
+
+observed_Spain<-Spaints
+predicted_Spain_Kalman<-PIB_POTENTIEL_KF_Spaints
+predicted_Spain_HP<-trend_Spain_hpts
+predicted_Spain_Linear<-linear_trend_Spain
+predicted_Spain_Baxter_King<-trend_Spain_bkts
 
 
 
+mae_Kalman_Spain<-mae(observed,predicted_Spain_Kalman)
+mae_Kalman_Spain
+mae_HP_Spain<-mae(observed,predicted_Spain_HP)
+mae_HP_Spain
+mae_Linear_Spain<-mae(observed,predicted_Spain_Linear)
+mae_Linear_Spain
+mae_Baxter_King_Spain<-mae(observed,predicted_Spain_Baxter_King)
+mae_Baxter_King_Spain
 
 
 
@@ -982,9 +1123,37 @@ ts.plot(Japantss_bk, trend_Japan_bk, gpars = list(col = c("black", "red")))
 
 
 
+linear_trend_Japan<-ts(linear_Japan, start = c(1994, 1), frequency = 4)
+trend_Japan_bkts<-ts(trend_Japan_bk, start = c(1994, 1), frequency = 4)
+
+# Plot time series
+plot.ts(PIB_POTENTIEL_KF_Japants, ylab = "",col="black")  
+
+# include HP trend
+lines(Japants, col = "red")
+lines(trend_Japan_hpts, col = "blue")
+lines(linear_trend_Japan, col = "green")
+lines(trend_Japan_bkts, col = "orange")
+legend("topleft", legend = c("GDP potential Kalman Filter Japan", "Log GDP Japan", "HP Japan trend","Linear Japan trend","Baxter-King Japan trend" ), lty = 1, 
+       fill = c("black", "red","blue","green","orange"), bty = "n")
+
+
+observed_Japan<-Japants
+predicted_Japan_Kalman<-PIB_POTENTIEL_KF_Japants
+predicted_Japan_HP<-trend_Japan_hpts
+predicted_Japan_Linear<-linear_trend_Japan
+predicted_Japan_Baxter_King<-trend_Japan_bkts
 
 
 
+mae_Kalman_Japan<-mae(observed,predicted_Japan_Kalman)
+mae_Kalman_Japan
+mae_HP_Japan<-mae(observed,predicted_Japan_HP)
+mae_HP_Japan
+mae_Linear_Japan<-mae(observed,predicted_Japan_Linear)
+mae_Linear_Japan
+mae_Baxter_King_Japan<-mae(observed,predicted_Japan_Baxter_King)
+mae_Baxter_King_Japan
 
 
 
@@ -1177,10 +1346,38 @@ ts.plot(United_Kingdomtss_bk, trend_United_Kingdom_bk, gpars = list(col = c("bla
 
 
 
+linear_trend_United_Kingdom<-ts(linear_United_Kingdom, start = c(1975, 1), frequency = 4)
+trend_United_Kingdom_bkts<-ts(trend_United_Kingdom_bk, start = c(1975, 1), frequency = 4)
+
+# Plot time series
+plot.ts(PIB_POTENTIEL_KF_United_Kingdomts, ylab = "",col="black")  
+
+# include HP trend
+lines(United_Kingdomts, col = "red")
+lines(trend_United_Kingdom_hpts, col = "blue")
+lines(linear_trend_United_Kingdom, col = "green")
+lines(trend_United_Kingdom_bkts, col = "orange")
+legend("topleft", legend = c("GDP potential Kalman Filter United_Kingdom", "Log GDP United_Kingdom", "HP United_Kingdom trend","Linear United_Kingdom trend","Baxter-King United_Kingdom trend" ), lty = 1, 
+       fill = c("black", "red","blue","green","orange"), bty = "n")
 
 
 
+observed_United_Kingdom<-United_Kingdomts
+predicted_United_Kingdom_Kalman<-PIB_POTENTIEL_KF_United_Kingdomts
+predicted_United_Kingdom_HP<-trend_United_Kingdom_hpts
+predicted_United_Kingdom_Linear<-linear_trend_United_Kingdom
+predicted_United_Kingdom_Baxter_King<-trend_United_Kingdom_bkts
 
+
+
+mae_Kalman_United_Kingdom<-mae(observed,predicted_United_Kingdom_Kalman)
+mae_Kalman_United_Kingdom
+mae_HP_United_Kingdom<-mae(observed,predicted_United_Kingdom_HP)
+mae_HP_United_Kingdom
+mae_Linear_United_Kingdom<-mae(observed,predicted_United_Kingdom_Linear)
+mae_Linear_United_Kingdom
+mae_Baxter_King_United_Kingdom<-mae(observed,predicted_United_Kingdom_Baxter_King)
+mae_Baxter_King_United_Kingdom
 
 
 
@@ -1381,10 +1578,38 @@ ts.plot(United_Statestss_bk, trend_United_States_bk, gpars = list(col = c("black
 
 
 
+linear_trend_United_States<-ts(linear_United_States, start = c(1975, 1), frequency = 4)
+trend_United_States_bkts<-ts(trend_United_States_bk, start = c(1975, 1), frequency = 4)
+
+# Plot time series
+plot.ts(PIB_POTENTIEL_KF_United_Statests, ylab = "",col="black")  
+
+# include HP trend
+lines(United_Statests, col = "red")
+lines(trend_United_States_hpts, col = "blue")
+lines(linear_trend_United_States, col = "green")
+lines(trend_United_States_bkts, col = "orange")
+legend("topleft", legend = c("GDP potential Kalman Filter United_States", "Log GDP United_States", "HP United_States trend","Linear United_States trend","Baxter-King United_States trend" ), lty = 1, 
+       fill = c("black", "red","blue","green","orange"), bty = "n")
 
 
 
+observed_United_States<-United_Statests
+predicted_United_States_Kalman<-PIB_POTENTIEL_KF_United_Statests
+predicted_United_States_HP<-trend_United_States_hpts
+predicted_United_States_Linear<-linear_trend_United_States
+predicted_United_States_Baxter_King<-trend_United_States_bkts
 
+
+
+mae_Kalman_United_States<-mae(observed,predicted_United_States_Kalman)
+mae_Kalman_United_States
+mae_HP_United_States<-mae(observed,predicted_United_States_HP)
+mae_HP_United_States
+mae_Linear_United_States<-mae(observed,predicted_United_States_Linear)
+mae_Linear_United_States
+mae_Baxter_King_United_States<-mae(observed,predicted_United_States_Baxter_King)
+mae_Baxter_King_United_States
 
 
 
