@@ -3,7 +3,7 @@ graphics.off()
 
 #install.packages("readxl")
 #install.packages("mfilter")
-install.packages("Metrics")
+#install.packages("Metrics")
 library(RCurl)
 library(mFilter)
 library(tidyverse)
@@ -1336,6 +1336,7 @@ United_Kingdom<-na.omit(United_Kingdom)
 United_Kingdomts<-ts(data=logUnited_Kingdom,start=(1975),frequency=4)     
 
 United_Kingdomts<- na.omit(United_Kingdomts) 
+
 plot(United_Kingdomts)
 
 
