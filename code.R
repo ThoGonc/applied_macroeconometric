@@ -39,7 +39,7 @@ France_hp <- hpfilter(Francets, freq = 1600, type = "lambda",drift=FALSE)
 
 
 # Plot time series
-plot.ts(Francets, ylab = "")  
+plot.ts(Francets, ylab = "Log GDP")  
 
 # include HP trend
 lines(France_hp$trend, col = "red")
