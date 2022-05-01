@@ -47,7 +47,7 @@ legend("topleft", legend = c("Log GDP France", "HP trend"), lty = 1,
        fill = c("black", "red"), bty = "n")
 
 #Plot cycle
-plot.ts(France_hp$cycle, ylab = "") 
+plot.ts(France_hp$cycle, ylab = "Cyclical component HP filter (log GDP)") 
 legend("topleft", legend = c("HP cycle France"), lty = 1, fill = c("black"), 
        bty = "n")
 
@@ -149,7 +149,7 @@ model.list2_France <- list(B = B2_France, Q=Q2_France, Z = Z2_France, A = A2_Fra
 fit <- MARSS(d2_France, model=model.list2_France, fit = TRUE)
 France_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95, output = c("data.frame", "matrix"))
 France_KF4 <- tsSmooth(fit,
-                       type = c("xtt"),
+                       type = c("xtt1"),
                        interval = c("confidence"),
                        level = 0.95, fun.kf = c("MARSSkfas"))
 
@@ -160,6 +160,17 @@ PIB_POTENTIEL_KF_Francets <- ts(PIB_POTENTIEL_KF_France, start = c(1975, 1), fre
 
 plot(PIB_POTENTIEL_KF_France)
 plot(logFrance)
+
+
+
+# Plot time series
+plot.ts( PIB_POTENTIEL_KF_Francets, ylab = "Log GDP",col="red")  
+
+# include HP trend
+lines(Francets, col = "black")
+legend("topleft", legend = c("Kalman filter trend","Log GDP"), lty = 1, 
+       fill = c("red", "black"), bty = "n")
+
 
 
 # Plot time series
@@ -269,6 +280,12 @@ mae_Baxter_King_France_cycle
 
 
 
+plot.ts(cycle_France_Kalman_ts, ylab = "Cyclical component KF filter (log GDP)",col="black")  
+
+# include HP trend
+legend("topleft", legend = c("Kalman filter cycle"), lty = 1, 
+       fill = c("black"), bty = "n")
+
 
 
 
@@ -290,7 +307,7 @@ plot(Germanyts)
 Germany_hp <- hpfilter(Germanyts, freq = 1600, type = "lambda",drift=FALSE)
 
 # Plot time series
-plot.ts(Germanyts, ylab = "")  
+plot.ts(Germanyts, ylab = "Log GDP")  
 
 # include HP trend
 lines(Germany_hp$trend, col = "red")
@@ -298,7 +315,7 @@ legend("topleft", legend = c("Log GDP Germany", "HP trend"), lty = 1,
        col = c("black", "red"), bty = "n")
 
 #Plot cycle
-plot.ts(Germany_hp$cycle, ylab = "") 
+plot.ts(Germany_hp$cycle, ylab = "Cyclical component HP filter (log GDP)") 
 legend("topleft", legend = c("HP cycle Germany"), lty = 1, col = c("black"), 
        bty = "n")
 
@@ -419,17 +436,28 @@ model.list2_Germany <- list(B = B2_Germany, Q=Q2_Germany, Z = Z2_Germany, A = A2
 fit <- MARSS(d2_Germany, model=model.list2_Germany, fit = TRUE)
 Germany_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95, output = c("data.frame", "matrix"))
 Germany_KF4 <- tsSmooth(fit,
-                       type = c("xtt"),
+                       type = c("xtt1"),
                        interval = c("confidence"),
                        level = 0.95, fun.kf = c("MARSSkfas"))
 
 
 
-PIB_POTENTIEL_KF_Germany <- logGermany - Germany_KF4$.estimate[1:124]/100
-PIB_POTENTIEL_KF_Germanyts <- ts(PIB_POTENTIEL_KF_Germany, start = c(1991, 1), frequency = 4)
+PIB_POTENTIEL_KF_Germany <- logGermany[2:123] - Germany_KF4$.estimate[1:122]/100
+PIB_POTENTIEL_KF_Germanyts <- ts(PIB_POTENTIEL_KF_Germany, start = c(1991, 2), frequency = 4)
 
 plot(PIB_POTENTIEL_KF_Germany)
 plot(logGermany)
+
+
+# Plot time series
+plot.ts( PIB_POTENTIEL_KF_Germanyts, ylab = "Log GDP",col="red")  
+
+# include HP trend
+lines(Germanyts, col = "black")
+legend("topleft", legend = c("Kalman filter trend","Log GDP"), lty = 1, 
+       fill = c("red", "black"), bty = "n")
+
+
 
 
 # Plot time series
@@ -506,7 +534,7 @@ diff_lgdp_Germany_ts<-ts(diff_lgdp_Germany/100, end = c(2022, 1), frequency = 4)
 cycle_Germany_bk_ts<-ts(cycle_Germany_bk, end = c(2022, 1), frequency = 4)
 cycle_Germany_linear_ts<-ts(lin.cycle_Germany, start = c(1991, 1), frequency = 4)
 cycle_Germany_Kalman_a <- logGermany - PIB_POTENTIEL_KF_Germany
-cycle_Germany_Kalman_ts<-ts(cycle_Germany_Kalman_a, end = c(2022, 1), frequency = 4)
+cycle_Germany_Kalman_ts<-ts(cycle_Germany_Kalman_a, start = c(1991, 3), frequency = 4)
 
 
 # Plot time series
@@ -540,6 +568,13 @@ mae_Baxter_King_Germany
 
 
 
+plot.ts(cycle_Germany_Kalman_ts, ylab = "Cyclical component KF filter (log GDP)",col="black")  
+
+# include HP trend
+legend("topleft", legend = c("Kalman filter cycle"), lty = 1, 
+       fill = c("black"), bty = "n")
+
+
 
 
 
@@ -561,7 +596,7 @@ plot(Italiats)
 Italia_hp <- hpfilter(Italiats, freq = 1600, type = "lambda",drift=FALSE)
 
 # Plot time series
-plot.ts(Italiats, ylab = "")  
+plot.ts(Italiats, ylab = "Log GDP")  
 
 # include HP trend
 lines(Italia_hp$trend, col = "red")
@@ -569,7 +604,7 @@ legend("topleft", legend = c("Log GDP Italia", "HP trend"), lty = 1,
        col = c("black", "red"), bty = "n")
 
 #Plot cycle
-plot.ts(Italia_hp$cycle, ylab = "") 
+plot.ts(Italia_hp$cycle, ylab = "Cyclical component HP filter (log GDP)") 
 legend("topleft", legend = c("HP cycle Italia"), lty = 1, col = c("black"), 
        bty = "n")
 
@@ -690,7 +725,7 @@ model.list2_Italia <- list(B = B2_Italia, Q=Q2_Italia, Z = Z2_Italia, A = A2_Ita
 fit <- MARSS(d2_Italia, model=model.list2_Italia, fit = TRUE)
 Italia_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95)
 Italia_KF4 <- tsSmooth(fit,
-                        type = c("xtt"),
+                        type = c("xtt1"),
                         interval = c("confidence"),
                         level = 0.95, fun.kf = c("MARSSkfas"))
 
@@ -698,6 +733,18 @@ PIB_POTENTIEL_KF_Italia <- logItalia - Italia_KF4$.estimate[1:108]/100
 PIB_POTENTIEL_KF_Italiats <- ts(PIB_POTENTIEL_KF_Italia, start = c(1995, 1), frequency = 4)
 plot(PIB_POTENTIEL_KF_Italia)
 plot(logItalia)
+
+
+
+# Plot time series
+plot.ts(PIB_POTENTIEL_KF_Italiats, ylab = "Log GDP",col="red")  
+
+# include HP trend
+lines(Italiats, col = "black")
+legend("topleft", legend = c("Kalman filter trend","Log GDP"), lty = 1, 
+       fill = c("red", "black"), bty = "n")
+
+
 
 
 # Plot time series
@@ -814,6 +861,11 @@ mae_Baxter_King_Italia_cycle<-mae(observed_Italia,predicted_Italia_Baxter_King_c
 mae_Baxter_King_Italia_cycle
 
 
+plot.ts(cycle_Italia_Kalman_ts, ylab = "Cyclical component KF filter (log GDP)",col="black")  
+
+# include HP trend
+legend("topleft", legend = c("Kalman filter cycle"), lty = 1, 
+       fill = c("black"), bty = "n")
 
 
 
@@ -835,7 +887,7 @@ plot(Spaints)
 Spain_hp <- hpfilter(Spaints, freq = 1600, type = "lambda",drift=FALSE)
 
 # Plot time series
-plot.ts(Spaints, ylab = "")  
+plot.ts(Spaints, ylab = "LOG GDP")  
 
 # include HP trend
 lines(Spain_hp$trend, col = "red")
@@ -843,7 +895,7 @@ legend("topleft", legend = c("Log GDP Spain", "HP trend"), lty = 1,
        col = c("black", "red"), bty = "n")
 
 #Plot cycle
-plot.ts(Spain_hp$cycle, ylab = "") 
+plot.ts(Spain_hp$cycle, ylab = "Cyclical component HP filter (log GDP)") 
 legend("topleft", legend = c("HP cycle Spain"), lty = 1, col = c("black"), 
        bty = "n")
 
@@ -963,7 +1015,7 @@ model.list2_Spain <- list(B = B2_Spain, Q=Q2_Spain, Z = Z2_Spain, A = A2_Spain, 
 fit <- MARSS(d2_Spain, model=model.list2_Spain, fit = TRUE)
 Spain_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95, output = c("data.frame", "matrix"))
 Spain_KF4 <- tsSmooth(fit,
-                       type = c("xtt"),
+                       type = c("xtt1"),
                        interval = c("confidence"),
                        level = 0.95, fun.kf = c("MARSSkfas"))
 
@@ -971,6 +1023,23 @@ Spain_KF4 <- tsSmooth(fit,
 
 PIB_POTENTIEL_KF_Spain <- logSpain - Spain_KF4$.estimate[1:108]/100
 PIB_POTENTIEL_KF_Spaints <- ts(PIB_POTENTIEL_KF_Spain, start = c(1995, 1), frequency = 4)
+
+
+
+
+
+
+# Plot time series
+plot.ts( PIB_POTENTIEL_KF_Spaints, ylab = "Log GDP",col="red")  
+
+# include HP trend
+lines(Spaints, col = "black")
+legend("topleft", legend = c("Kalman filter trend","Log GDP"), lty = 1, 
+       fill = c("red", "black"), bty = "n")
+
+
+
+
 
 
 # Plot time series
@@ -1082,6 +1151,13 @@ mae_Linear_Spain_cycle
 mae_Baxter_King_Spain_cycle<-mae(observed_Spain,predicted_Spain_Baxter_King_cycle)
 mae_Baxter_King_Spain_cycle
 
+plot.ts(cycle_Spain_Kalman_ts, ylab = "Cyclical component KF filter (log GDP)",col="black")  
+
+# include HP trend
+legend("topleft", legend = c("Kalman filter cycle"), lty = 1, 
+       fill = c("black"), bty = "n")
+
+
 
 ###Japan
 
@@ -1099,7 +1175,7 @@ plot(Japants)
 Japan_hp <- hpfilter(Japants, freq = 1600, type = "lambda",drift=FALSE)
 
 # Plot time series
-plot.ts(Japants, ylab = "")  
+plot.ts(Japants, ylab = "Log GDP")  
 
 # include HP trend
 lines(Japan_hp$trend, col = "red")
@@ -1107,7 +1183,7 @@ legend("topleft", legend = c("Log GDP Japan", "HP trend"), lty = 1,
        col = c("black", "red"), bty = "n")
 
 #Plot cycle
-plot.ts(Japan_hp$cycle, ylab = "") 
+plot.ts(Japan_hp$cycle, ylab = "Cyclical component HP filter (log GDP)") 
 legend("topleft", legend = c("HP cycle Japan"), lty = 1, col = c("black"), 
        bty = "n")
 
@@ -1223,7 +1299,7 @@ model.list2_Japan <- list(B = B2_Japan, Q=Q2_Japan, Z = Z2_Japan, A = A2_Japan, 
 fit <- MARSS(d2_Japan, model=model.list2_Japan, fit = TRUE)
 Japan_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95, output = c("data.frame", "matrix"))
 Japan_KF4 <- tsSmooth(fit,
-                       type = c("xtt"),
+                       type = c("xtt1"),
                        interval = c("confidence"),
                        level = 0.95, fun.kf = c("MARSSkfas"))
 
@@ -1231,6 +1307,18 @@ Japan_KF4 <- tsSmooth(fit,
 
 PIB_POTENTIEL_KF_Japan <- logJapan - Japan_KF4$.estimate[1:112]/100
 PIB_POTENTIEL_KF_Japants <- ts(PIB_POTENTIEL_KF_Japan, start = c(1994, 1), frequency = 4)
+
+
+
+# Plot time series
+plot.ts( PIB_POTENTIEL_KF_Japants, ylab = "Log GDP",col="red")  
+
+# include HP trend
+lines(Japants, col = "black")
+legend("topleft", legend = c("Kalman filter trend","Log GDP"), lty = 1, 
+       fill = c("red", "black"), bty = "n")
+
+
 
 # Plot time series
 plot.ts(PIB_POTENTIEL_KF_Japants, ylab = "", col ="black")  
@@ -1322,6 +1410,13 @@ legend("topleft", legend = c("Log Delta GDP Japan","Cycle Japan Kalman Filter GD
        fill = c("black", "red","blue","green","orange"), bty = "n")
 
 
+plot.ts(cycle_Japan_Kalman_ts, ylab = "Cyclical component KF filter (log GDP)",col="black")  
+
+# include HP trend
+legend("topleft", legend = c("Kalman filter cycle"), lty = 1, 
+       fill = c("black"), bty = "n")
+
+
 
 
 ###United_Kingdom
@@ -1343,7 +1438,7 @@ plot(United_Kingdomts)
 United_Kingdom_hp <- hpfilter(United_Kingdomts, freq = 1600, type = "lambda",drift=FALSE)
 
 # Plot time series
-plot.ts(United_Kingdomts, ylab = "")  
+plot.ts(United_Kingdomts, ylab = "Log GDP")  
 
 # include HP trend
 lines(United_Kingdom_hp$trend, col = "red")
@@ -1351,7 +1446,7 @@ legend("topleft", legend = c("Log GDP United_Kingdom", "HP trend"), lty = 1,
        col = c("black", "red"), bty = "n")
 
 #Plot cycle
-plot.ts(United_Kingdom_hp$cycle, ylab = "") 
+plot.ts(United_Kingdom_hp$cycle, ylab = "Cyclical component HP filter (log GDP)") 
 legend("topleft", legend = c("HP cycle United_Kingdom"), lty = 1, col = c("black"), 
        bty = "n")
 
@@ -1468,7 +1563,7 @@ model.list2_United_Kingdom <- list(B = B2_United_Kingdom, Q=Q2_United_Kingdom, Z
 fit <- MARSS(d2_United_Kingdom, model=model.list2_United_Kingdom, fit = TRUE)
 United_Kingdom_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95, output = c("data.frame", "matrix"))
 United_Kingdom_KF4 <- tsSmooth(fit,
-                      type = c("xtt"),
+                      type = c("xtt1"),
                       interval = c("confidence"),
                       level = 0.95, fun.kf = c("MARSSkfas"))
 
@@ -1476,6 +1571,19 @@ United_Kingdom_KF4 <- tsSmooth(fit,
 
 PIB_POTENTIEL_KF_United_Kingdom <- logUnited_Kingdom - United_Kingdom_KF4$.estimate[1:180]/100
 PIB_POTENTIEL_KF_United_Kingdomts <- ts(PIB_POTENTIEL_KF_United_Kingdom, start = c(1975, 1), frequency = 4)
+
+
+
+# Plot time series
+plot.ts( PIB_POTENTIEL_KF_United_Kingdomts, ylab = "Log GDP",col="red")  
+
+# include HP trend
+lines(United_Kingdomts, col = "black")
+legend("topleft", legend = c("Kalman filter trend","Log GDP"), lty = 1, 
+       fill = c("red", "black"), bty = "n")
+
+
+
 
 # Plot time series
 plot.ts(PIB_POTENTIEL_KF_United_Kingdomts, ylab = "", col = "black")  
@@ -1585,9 +1693,20 @@ mae_Linear_United_Kingdom_cycle
 mae_Baxter_King_United_Kingdom_cycle<-mae(observed_United_Kingdom,predicted_United_Kingdom_Baxter_King_cycle)
 mae_Baxter_King_United_Kingdom_cycle
 
+plot.ts(cycle_United_Kingdom_Kalman_ts, ylab = "Cyclical component KF filter (log GDP)",col="black")  
+
+# include HP trend
+legend("topleft", legend = c("Kalman filter cycle"), lty = 1, 
+       fill = c("black"), bty = "n")
+
+
+
+
+
 
 
 ###United_States
+
 
 #Frequence du parametre HP smoother
 
@@ -1605,7 +1724,7 @@ plot(United_Statests)
 United_States_hp <- hpfilter(United_Statests, freq = 1600, type = "lambda",drift=FALSE)
 
 # Plot time series
-plot.ts(United_Statests, ylab = "")  
+plot.ts(United_Statests, ylab = "Log GDP")  
 
 # include HP trend
 lines(United_States_hp$trend, col = "red")
@@ -1613,7 +1732,7 @@ legend("topleft", legend = c("Log GDP United_States", "HP trend"), lty = 1,
        col = c("black", "red"), bty = "n")
 
 #Plot cycle
-plot.ts(United_States_hp$cycle, ylab = "") 
+plot.ts(United_States_hp$cycle, ylab = "Cyclical component HP filter (log GDP)") 
 legend("topleft", legend = c("HP cycle United_States"), lty = 1, col = c("black"), 
        bty = "n")
 
@@ -1733,7 +1852,7 @@ model.list2_United_States <- list(B = B2_United_States, Q=Q2_United_States, Z = 
 fit <- MARSS(d2_United_States, model=model.list2_United_States, fit = TRUE)
 United_States_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95, output = c("data.frame", "matrix"))
 United_States_KF4 <- tsSmooth(fit,
-                      type = c("xtt"),
+                      type = c("xtt1"),
                       interval = c("confidence"),
                       level = 0.95, fun.kf = c("MARSSkfas"))
 
@@ -1741,6 +1860,14 @@ United_States_KF4 <- tsSmooth(fit,
 PIB_POTENTIEL_KF_United_States <- logUnited_States - United_States_KF4$.estimate[1:188]/100
 PIB_POTENTIEL_KF_United_Statests <- ts(PIB_POTENTIEL_KF_United_States, start = c(1975, 1), frequency = 4)
 
+
+# Plot time series
+plot.ts( PIB_POTENTIEL_KF_United_Statests, ylab = "Log GDP",col="red")  
+
+# include HP trend
+lines(United_Statests, col = "black")
+legend("topleft", legend = c("Kalman filter trend","Log GDP"), lty = 1, 
+       fill = c("red", "black"), bty = "n")
 
 
 # Plot time series
@@ -1854,6 +1981,11 @@ mae_Linear_United_States_cycle
 mae_Baxter_King_United_States_cycle<-mae(observed_United_States,predicted_United_States_Baxter_King_cycle)
 mae_Baxter_King_United_States_cycle
 
+plot.ts(cycle_United_States_Kalman_ts, ylab = "Cyclical component KF filter (log GDP)",col="black")  
+
+# include HP trend
+legend("topleft", legend = c("Kalman filter cycle"), lty = 1, 
+       fill = c("black"), bty = "n")
 
 
 
