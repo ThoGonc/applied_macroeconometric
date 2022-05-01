@@ -45,8 +45,8 @@ France_infla <- na.omit(France_infla)
 France_logPIB <- matrix(data = Francets)
 France_deltalogPIB <- diff(France_logPIB)*100
 France_deltalogPIB[187,1] <- NA_real_
-France_deltalogPIB[188,1] <- NA_real_
-
+#France_deltalogPIB[188,1] <- NA_real_
+France_deltalogPIB<- na.omit(France_deltalogPIB)
 
 France_laginfla <- lag(France_infla)
 France_infla[1,1] <- NA_real_
@@ -55,7 +55,7 @@ France_laginfla <- na.omit(France_laginfla)
 
 
 #préparation matrice var d'observation
-mat_obs <- matrix(, nrow = 187, ncol = 3)
+mat_obs <- matrix(, nrow = 186, ncol = 3)
 mat_obs[,1] <- France_deltalogPIB
 mat_obs[,2] <- France_infla
 mat_obs[,3] <- France_laginfla
@@ -77,7 +77,7 @@ u2 <- matrix(list(0,0),nrow = 2, ncol = 1)
 d2 <- t(mat_obs)
 D2 <- matrix(list (0, 0, 0, 0, 0, 0, 0, alpha2, 1), 3, 3)
 R2 <- matrix(list ("r11", 0, 0, 0, "r22", 0, 0, 0, 0.01), 3, 3)
-x02 <- matrix(list(pot_France_begint1, pot_France_begint), nrow = 2, ncol = 1)
+x02 <- matrix(list(pot_France_begint1, pot_France_begin), nrow = 2, ncol = 1)
 model.list2 <- list(B = B2, Q=Q2, Z = Z2, A = A2, d=d2, D=D2, U=u2, R=R2, x0= x02, tinitx = 1)
 fit <- MARSS(d2, model=model.list2, fit = TRUE)
 France_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95, output = c("data.frame", "matrix"))
@@ -88,7 +88,7 @@ France_KF4 <- tsSmooth(fit,
 
 cycleKF<-ts(data=France_KF4$.estimate,start=(1975),end=(2022),frequency=4)
 cycleKF_OUTPUTGAP_France <- cycleKF
-plot(cycleKF_OUTPUTGAP)
+plot(cycleKF_OUTPUTGAP_France)
 
 PIB_POTENTIEL_KF_France <- France_logPIB - France_KF4$.estimate[1:188]/100
 plot(PIB_POTENTIEL_KF_France)
