@@ -1132,10 +1132,10 @@ PIB_POTENTIEL_KF_United_Kingdom <- logUnited_Kingdom - United_Kingdom_KF4$.estim
 PIB_POTENTIEL_KF_United_Kingdomts <- ts(PIB_POTENTIEL_KF_United_Kingdom, start = c(1975, 1), frequency = 4)
 
 # Plot time series
-plot.ts(United_Kingdomts, ylab = "", col = "black")  
+plot.ts(PIB_POTENTIEL_KF_United_Kingdomts, ylab = "", col = "black")  
 
 # include HP trend
-lines(PIB_POTENTIEL_KF_United_Kingdomts, col = "red")
+lines(United_Kingdomts, col = "red")
 lines(trend_United_Kingdom_hpts, col = "blue")
 legend("topleft", legend = c("PIB_Potentiel Kalman Filter United_Kingdom", "Log United_Kingdom", "HP trend"), lty = 1, 
        fill = c("black", "red","blue"), bty = "n")
