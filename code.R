@@ -40,11 +40,11 @@ plot.ts(Francets, ylab = "")
 # include HP trend
 lines(France_hp$trend, col = "red")
 legend("topleft", legend = c("Log GDP France", "HP trend"), lty = 1, 
-       col = c("black", "red"), bty = "n")
+       fill = c("black", "red"), bty = "n")
 
 #Plot cycle
 plot.ts(France_hp$cycle, ylab = "") 
-legend("topleft", legend = c("HP cycle France"), lty = 1, col = c("black"), 
+legend("topleft", legend = c("HP cycle France"), lty = 1, fill = c("black"), 
        bty = "n")
 
 
@@ -181,6 +181,16 @@ lin.cycle_France <- Francets - linear_France  # cycle is the difference between 
 
 ts.plot(linear_France, Francets, gpars = list(col = c("black", "red")))
 
+
+# Baxter-King filter (Band pass filter)
+
+France_bk <- bkfilter(Francets,pl = 6, pu = 32)
+
+cycle_France_bk<-France_bk$cycle
+trend_France_bk<-France_bk$trend
+francetss_bk<-France_bk$x
+
+ts.plot(francetss_bk, trend_France_bk, gpars = list(col = c("black", "red")))
 
 
 
@@ -371,7 +381,15 @@ lin.cycle_Germany <- Germanyts - linear_Germany  # cycle is the difference betwe
 
 ts.plot(linear_Germany, Germanyts, gpars = list(col = c("black", "red")))
 
+# Baxter-King filter (Band pass filter)
 
+Germany_bk <- bkfilter(Germanyts,pl = 6, pu = 32)
+
+cycle_Germany_bk<-Germany_bk$cycle
+trend_Germany_bk<-Germany_bk$trend
+Germanytss_bk<-Germany_bk$x
+
+ts.plot(Germanytss_bk, trend_Germany_bk, gpars = list(col = c("black", "red")))
 
 
 
@@ -559,7 +577,15 @@ lin.cycle_Italia <- Italiats - linear_Italia  # cycle is the difference between 
 ts.plot(linear_Italia, Italiats, gpars = list(col = c("black", "red")))
 
 
+# Baxter-King filter (Band pass filter)
 
+Italia_bk <- bkfilter(Italiats,pl = 6, pu = 32)
+
+cycle_Italia_bk<-Italia_bk$cycle
+trend_Italia_bk<-Italia_bk$trend
+Italiatss_bk<-Italia_bk$x
+
+ts.plot(Italiatss_bk, trend_Italia_bk, gpars = list(col = c("black", "red")))
 
 
 
@@ -745,7 +771,15 @@ ts.plot(linear_Spain, Spaints, gpars = list(col = c("black", "red")))
 
 
 
+# Baxter-King filter (Band pass filter)
 
+Spain_bk <- bkfilter(Spaints,pl = 6, pu = 32)
+
+cycle_Spain_bk<-Spain_bk$cycle
+trend_Spain_bk<-Spain_bk$trend
+Spaintss_bk<-Spain_bk$x
+
+ts.plot(Spaintss_bk, trend_Spain_bk, gpars = list(col = c("black", "red")))
 
 
 
@@ -929,7 +963,15 @@ ts.plot(linear_Japan, Japants, gpars = list(col = c("black", "red")))
 
 
 
+# Baxter-King filter (Band pass filter)
 
+Japan_bk <- bkfilter(Japants,pl = 6, pu = 32)
+
+cycle_Japan_bk<-Japan_bk$cycle
+trend_Japan_bk<-Japan_bk$trend
+Japantss_bk<-Japan_bk$x
+
+ts.plot(Japantss_bk, trend_Japan_bk, gpars = list(col = c("black", "red")))
 
 
 
@@ -1110,7 +1152,15 @@ ts.plot(linear_United_Kingdom, United_Kingdomts, gpars = list(col = c("black", "
 
 
 
+# Baxter-King filter (Band pass filter)
 
+United_Kingdom_bk <- bkfilter(United_Kingdomts,pl = 6, pu = 32)
+
+cycle_United_Kingdom_bk<-United_Kingdom_bk$cycle
+trend_United_Kingdom_bk<-United_Kingdom_bk$trend
+United_Kingdomtss_bk<-United_Kingdom_bk$x
+
+ts.plot(United_Kingdomtss_bk, trend_United_Kingdom_bk, gpars = list(col = c("black", "red")))
 
 
 
@@ -1304,28 +1354,26 @@ lin.cycle_United_States <- United_Statests - linear_United_States  # cycle is th
 
 ts.plot(linear_United_States, United_Statests, gpars = list(col = c("black", "red")))
 
-
-
-
-
-
-
-
-
-
-
-
-
 # Baxter-King filter (Band pass filter)
 
-France_bk <- bkfilter(Francets,pl = 6, pu = 32)
-#plot(France_bk)
+United_States_bk <- bkfilter(United_Statests,pl = 6, pu = 32)
 
-cycle_France_bk<-France_bk$cycle
-trend_France_bk<-France_bk$trend
-francetss_bk<-France_bk$x
+cycle_United_States_bk<-United_States_bk$cycle
+trend_United_States_bk<-United_States_bk$trend
+United_Statestss_bk<-United_States_bk$x
 
-ts.plot(francetss_bk, trend_France_bk, gpars = list(col = c("black", "red")))
+ts.plot(United_Statestss_bk, trend_United_States_bk, gpars = list(col = c("black", "red")))
+
+
+
+
+
+
+
+
+
+
+
 
 
 
