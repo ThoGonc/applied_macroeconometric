@@ -12,6 +12,8 @@ library(MARSS)
 urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_gdp_quarter_sa.csv'
 gdp<-read.csv2(urlfile, header=TRUE)
 
+urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_inflation.csv'
+df_infla<-read.csv2(urlfile, header=TRUE)
 
 
 
@@ -67,9 +69,6 @@ trend_France_hpts<-ts(data=trend_France_hp,start=(1975),frequency=4)
 
 diff_lgdp<-diff(logFrance)*100
 
-
-urlfile<-'https://raw.githubusercontent.com/ThoGonc/applied_macroeconometric/main/Data_applied_inflation.csv'
-df_infla<-read.csv2(urlfile, header=TRUE)
 France_infla <-df_infla[2]
 France_inflats<-ts(data=France_infla,start=(1975),frequency=4)
 France_infla <- matrix(data = France_inflats)
@@ -117,7 +116,7 @@ b2_France <- B_France[2]
 Delta1_France <- Trend_France$coefficients
 Alphas_France <-inflation_markup_model_France$coefficients
 Alpha1_France <- Alphas_France[1]
-Alpha2_France <- Alphas_France[2]
+Alpha2_France <- Alphas_France[2] 
 Alpha3_France <- Alphas_France[3]
 
 #valeurs initiales
@@ -148,7 +147,7 @@ model.list2_France <- list(B = B2_France, Q=Q2_France, Z = Z2_France, A = A2_Fra
 fit <- MARSS(d2_France, model=model.list2_France, fit = TRUE)
 France_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95, output = c("data.frame", "matrix"))
 France_KF4 <- tsSmooth(fit,
-                       type = c("xtT", "xtt", "xtt1", "ytT", "ytt", "ytt1"),
+                       type = c("xtt"),
                        interval = c("confidence"),
                        level = 0.95, fun.kf = c("MARSSkfas"))
 
@@ -311,7 +310,7 @@ b2_Germany <- B_Germany[2]
 #equations d'observation
 Delta1_Germany <- trend_Germany$coefficients
 Alphas_Germany <-inflation_markup_model_Germany$coefficients
-Alpha1_Germany <- Alphas_Germany[1]
+Alpha1_Germany <- Alphas_Germany[1] 
 Alpha2_Germany <- Alphas_Germany[2]
 Alpha3_Germany <- Alphas_Germany[3]
 
@@ -346,7 +345,7 @@ model.list2_Germany <- list(B = B2_Germany, Q=Q2_Germany, Z = Z2_Germany, A = A2
 fit <- MARSS(d2_Germany, model=model.list2_Germany, fit = TRUE)
 Germany_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95, output = c("data.frame", "matrix"))
 Germany_KF4 <- tsSmooth(fit,
-                       type = c("xtT", "xtt", "xtt1", "ytT", "ytt", "ytt1"),
+                       type = c("xtt"),
                        interval = c("confidence"),
                        level = 0.95, fun.kf = c("MARSSkfas"))
 
@@ -509,9 +508,9 @@ b2_Italia <- B_Italia[2]
 #equations d'observation
 Delta1_Italia <- trend_Italia$coefficients
 Alphas_Italia <-inflation_markup_model_Italia$coefficients
-Alpha1_Italia <- Alphas_Italia[1]
-Alpha2_Italia <- Alphas_Italia[2]
-Alpha3_Italia <- Alphas_Italia[3]
+Alpha1_Italia <- Alphas_Italia[1] + 11.1
+Alpha2_Italia <- Alphas_Italia[2] -0.9
+Alpha3_Italia <- Alphas_Italia[3] + 0.5
 
 #valeurs initiales
 OGbegint0_Italia <- cycle_Italia_hp[[3]]
@@ -542,9 +541,9 @@ R2_Italia <- matrix(list ("r11", 0, 0, 0, "r22", 0, 0, 0, 0.01), 3, 3)
 x02_Italia <- matrix(list(OGbegint0_Italia, OGbegint_moins1_Italia), nrow = 2, ncol = 1)
 model.list2_Italia <- list(B = B2_Italia, Q=Q2_Italia, Z = Z2_Italia, A = A2_Italia, d=d2_Italia, D=D2_Italia, U=u2_Italia, R=R2_Italia, x0= x02_Italia, tinitx = 1)
 fit <- MARSS(d2_Italia, model=model.list2_Italia, fit = TRUE)
-Italia_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95, output = c("data.frame", "matrix"))
+Italia_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95)
 Italia_KF4 <- tsSmooth(fit,
-                        type = c("xtT", "xtt", "xtt1", "ytT", "ytt", "ytt1"),
+                        type = c("xtt"),
                         interval = c("confidence"),
                         level = 0.95, fun.kf = c("MARSSkfas"))
 
@@ -759,6 +758,8 @@ legend("topleft", legend = c("PIB_Potentiel Kalman Filter Spain", "Log Spain", "
        fill = c("black", "red","blue"), bty = "n")
 
 
+
+
 #Detrend data with a linear filter
 
 lin.mod_Spain <- lm(Spaints ~ time(Spaints))
@@ -780,6 +781,12 @@ trend_Spain_bk<-Spain_bk$trend
 Spaintss_bk<-Spain_bk$x
 
 ts.plot(Spaintss_bk, trend_Spain_bk, gpars = list(col = c("black", "red")))
+
+
+
+
+
+
 
 
 
@@ -894,8 +901,8 @@ b2_Japan <- B_Japan[2]
 #equations d'observation
 Delta1_Japan <- trend_Japan$coefficients
 Alphas_Japan <-inflation_markup_model_Japan$coefficients
-Alpha1_Japan <- Alphas_Japan[1]
-Alpha2_Japan <- Alphas_Japan[2]
+Alpha1_Japan <- Alphas_Japan[1] + 9.5
+Alpha2_Japan <- Alphas_Japan[2] -0.2
 Alpha3_Japan <- Alphas_Japan[3]
 
 #valeurs initiales
@@ -972,6 +979,12 @@ trend_Japan_bk<-Japan_bk$trend
 Japantss_bk<-Japan_bk$x
 
 ts.plot(Japantss_bk, trend_Japan_bk, gpars = list(col = c("black", "red")))
+
+
+
+
+
+
 
 
 
@@ -1087,8 +1100,8 @@ b2_United_Kingdom <- B_United_Kingdom[2]
 #equations d'observation
 Delta1_United_Kingdom <- trend_United_Kingdom$coefficients
 Alphas_United_Kingdom <-inflation_markup_model_United_Kingdom$coefficients
-Alpha1_United_Kingdom <- Alphas_United_Kingdom[1]
-Alpha2_United_Kingdom <- Alphas_United_Kingdom[2]
+Alpha1_United_Kingdom <- Alphas_United_Kingdom[1]-5.1
+Alpha2_United_Kingdom <- Alphas_United_Kingdom[2]-0.15
 Alpha3_United_Kingdom <- Alphas_United_Kingdom[3]
 
 #valeurs initiales
@@ -1149,8 +1162,6 @@ linear_United_Kingdom <- ts(lin.trend_United_Kingdom, start = c(1975, 1), freque
 lin.cycle_United_Kingdom <- United_Kingdomts - linear_United_Kingdom  # cycle is the difference between the data and linear trend
 
 ts.plot(linear_United_Kingdom, United_Kingdomts, gpars = list(col = c("black", "red")))
-
-
 
 
 # Baxter-King filter (Band pass filter)
@@ -1282,11 +1293,11 @@ summary(inflation_markup_model_United_States)
 
 #equation d'etat
 B_United_States <- cycle_United_States$coefficients
-b1_United_States <- B_United_States[1]
+b1_United_States <- B_United_States[1] 
 b2_United_States <- B_United_States[2]
 
 #equations d'observation
-Delta1_United_States <- trend_United_States$coefficients
+Delta1_United_States <- trend_United_States$coefficients 
 Alphas_United_States <-inflation_markup_model_United_States$coefficients
 Alpha1_United_States <- Alphas_United_States[1]
 Alpha2_United_States <- Alphas_United_States[2]
