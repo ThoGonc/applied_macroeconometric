@@ -3,7 +3,7 @@ graphics.off()
 
 #install.packages("readxl")
 #install.packages("mfilter")
-install.packages("Metrics")
+#install.packages("Metrics")
 library(RCurl)
 library(mFilter)
 library(tidyverse)
@@ -69,7 +69,7 @@ trend_France_hpts<-ts(data=trend_France_hp,start=(1975),frequency=4)
 
 
 
-diff_lgdp<-diff(logFrance)*100
+diff_lgdp_France<-diff(logFrance)*100
 
 France_infla <-df_infla[2]
 France_inflats<-ts(data=France_infla,start=(1975),frequency=4)
@@ -83,7 +83,7 @@ France_infla <- matrix(data = France_inflats)
 #Détermination des coefficients pour le modèle espace-etat 
 
 #1ere Trend
-Trend_France<-lm(diff_lgdp~1+offset(diff(cycle_France_hp)))
+Trend_France<-lm(diff_lgdp_France~1+offset(diff(cycle_France_hp)))
 summary(Trend_France)
 
 
@@ -128,7 +128,7 @@ OGbegint_moins1_France <- cycle_France_hp[[2]]
 
 #préparation matrice variables d'observation du modèle espace etat
 mat_obs_France <- matrix(, nrow = 187, ncol = 3)
-mat_obs_France[,1] <- diff_lgdp
+mat_obs_France[,1] <- diff_lgdp_France
 mat_obs_France[,2] <- France_infla_reg
 mat_obs_France[,3] <- lag(France_infla_reg,1)
 mat_obs_France <- na.omit(mat_obs_France)
@@ -219,22 +219,53 @@ predicted_France_Baxter_King<-trend_France_bkts
 
 
 
-mae_Kalman_France<-mae(observed,predicted_France_Kalman)
+mae_Kalman_France<- mae(observed_France,predicted_France_Kalman)
 mae_Kalman_France
-mae_HP_France<-mae(observed,predicted_France_HP)
+mae_HP_France<-mae(observed_France,predicted_France_HP)
 mae_HP_France
-mae_Linear_France<-mae(observed,predicted_France_Linear)
+mae_Linear_France<-mae(observed_France,predicted_France_Linear)
 mae_Linear_France
-mae_Baxter_King_France<-mae(observed,predicted_France_Baxter_King)
+mae_Baxter_King_France<-mae(observed_France,predicted_France_Baxter_King)
 mae_Baxter_King_France
 
 
 
 
+diff_lgdp_France_ts<-ts(diff_lgdp_France/100, end = c(2022, 1), frequency = 4)
+cycle_France_bk_ts<-ts(cycle_France_bk, end = c(2022, 1), frequency = 4)
+cycle_France_linear_ts<-ts(lin.cycle_France, start = c(1975, 1), frequency = 4)
+cycle_France_Kalman_a <- logFrance - PIB_POTENTIEL_KF_France
+cycle_France_Kalman_ts<-ts(cycle_France_Kalman_a, end = c(2022, 1), frequency = 4)
+
+
+# Plot time series
+plot.ts(diff_lgdp_France_ts, ylab = "",col="black")  
+
+# include HP trend
+lines(cycle_France_Kalman_ts, col = "red")
+lines(cycle_France_hpts, col = "blue")
+lines(cycle_France_linear_ts, col = "green")
+lines(cycle_France_bk_ts, col = "orange")
+legend("topleft", legend = c("Log Delta GDP France","Cycle France Kalman Filter GDP", "HP France Cycle","Linear France cycle","Baxter-King France cycle" ), lty = 1, 
+       fill = c("black", "red","blue","green","orange"), bty = "n")
+
+
+observed_France_cycle<-diff_lgdp_France_ts
+predicted_France_Kalman_cycle<-cycle_France_Kalman_ts
+predicted_France_HP_cycle<-cycle_France_hpts
+predicted_France_Linear_cycle<-cycle_France_linear_ts
+predicted_France_Baxter_King_cycle<-cycle_France_bk_ts
 
 
 
-
+mae_Kalman_France_cycle<- mae(observed_France,predicted_France_Kalman_cycle)
+mae_Kalman_France_cycle
+mae_HP_France_cycle<-mae(observed_France,predicted_France_HP_cycle)
+mae_HP_France_cycle
+mae_Linear_France_cycle<-mae(observed_France,predicted_France_Linear_cycle)
+mae_Linear_France_cycle
+mae_Baxter_King_France<-mae(observed_France,predicted_France_Baxter_King_cycle)
+mae_Baxter_King_France_cycle
 
 
 
@@ -311,6 +342,7 @@ Germany_infla <- matrix(data = Germany_inflats)
 #1ere Trend
 trend_Germany<-lm(diff_lgdp_Germany~1+offset(diff(cycle_Germany_hp)))
 summary(trend_Germany)
+
 
 
 #3 eme equation Cycle
@@ -458,15 +490,53 @@ predicted_Germany_Baxter_King<-trend_Germany_bkts
 
 
 
-mae_Kalman_Germany<-mae(observed,predicted_Germany_Kalman)
-mae_Kalman_Germany
-mae_HP_Germany<-mae(observed,predicted_Germany_HP)
-mae_HP_Germany
-mae_Linear_Germany<-mae(observed,predicted_Germany_Linear)
-mae_Linear_Germany
-mae_Baxter_King_Germany<-mae(observed,predicted_Germany_Baxter_King)
-mae_Baxter_King_Germany
+mae_Kalman_Germany_cycle<-mae(observed_Germany,predicted_Germany_Kalman)
+mae_Kalman_Germany_cycle
+mae_HP_Germany_cycle<-mae(observed_Germany,predicted_Germany_HP)
+mae_HP_Germany_cycle
+mae_Linear_Germany_cycle<-mae(observed_Germany,predicted_Germany_Linear)
+mae_Linear_Germany_cycle
+mae_Baxter_King_Germany_cycle<-mae(observed_Germany,predicted_Germany_Baxter_King)
+mae_Baxter_King_Germany_cycle
 
+
+
+
+diff_lgdp_Germany_ts<-ts(diff_lgdp_Germany/100, end = c(2022, 1), frequency = 4)
+cycle_Germany_bk_ts<-ts(cycle_Germany_bk, end = c(2022, 1), frequency = 4)
+cycle_Germany_linear_ts<-ts(lin.cycle_Germany, start = c(1991, 1), frequency = 4)
+cycle_Germany_Kalman_a <- logGermany - PIB_POTENTIEL_KF_Germany
+cycle_Germany_Kalman_ts<-ts(cycle_Germany_Kalman_a, end = c(2022, 1), frequency = 4)
+
+
+# Plot time series
+plot.ts(diff_lgdp_Germany_ts, ylab = "",col="black")  
+
+# include HP trend
+lines(cycle_Germany_Kalman_ts, col = "red")
+lines(cycle_Germany_hpts, col = "blue")
+lines(cycle_Germany_linear_ts, col = "green")
+lines(cycle_Germany_bk_ts, col = "orange")
+legend("topleft", legend = c("Log Delta GDP Germany","Cycle Germany Kalman Filter GDP", "HP Germany Cycle","Linear Germany cycle","Baxter-King Germany cycle" ), lty = 1, 
+       fill = c("black", "red","blue","green","orange"), bty = "n")
+
+
+observed_Germany_cycle<-diff_lgdp_Germany_ts
+predicted_Germany_Kalman_cycle<-cycle_Germany_Kalman_ts
+predicted_Germany_HP_cycle<-cycle_Germany_hpts
+predicted_Germany_Linear_cycle<-cycle_Germany_linear_ts
+predicted_Germany_Baxter_King_cycle<-cycle_Germany_bk_ts
+
+
+
+mae_Kalman_Germany<- mae(observed_Germany,predicted_Germany_Kalman_cycle)
+mae_Kalman_Germany
+mae_HP_Germany<-mae(observed_Germany,predicted_Germany_HP_cycle)
+mae_HP_Germany
+mae_Linear_Germany<-mae(observed_Germany,predicted_Germany_Linear_cycle)
+mae_Linear_Germany
+mae_Baxter_King_Germany<-mae(observed_Germany,predicted_Germany_Baxter_King_cycle)
+mae_Baxter_King_Germany
 
 
 
@@ -515,6 +585,7 @@ Italia_hp_reg <- hpfilter(logItalia, freq = 1600, type = "lambda",drift=FALSE)
 
 cycle_Italia_hp<-Italia_hp_reg$cycle
 trend_Italia_hp<-Italia_hp_reg$trend
+
 
 cycle_Italia_hpts<-ts(data=cycle_Italia_hp,start=(1995),frequency=4)
 trend_Italia_hpts<-ts(data=trend_Italia_hp,start=(1995),frequency=4)
@@ -692,14 +763,55 @@ predicted_Italia_Baxter_King<-trend_Italia_bkts
 
 
 
-mae_Kalman_Italia<-mae(observed,predicted_Italia_Kalman)
+mae_Kalman_Italia<-mae(observed_Italia,predicted_Italia_Kalman)
 mae_Kalman_Italia
-mae_HP_Italia<-mae(observed,predicted_Italia_HP)
+mae_HP_Italia<-mae(observed_Italia,predicted_Italia_HP)
 mae_HP_Italia
-mae_Linear_Italia<-mae(observed,predicted_Italia_Linear)
+mae_Linear_Italia<-mae(observed_Italia,predicted_Italia_Linear)
 mae_Linear_Italia
-mae_Baxter_King_Italia<-mae(observed,predicted_Italia_Baxter_King)
+mae_Baxter_King_Italia<-mae(observed_Italia,predicted_Italia_Baxter_King)
 mae_Baxter_King_Italia
+
+
+
+diff_lgdp_Italia_ts<-ts(diff_lgdp_Italia/100, end = c(2022, 1), frequency = 4)
+cycle_Italia_bk_ts<-ts(cycle_Italia_bk, end = c(2022, 1), frequency = 4)
+cycle_Italia_linear_ts<-ts(lin.cycle_Italia, start = c(1995, 1), frequency = 4)
+cycle_Italia_Kalman_a <- logItalia - PIB_POTENTIEL_KF_Italia
+cycle_Italia_Kalman_ts<-ts(cycle_Italia_Kalman_a, end = c(2022, 1), frequency = 4)
+
+
+# Plot time series
+plot.ts(diff_lgdp_Italia_ts, ylab = "",col="black")  
+
+# include HP trend
+lines(cycle_Italia_Kalman_ts, col = "red")
+lines(cycle_Italia_hpts, col = "blue")
+lines(cycle_Italia_linear_ts, col = "green")
+lines(cycle_Italia_bk_ts, col = "orange")
+legend("topleft", legend = c("Log Delta GDP Italia","Cycle Italia Kalman Filter GDP", "HP Italia Cycle","Linear Italia cycle","Baxter-King Italia cycle" ), lty = 1, 
+       fill = c("black", "red","blue","green","orange"), bty = "n")
+
+
+
+
+
+observed_Italia_cycle<-diff_lgdp_Italia_ts
+predicted_Italia_Kalman_cycle<-cycle_Italia_Kalman_ts
+predicted_Italia_HP_cycle<-cycle_Italia_hpts
+predicted_Italia_Linear_cycle<-cycle_Italia_linear_ts
+predicted_Italia_Baxter_King_cycle<-cycle_Italia_bk_ts
+
+
+
+mae_Kalman_Italia_cycle<- mae(observed_Italia,predicted_Italia_Kalman_cycle)
+mae_Kalman_Italia_cycle
+mae_HP_Italia_cycle<-mae(observed_Italia,predicted_Italia_HP_cycle)
+mae_HP_Italia_cycle
+mae_Linear_Italia_cycle<-mae(observed_Italia,predicted_Italia_Linear_cycle)
+mae_Linear_Italia_cycle
+mae_Baxter_King_Italia_cycle<-mae(observed_Italia,predicted_Italia_Baxter_King_cycle)
+mae_Baxter_King_Italia_cycle
 
 
 
@@ -851,7 +963,7 @@ model.list2_Spain <- list(B = B2_Spain, Q=Q2_Spain, Z = Z2_Spain, A = A2_Spain, 
 fit <- MARSS(d2_Spain, model=model.list2_Spain, fit = TRUE)
 Spain_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95, output = c("data.frame", "matrix"))
 Spain_KF4 <- tsSmooth(fit,
-                       type = c("xtT", "xtt", "xtt1", "ytT", "ytt", "ytt1"),
+                       type = c("xtt"),
                        interval = c("confidence"),
                        level = 0.95, fun.kf = c("MARSSkfas"))
 
@@ -921,20 +1033,54 @@ predicted_Spain_Baxter_King<-trend_Spain_bkts
 
 
 
-mae_Kalman_Spain<-mae(observed,predicted_Spain_Kalman)
+mae_Kalman_Spain<-mae(observed_Spain,predicted_Spain_Kalman)
 mae_Kalman_Spain
-mae_HP_Spain<-mae(observed,predicted_Spain_HP)
+mae_HP_Spain<-mae(observed_Spain,predicted_Spain_HP)
 mae_HP_Spain
-mae_Linear_Spain<-mae(observed,predicted_Spain_Linear)
+mae_Linear_Spain<-mae(observed_Spain,predicted_Spain_Linear)
 mae_Linear_Spain
-mae_Baxter_King_Spain<-mae(observed,predicted_Spain_Baxter_King)
+mae_Baxter_King_Spain<-mae(observed_Spain,predicted_Spain_Baxter_King)
 mae_Baxter_King_Spain
 
 
 
 
+diff_lgdp_Spain_ts<-ts(diff_lgdp_Spain/100, end = c(2022, 1), frequency = 4)
+cycle_Spain_bk_ts<-ts(cycle_Spain_bk, end = c(2022, 1), frequency = 4)
+cycle_Spain_linear_ts<-ts(lin.cycle_Spain, start = c(1995, 1), frequency = 4)
+cycle_Spain_Kalman_a <- logSpain - PIB_POTENTIEL_KF_Spain
+cycle_Spain_Kalman_ts<-ts(cycle_Spain_Kalman_a, end = c(2022, 1), frequency = 4)
 
 
+# Plot time series
+plot.ts(diff_lgdp_Spain_ts, ylab = "",col="black")  
+
+# include HP trend
+lines(cycle_Spain_Kalman_ts, col = "red")
+lines(cycle_Spain_hpts, col = "blue")
+lines(cycle_Spain_linear_ts, col = "green")
+lines(cycle_Spain_bk_ts, col = "orange")
+legend("topleft", legend = c("Log Delta GDP Spain","Cycle Spain Kalman Filter GDP", "HP Spain Cycle","Linear Spain cycle","Baxter-King Spain cycle" ), lty = 1, 
+       fill = c("black", "red","blue","green","orange"), bty = "n")
+
+
+
+observed_Spain_cycle<-diff_lgdp_Spain_ts
+predicted_Spain_Kalman_cycle<-cycle_Spain_Kalman_ts
+predicted_Spain_HP_cycle<-cycle_Spain_hpts
+predicted_Spain_Linear_cycle<-cycle_Spain_linear_ts
+predicted_Spain_Baxter_King_cycle<-cycle_Spain_bk_ts
+
+
+
+mae_Kalman_Spain_cycle<- mae(observed_Spain,predicted_Spain_Kalman_cycle)
+mae_Kalman_Spain_cycle
+mae_HP_Spain_cycle<-mae(observed_Spain,predicted_Spain_HP_cycle)
+mae_HP_Spain_cycle
+mae_Linear_Spain_cycle<-mae(observed_Spain,predicted_Spain_Linear_cycle)
+mae_Linear_Spain_cycle
+mae_Baxter_King_Spain_cycle<-mae(observed_Spain,predicted_Spain_Baxter_King_cycle)
+mae_Baxter_King_Spain_cycle
 
 
 ###Japan
@@ -1077,7 +1223,7 @@ model.list2_Japan <- list(B = B2_Japan, Q=Q2_Japan, Z = Z2_Japan, A = A2_Japan, 
 fit <- MARSS(d2_Japan, model=model.list2_Japan, fit = TRUE)
 Japan_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95, output = c("data.frame", "matrix"))
 Japan_KF4 <- tsSmooth(fit,
-                       type = c("xtT", "xtt", "xtt1", "ytT", "ytt", "ytt1"),
+                       type = c("xtt"),
                        interval = c("confidence"),
                        level = 0.95, fun.kf = c("MARSSkfas"))
 
@@ -1146,17 +1292,34 @@ predicted_Japan_Baxter_King<-trend_Japan_bkts
 
 
 
-mae_Kalman_Japan<-mae(observed,predicted_Japan_Kalman)
+mae_Kalman_Japan<-mae(observed_Japan,predicted_Japan_Kalman)
 mae_Kalman_Japan
-mae_HP_Japan<-mae(observed,predicted_Japan_HP)
+mae_HP_Japan<-mae(observed_Japan,predicted_Japan_HP)
 mae_HP_Japan
-mae_Linear_Japan<-mae(observed,predicted_Japan_Linear)
+mae_Linear_Japan<-mae(observed_Japan,predicted_Japan_Linear)
 mae_Linear_Japan
-mae_Baxter_King_Japan<-mae(observed,predicted_Japan_Baxter_King)
+mae_Baxter_King_Japan<-mae(observed_Japan,predicted_Japan_Baxter_King)
 mae_Baxter_King_Japan
 
 
 
+diff_lgdp_Japan_ts<-ts(diff_lgdp_Japan/100, end = c(2022, 1), frequency = 4)
+cycle_Japan_bk_ts<-ts(cycle_Japan_bk, end = c(2022, 1), frequency = 4)
+cycle_Japan_linear_ts<-ts(lin.cycle_Japan, start = c(1994, 1), frequency = 4)
+cycle_Japan_Kalman_a <- logJapan - PIB_POTENTIEL_KF_Japan
+cycle_Japan_Kalman_ts<-ts(cycle_Japan_Kalman_a, end = c(2022, 1), frequency = 4)
+
+
+# Plot time series
+plot.ts(diff_lgdp_Japan_ts, ylab = "",col="black")  
+
+# include HP trend
+lines(cycle_Japan_Kalman_ts, col = "red")
+lines(cycle_Japan_hpts, col = "blue")
+lines(cycle_Japan_linear_ts, col = "green")
+lines(cycle_Japan_bk_ts, col = "orange")
+legend("topleft", legend = c("Log Delta GDP Japan","Cycle Japan Kalman Filter GDP", "HP Japan Cycle","Linear Japan cycle","Baxter-King Japan cycle" ), lty = 1, 
+       fill = c("black", "red","blue","green","orange"), bty = "n")
 
 
 
@@ -1304,7 +1467,7 @@ model.list2_United_Kingdom <- list(B = B2_United_Kingdom, Q=Q2_United_Kingdom, Z
 fit <- MARSS(d2_United_Kingdom, model=model.list2_United_Kingdom, fit = TRUE)
 United_Kingdom_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95, output = c("data.frame", "matrix"))
 United_Kingdom_KF4 <- tsSmooth(fit,
-                      type = c("xtT", "xtt", "xtt1", "ytT", "ytt", "ytt1"),
+                      type = c("xtt"),
                       interval = c("confidence"),
                       level = 0.95, fun.kf = c("MARSSkfas"))
 
@@ -1370,18 +1533,56 @@ predicted_United_Kingdom_Baxter_King<-trend_United_Kingdom_bkts
 
 
 
-mae_Kalman_United_Kingdom<-mae(observed,predicted_United_Kingdom_Kalman)
+mae_Kalman_United_Kingdom<-mae(observed_United_Kingdom,predicted_United_Kingdom_Kalman)
 mae_Kalman_United_Kingdom
-mae_HP_United_Kingdom<-mae(observed,predicted_United_Kingdom_HP)
+mae_HP_United_Kingdom<-mae(observed_United_Kingdom,predicted_United_Kingdom_HP)
 mae_HP_United_Kingdom
-mae_Linear_United_Kingdom<-mae(observed,predicted_United_Kingdom_Linear)
+mae_Linear_United_Kingdom<-mae(observed_United_Kingdom,predicted_United_Kingdom_Linear)
 mae_Linear_United_Kingdom
-mae_Baxter_King_United_Kingdom<-mae(observed,predicted_United_Kingdom_Baxter_King)
+mae_Baxter_King_United_Kingdom<-mae(observed_United_Kingdom,predicted_United_Kingdom_Baxter_King)
 mae_Baxter_King_United_Kingdom
 
 
 
 
+
+
+diff_lgdp_United_Kingdom_ts<-ts(diff_lgdp_United_Kingdom/100, end = c(2020, 1), frequency = 4)
+cycle_United_Kingdom_bk_ts<-ts(cycle_United_Kingdom_bk, end = c(2020, 1), frequency = 4)
+cycle_United_Kingdom_linear_ts<-ts(lin.cycle_United_Kingdom, start = c(1975, 1), frequency = 4)
+cycle_United_Kingdom_Kalman_a <- logUnited_Kingdom - PIB_POTENTIEL_KF_United_Kingdom
+cycle_United_Kingdom_Kalman_ts<-ts(cycle_United_Kingdom_Kalman_a, end = c(2020, 1), frequency = 4)
+
+
+# Plot time series
+plot.ts(diff_lgdp_United_Kingdom_ts, ylab = "",col="black")  
+
+# include HP trend
+lines(cycle_United_Kingdom_Kalman_ts, col = "red")
+lines(cycle_United_Kingdom_hpts, col = "blue")
+lines(cycle_United_Kingdom_linear_ts, col = "green")
+lines(cycle_United_Kingdom_bk_ts, col = "orange")
+legend("topleft", legend = c("Log Delta GDP United_Kingdom","Cycle United_Kingdom Kalman Filter GDP", "HP United_Kingdom Cycle","Linear United_Kingdom cycle","Baxter-King United_Kingdom cycle" ), lty = 1, 
+       fill = c("black", "red","blue","green","orange"), bty = "n")
+
+
+
+observed_United_Kingdom_cycle<-diff_lgdp_United_Kingdom_ts
+predicted_United_Kingdom_Kalman_cycle<-cycle_United_Kingdom_Kalman_ts
+predicted_United_Kingdom_HP_cycle<-cycle_United_Kingdom_hpts
+predicted_United_Kingdom_Linear_cycle<-cycle_United_Kingdom_linear_ts
+predicted_United_Kingdom_Baxter_King_cycle<-cycle_United_Kingdom_bk_ts
+
+
+
+mae_Kalman_United_Kingdom_cycle<- mae(observed_United_Kingdom,predicted_United_Kingdom_Kalman_cycle)
+mae_Kalman_United_Kingdom_cycle
+mae_HP_United_Kingdom_cycle<-mae(observed_United_Kingdom,predicted_United_Kingdom_HP_cycle)
+mae_HP_United_Kingdom_cycle
+mae_Linear_United_Kingdom_cycle<-mae(observed_United_Kingdom,predicted_United_Kingdom_Linear_cycle)
+mae_Linear_United_Kingdom_cycle
+mae_Baxter_King_United_Kingdom_cycle<-mae(observed_United_Kingdom,predicted_United_Kingdom_Baxter_King_cycle)
+mae_Baxter_King_United_Kingdom_cycle
 
 
 
@@ -1531,7 +1732,7 @@ model.list2_United_States <- list(B = B2_United_States, Q=Q2_United_States, Z = 
 fit <- MARSS(d2_United_States, model=model.list2_United_States, fit = TRUE)
 United_States_KF3 <- fitted(fit, type="ytT", interval = c("confidence"),level = 0.95, output = c("data.frame", "matrix"))
 United_States_KF4 <- tsSmooth(fit,
-                      type = c("xtT", "xtt", "xtt1", "ytT", "ytt", "ytt1"),
+                      type = c("xtt"),
                       interval = c("confidence"),
                       level = 0.95, fun.kf = c("MARSSkfas"))
 
@@ -1602,20 +1803,55 @@ predicted_United_States_Baxter_King<-trend_United_States_bkts
 
 
 
-mae_Kalman_United_States<-mae(observed,predicted_United_States_Kalman)
+mae_Kalman_United_States<-mae(observed_United_States,predicted_United_States_Kalman)
 mae_Kalman_United_States
-mae_HP_United_States<-mae(observed,predicted_United_States_HP)
+mae_HP_United_States<-mae(observed_United_States,predicted_United_States_HP)
 mae_HP_United_States
-mae_Linear_United_States<-mae(observed,predicted_United_States_Linear)
+mae_Linear_United_States<-mae(observed_United_States,predicted_United_States_Linear)
 mae_Linear_United_States
-mae_Baxter_King_United_States<-mae(observed,predicted_United_States_Baxter_King)
+mae_Baxter_King_United_States<-mae(observed_United_States,predicted_United_States_Baxter_King)
 mae_Baxter_King_United_States
 
 
 
 
 
+diff_lgdp_United_States_ts<-ts(diff_lgdp_United_States/100, end = c(2022, 1), frequency = 4)
+cycle_United_States_bk_ts<-ts(cycle_United_States_bk, end = c(2022, 1), frequency = 4)
+cycle_United_States_linear_ts<-ts(lin.cycle_United_States, start = c(1975, 1), frequency = 4)
+cycle_United_States_Kalman_a <- logUnited_States - PIB_POTENTIEL_KF_United_States
+cycle_United_States_Kalman_ts<-ts(cycle_United_States_Kalman_a*10, end = c(2022, 1), frequency = 4)
 
+
+# Plot time series
+plot.ts(diff_lgdp_United_States_ts, ylab = "",col="black")  
+
+# include HP trend
+lines(cycle_United_States_Kalman_ts, col = "red")
+lines(cycle_United_States_hpts, col = "blue")
+lines(cycle_United_States_linear_ts, col = "green")
+lines(cycle_United_States_bk_ts, col = "orange")
+legend("topleft", legend = c("Log Delta GDP United_States","Cycle United_States Kalman Filter GDP", "HP United_States Cycle","Linear United_States cycle","Baxter-King United_States cycle" ), lty = 1, 
+       fill = c("black", "red","blue","green","orange"), bty = "n")
+
+
+
+observed_United_States_cycle<-diff_lgdp_United_States_ts
+predicted_United_States_Kalman_cycle<-cycle_United_States_Kalman_ts
+predicted_United_States_HP_cycle<-cycle_United_States_hpts
+predicted_United_States_Linear_cycle<-cycle_United_States_linear_ts
+predicted_United_States_Baxter_King_cycle<-cycle_United_States_bk_ts
+
+
+
+mae_Kalman_United_States_cycle<- mae(observed_United_States,predicted_United_States_Kalman_cycle)
+mae_Kalman_United_States_cycle
+mae_HP_United_States_cycle<-mae(observed_United_States,predicted_United_States_HP_cycle)
+mae_HP_United_States_cycle
+mae_Linear_United_States_cycle<-mae(observed_United_States,predicted_United_States_Linear_cycle)
+mae_Linear_United_States_cycle
+mae_Baxter_King_United_States_cycle<-mae(observed_United_States,predicted_United_States_Baxter_King_cycle)
+mae_Baxter_King_United_States_cycle
 
 
 
